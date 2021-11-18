@@ -1,0 +1,32 @@
+@import "_colors.scss";
+@import "_mixins.scss";
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+body {
+  background-color: $background;
+  color: $black;
+  font-family: roboto, 'sans-serif';
+  @include text;
+}
+body, html {
+  height: 100%;
+}
+input, button, textarea {
+  outline: none;
+}
+button {
+  border: none;
+  background-color: transparent;
+}
+a {
+  text-decoration: none;
+  color: $black;
+}

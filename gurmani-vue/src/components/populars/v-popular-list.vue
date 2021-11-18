@@ -1,0 +1,47 @@
+<template>
+  <section class="popular">
+    <h2 class="popular__title">Популярное</h2>
+    <div class="popular__list">
+      <v-popular-item
+        v-for="popular in POPULAR"
+        :key="popular.id"
+        :popular_data="popular"
+      ></v-popular-item>
+    </div>
+  </section>
+</template>
+<script>
+import vPopularItem from "@/components/populars/v-popular-item";
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  name: "v-popular-list",
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapGetters(["POPULAR"]),
+  },
+  methods: {
+    ...mapActions(["GET_POPULAR_FROM_API"]),
+  },
+  mounted() {
+    this.GET_POPULAR_FROM_API();
+  },
+  components: {
+    vPopularItem,
+  },
+};
+</script>
+<style lang="scss">
+.popular {
+  padding: 0 0 0 20px;
+  &__title {
+    @include h2;
+  }
+  &__list {
+    display: flex;
+    overflow: auto;
+  }
+}
+</style>
