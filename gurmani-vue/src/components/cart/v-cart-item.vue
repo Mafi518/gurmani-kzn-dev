@@ -37,32 +37,19 @@
 
       <p class="cart__item-weight">{{ cart_item_data.out }} г</p>
     </div>
-    <div
-      class="popup__size"
-      v-if="cart_item_data.product_name.includes('Пицца')"
-    >
-      <label for="small-size" class="popup__label" data-size="small-size">
+    <div class="popup__size" v-if="cart_item_data.product_name.includes('Пицца')">
+      <label
+        class="popup__label"
+        v-for="(modification, index) in cart_item_data.group_modifications"
+        :key="modification.dish_modification_group_id"
+        @click="toggleSize(index)"
+      >
         <input
           type="radio"
-          ref="smallSize"
-          checked
-          @click="this.size = 'small-size'"
           name="size"
-          id="small-size"
           class="popup__input"
         />
-        25 см
-      </label>
-      <label for="big-size" class="popup__label" data-size="big-size">
-        <input
-          type="radio"
-          ref="big-size"
-          @click="this.size = 'big-size'"
-          name="size"
-          id="big-size"
-          class="popup__input"
-        />
-        30 см
+        {{ modification.name }}
       </label>
     </div>
   </div>
@@ -72,33 +59,28 @@ export default {
   name: "v-cart-item",
   computed: {
     modificationPrice() {
-      if (
-        this.cart_item_data.product_name.includes("Пицца")
-        // this.cart_item_data.price[1].slice(0, -2) <= this.cart_item_data.group_modifications[0]
-      ) {
-        // let array = this.cart_item_data.group_modifications.map(
-        //   (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-        // );
-        // let reducer = (previousValue, currentValue) =>
-        //   previousValue + currentValue;
-        // let newValue =
-        //   array.reduce(reducer) - this.cart_item_data.price[1].slice(0, -2);
-        let newValue = this.cart_item_data.price[1].slice(0, -2);
-        return newValue;
+      if (this.cart_item_data.product_name.includes("Пицца")) {
+        let checkedModification =
+          this.cart_item_data.group_modifications.filter(
+            (mode) => mode.checked == true
+          );
+        return (
+          this.cart_item_data.count *
+            checkedModification[0].modifications.map((mode) => mode.price) -
+          this.cart_item_data.price[1].slice(0, -2) * this.cart_item_data.count
+        );
       } else {
-        console.log("dd");
+        let array = this.cart_item_data.group_modifications.map(
+          (mode) => mode.count * mode.modifications.map((modif) => modif.price)
+        );
+        let reducer = (previousValue, currentValue) =>
+          previousValue + currentValue;
+        return array.reduce(reducer);
       }
-      let array = this.cart_item_data.group_modifications.map(
-        (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-      );
-      let reducer = (previousValue, currentValue) =>
-        previousValue + currentValue;
-      return array.reduce(reducer);
     },
   },
   data() {
     return {
-      size: "small-size",
     };
   },
   methods: {
@@ -107,6 +89,9 @@ export default {
     },
     decrementItem() {
       this.$emit("decrement");
+    },
+    toggleSize() {
+      this.$emit("togglesize");
     },
   },
   props: {

@@ -230,6 +230,7 @@ export default {
     addToCart(data) {
       data = this.PRODUCT;
       this.ADD_TO_CART(data);
+      console.log(data);
     },
     deleteModification(index) {
       if (this.PRODUCT.group_modifications[index].count > 0) {
@@ -250,7 +251,6 @@ export default {
         let checkedModification = this.PRODUCT.group_modifications.filter(
           (mode) => mode.checked == true
         );
-        console.log(checkedModification);
         return (
           this.PRODUCT.count *
             checkedModification[0].modifications.map((mode) => mode.price) -
