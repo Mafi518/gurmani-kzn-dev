@@ -47,7 +47,19 @@ export default createStore({
         state.cart.map((item) => {
           if (item.product_id === data.product_id) {
             dataExists = true;
-            console.log(item);
+            console.log("dataExists");
+
+            console.log(state.cart.indexOf(item));
+            item.count = data.count;
+            item.group_modifications = data.group_modifications;
+
+            // state.cart.splice(item, 1)
+            // state.cart.push(data)
+            // console.log(item);
+            // Нужно тут получить именно тот индекс объекта, который нужно запушить с новыми значениями
+            // Можно вообще проще ценник прятать в другой ключ объекта и по нему проверку проводить
+            // Стоит попробовать это! Если совпадение по айди происходит, то мы берем state продукта и обновляем state item в SET_CART
+            // Тут внутри ещё сделать проверку на размер пиццы, чтобы пушились разные продукты 25 см и 30 см пиццы по checked
           }
         });
         if (!dataExists) {
@@ -56,11 +68,47 @@ export default createStore({
       } else {
         state.cart.push(data);
       }
+      // localStorage.setItem('cart', JSON.stringify(state.cart.map(item => item)))
+      // console.log(localStorage.getItem('cart'));
     },
     TOGGLE_SIZE: (state, index) => {
-      console.log(index);
-      state.product.group_modifications.map((mode) => (mode.checked = false));
-      state.product.group_modifications[index].checked = true;
+      // console.log(index);
+      if (state.product.product !== "empty") {
+        state.product.group_modifications.map((mode) => (mode.checked = false));
+        state.product.group_modifications[index].checked = true;
+      }
+
+      if (state.cart.length) {
+        setTimeout(() => {
+          let switchArray = new Array(state.cart[localStorage.getItem('cartItem')].group_modifications);
+          switchArray[0].map(mode => mode.checked = false)
+          state.cart[localStorage.getItem('cartItem')].group_modifications[index].checked = true
+        }, 1);
+      } 
+      // console.log(state.cart[index].group_modifications[0]);
+      // let switchArray = state.cart[index].group_modifications
+      // let test = switchArray.filter(mode => mode.checked !== true)
+
+
+      // else if (state.cart[index].group_modifications[0].checked == true) {
+      //   state.cart[index].group_modifications[1].checked = true;
+      //   state.cart[index].group_modifications[0].checked = false;
+      // } else if (state.cart[index].group_modifications[1].checked == true) {
+      //   state.cart[index].group_modifications[0].checked = true;
+      //   state.cart[index].group_modifications[1].checked = false
+      // }
+      // state.cart[index].group_modifications.map((mode) => (mode.checked = false));
+      // state.cart[index].group_modifications[index].checked = true;
+      // console.log(state.cart[index])
+      // console.log(state.cart[index].group_modifications.name);
+      // let refreshCart = new Array(state.cart[index].group_modifications)
+      // refreshCart.filter(mode => mode.checked == true)
+      // console.log(refreshCart[0].filter(mode => !mode.checked));
+      // console.log(state.cart[index].group_modifications);
+    },
+    RESET_PRODUCT: (state) => {
+      state.product = { product: "empty" };
+      console.log(state.product);
     },
   },
   actions: {
@@ -110,7 +158,6 @@ export default createStore({
         });
         data.group_modifications[0].checked = true;
       }
-      console.log(data);
       data.ingredients.map((ingredient) => {
         switch (ingredient.ingredient_name) {
           case "Лосось":
@@ -138,6 +185,12 @@ export default createStore({
     },
     TOGGLE_SIZE_OF_PIZZA({ commit }, index) {
       commit("TOGGLE_SIZE", index);
+    },
+    // TOGGLE_SIZE_OF_PIZZA_CART({ commit }, index) {
+
+    // },
+    RESET_PRODUCT({ commit }) {
+      commit("RESET_PRODUCT");
     },
   },
   getters: {

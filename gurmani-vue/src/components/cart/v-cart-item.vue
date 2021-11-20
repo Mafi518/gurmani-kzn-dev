@@ -37,24 +37,26 @@
 
       <p class="cart__item-weight">{{ cart_item_data.out }} г</p>
     </div>
-    <div class="popup__size" v-if="cart_item_data.product_name.includes('Пицца')">
+    <div
+      class="popup__size"
+      v-if="cart_item_data.product_name.includes('Пицца')"
+    >
       <label
         class="popup__label"
         v-for="(modification, index) in cart_item_data.group_modifications"
         :key="modification.dish_modification_group_id"
         @click="toggleSize(index)"
+        
       >
-        <input
-          type="radio"
-          name="size"
-          class="popup__input"
-        />
+        <input type="radio" :checked="cart_item_data.group_modifications[index].checked == true" :name="cart_item_data.product_id" class="popup__input" />
         {{ modification.name }}
       </label>
     </div>
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: "v-cart-item",
   computed: {
@@ -81,17 +83,20 @@ export default {
   },
   data() {
     return {
+      
     };
   },
   methods: {
+    ...mapActions(["TOGGLE_SIZE_OF_PIZZA"]),
     incrementItem() {
       this.$emit("increment");
     },
     decrementItem() {
       this.$emit("decrement");
     },
-    toggleSize() {
-      this.$emit("togglesize");
+    toggleSize(index) {
+      this.TOGGLE_SIZE_OF_PIZZA(index);
+      localStorage.setItem('pizzaSize', index)
     },
   },
   props: {
@@ -102,7 +107,9 @@ export default {
       },
     },
   },
-  mounted() {},
+  mounted() {
+
+  },
 };
 </script>
 <style lang="scss" scoped>

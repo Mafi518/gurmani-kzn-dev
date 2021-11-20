@@ -6,16 +6,24 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import vCart from "@/components/cart/v-cart";
 
 export default {
   components: {
     vCart,
   },
-  methods: {},
+  methods: {
+    ...mapActions(["RESET_PRODUCT"]),
+    reset() {
+      this.RESET_PRODUCT();
+    },
+  },
   computed: {
     ...mapGetters(["CART"]),
+  },
+  mounted() {
+    this.reset();
   },
 };
 </script>

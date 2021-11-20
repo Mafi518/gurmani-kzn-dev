@@ -6,7 +6,7 @@
       :cart_item_data="item"
       @increment="increment(index)"
       @decrement="decrement(index)"
-      @togglesize="togglesize(index)"
+      @click="check(index)"
     >
     </v-cart-item>
   </div>
@@ -28,15 +28,19 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["INCREMENT_POPUP_ITEM", "DECREMENT_POPUP_ITEM", "TOGGLE_SIZE_OF_PIZZA"]),
+    ...mapActions([
+      "INCREMENT_POPUP_ITEM",
+      "DECREMENT_POPUP_ITEM",
+      "TOGGLE_SIZE_OF_PIZZA",
+    ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
     },
     decrement(index) {
       this.DECREMENT_POPUP_ITEM(index);
     },
-    togglesize(index) {
-      this.TOGGLE_SIZE_OF_PIZZA(index)
+    check(index) {
+      localStorage.setItem('cartItem', index);
     }
   },
 };

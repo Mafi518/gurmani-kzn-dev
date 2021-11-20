@@ -19,13 +19,8 @@
             <p class="popup__subtitle">
               <span class="popup__price"
                 >{{
-                  this.size == "small-size"
-                    ? PRODUCT.price[1].slice(0, -2) * PRODUCT.count +
-                      modificationPrice
-                    : ""
-                    ? this.size == "big-size"
-                    : PRODUCT.group_modifications[0].modifications[0].price *
-                      PRODUCT.count
+                  PRODUCT.price[1].slice(0, -2) * PRODUCT.count +
+                  modificationPrice
                 }}
                 ₽</span
               >
@@ -58,12 +53,7 @@
                 :key="modification.dish_modification_group_id"
                 @click="toggleSize(index)"
               >
-                <input
-                  type="radio"
-                  @click="this.size = 'small-size'"
-                  name="size"
-                  class="popup__input"
-                />
+                <input type="radio" name="size" class="popup__input" />
                 {{ modification.name }}
               </label>
             </div>
@@ -176,12 +166,7 @@
       </div>
       <v-add-btn @click="addToCart"
         >{{
-          this.size == "small-size"
-            ? PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
-            : ""
-            ? this.size == "big-size"
-            : PRODUCT.group_modifications[0].modifications[0].price *
-              PRODUCT.count
+          PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
         }}
         ₽</v-add-btn
       >
@@ -194,9 +179,7 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "v-product-popup",
   data() {
-    return {
-      size: "small-size",
-    };
+    return {};
   },
   props: {
     popup_data: {
@@ -213,9 +196,10 @@ export default {
       "DECREMENT_POPUP_ITEM",
       "ADD_TO_CART",
       "TOGGLE_SIZE_OF_PIZZA",
+      "RESET_PRODUCT",
     ]),
     reset() {
-      this.size = "small-size";
+      this.RESET_PRODUCT();
     },
     getProductInfo(data) {
       this.GET_PRODUCT_INFO(data);
@@ -230,7 +214,6 @@ export default {
     addToCart(data) {
       data = this.PRODUCT;
       this.ADD_TO_CART(data);
-      console.log(data);
     },
     deleteModification(index) {
       if (this.PRODUCT.group_modifications[index].count > 0) {
@@ -268,6 +251,10 @@ export default {
   },
   mounted() {
     // this.PRODUCT.group_modifications.map(modification => modification.count = 0)
+    // if(document.querySelector('.popup__input')) {
+    //   document.querySelector('.popup__input').checked = true
+    //   console.log(document.querySelector('.popup__input'));
+    // }
   },
 };
 </script>
@@ -290,6 +277,9 @@ export default {
     }
   }
   &__item {
+  }
+  &__input {
+
   }
   &__head {
     padding-right: 20px;

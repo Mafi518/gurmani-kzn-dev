@@ -14,7 +14,7 @@
       ></v-product-item>
     </div>
   </section>
-  <v-product-popup></v-product-popup>
+  <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
     vCategoryList,
   },
   computed: {
-    ...mapGetters(["CATEGORY_PRODUCTS"]),
+    ...mapGetters(["CATEGORY_PRODUCTS", "PRODUCT"]),
   },
   methods: {
     ...mapActions(["GET_CATEGORY_PRODUCTS_FROM_API"]),
