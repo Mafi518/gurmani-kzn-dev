@@ -46,16 +46,20 @@
         v-for="(modification, index) in cart_item_data.group_modifications"
         :key="modification.dish_modification_group_id"
         @click="toggleSize(index)"
-        
       >
-        <input type="radio" :checked="cart_item_data.group_modifications[index].checked == true" :name="cart_item_data.product_id" class="popup__input" />
+        <input
+          type="radio"
+          :checked="cart_item_data.group_modifications[index].checked == true"
+          :name="cart_item_data.photo_origin"
+          class="popup__input"
+        />
         {{ modification.name }}
       </label>
     </div>
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 
 export default {
   name: "v-cart-item",
@@ -82,9 +86,7 @@ export default {
     },
   },
   data() {
-    return {
-      
-    };
+    return {};
   },
   methods: {
     ...mapActions(["TOGGLE_SIZE_OF_PIZZA"]),
@@ -96,7 +98,7 @@ export default {
     },
     toggleSize(index) {
       this.TOGGLE_SIZE_OF_PIZZA(index);
-      localStorage.setItem('pizzaSize', index)
+      localStorage.setItem("pizzaSize", index);
     },
   },
   props: {
@@ -107,9 +109,7 @@ export default {
       },
     },
   },
-  mounted() {
-
-  },
+  mounted() {},
 };
 </script>
 <style lang="scss" scoped>

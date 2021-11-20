@@ -53,7 +53,12 @@
                 :key="modification.dish_modification_group_id"
                 @click="toggleSize(index)"
               >
-                <input type="radio" name="size" class="popup__input" />
+                <input
+                  type="radio"
+                  :checked="PRODUCT.group_modifications[index].checked == true"
+                  name="size"
+                  class="popup__input"
+                />
                 {{ modification.name }}
               </label>
             </div>
@@ -279,7 +284,6 @@ export default {
   &__item {
   }
   &__input {
-
   }
   &__head {
     padding-right: 20px;

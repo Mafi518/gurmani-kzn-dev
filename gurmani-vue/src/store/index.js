@@ -48,11 +48,20 @@ export default createStore({
           if (item.product_id === data.product_id) {
             dataExists = true;
             console.log("dataExists");
+            if (
+              item.group_modifications[0].checked !==
+              data.group_modifications[0].checked
+            ) {
+              state.cart.push(data);
+            } else {
+              item.count = data.count;
+              item.group_modifications = data.group_modifications;
+            }
 
-            console.log(state.cart.indexOf(item));
-            item.count = data.count;
-            item.group_modifications = data.group_modifications;
+            console.log(item.group_modifications[0].checked);
+            console.log(data.group_modifications[0].checked);
 
+            // console.log(state.cart.indexOf(item));
             // state.cart.splice(item, 1)
             // state.cart.push(data)
             // console.log(item);
@@ -80,15 +89,18 @@ export default createStore({
 
       if (state.cart.length) {
         setTimeout(() => {
-          let switchArray = new Array(state.cart[localStorage.getItem('cartItem')].group_modifications);
-          switchArray[0].map(mode => mode.checked = false)
-          state.cart[localStorage.getItem('cartItem')].group_modifications[index].checked = true
+          let switchArray = new Array(
+            state.cart[localStorage.getItem("cartItem")].group_modifications
+          );
+          switchArray[0].map((mode) => (mode.checked = false));
+          state.cart[localStorage.getItem("cartItem")].group_modifications[
+            index
+          ].checked = true;
         }, 1);
-      } 
+      }
       // console.log(state.cart[index].group_modifications[0]);
       // let switchArray = state.cart[index].group_modifications
       // let test = switchArray.filter(mode => mode.checked !== true)
-
 
       // else if (state.cart[index].group_modifications[0].checked == true) {
       //   state.cart[index].group_modifications[1].checked = true;

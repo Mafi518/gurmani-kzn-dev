@@ -40,8 +40,8 @@ export default {
       this.DECREMENT_POPUP_ITEM(index);
     },
     check(index) {
-      localStorage.setItem('cartItem', index);
-    }
+      localStorage.setItem("cartItem", index);
+    },
   },
 };
 </script>
