@@ -120,7 +120,6 @@ export default createStore({
     },
     RESET_PRODUCT: (state) => {
       state.product = { product: "empty" };
-      console.log(state.product);
     },
   },
   actions: {
