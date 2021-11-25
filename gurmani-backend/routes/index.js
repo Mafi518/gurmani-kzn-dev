@@ -35,6 +35,39 @@ router.get('/categories', async (req, res) => {
     res.send(categories)
 })
 
+router.get('/promocodes', async (req, res) => {
+    
+    const posterApi = new PosterApi({ token: config.token });
+    
+    const promocodes = await posterApi.makePosterRequest('clients.getPromotions')
+
+    res.send(promocodes)
+})
+
+router.get('/getDiscountProduct:id', async (req, res) => {
+
+    const posterApi = new PosterApi({ token: config.token });
+
+    const discount_product = await posterApi.makePosterRequest('menu.getProduct', 'GET', {
+        body: {
+            product_id: req.params.id
+        }
+    })
+    console.log(req.params.id);
+    res.send(discount_product);
+});
+
+// router.get('/getDiscountProduct:id', async (req, res) => {
+
+//     const posterApi = new PosterApi({ token: config.token });
+
+//     const products = await posterApi.makePosterRequest('menu.getProduct', 'GET', {
+//         body: {
+//             category_id: req.params.id
+//         }
+//     })
+//     res.send(products);
+// });
 // router.post('/buy', async (req, res) => {
 //     const posterApi = new PosterApi({ token: config.token });
 //     const { productId } = req.body;

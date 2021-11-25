@@ -19,8 +19,8 @@
             <p class="popup__subtitle">
               <span class="popup__price"
                 >{{
-                  PRODUCT.price[1].slice(0, -2) * PRODUCT.count +
-                  modificationPrice
+                  // PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
+                  PRODUCT.price[1].slice(0, -2)
                 }}
                 ₽</span
               >
@@ -133,7 +133,7 @@
                 {{
                   modification.name +
                   " | " +
-                  modification.modifications[0].price +
+                  modification.modifications[0].price.toString().slice(0, -2) +
                   "₽"
                 }}
               </div>
@@ -171,7 +171,8 @@
       </div>
       <v-add-btn @click="addToCart"
         >{{
-          PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
+          // PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
+          PRODUCT.price[1].slice(0, -2)
         }}
         ₽</v-add-btn
       >
@@ -202,6 +203,7 @@ export default {
       "ADD_TO_CART",
       "TOGGLE_SIZE_OF_PIZZA",
       "RESET_PRODUCT",
+      "FULL_PRICE",
     ]),
     reset() {
       this.RESET_PRODUCT();
@@ -212,47 +214,37 @@ export default {
     },
     incrementItem() {
       this.INCREMENT_POPUP_ITEM();
+      this.FULL_PRICE(this.PRODUCT);
     },
     decrementItem() {
       this.DECREMENT_POPUP_ITEM();
+      this.FULL_PRICE(this.PRODUCT);
     },
     addToCart(data) {
       data = this.PRODUCT;
+
       this.ADD_TO_CART(data);
     },
     deleteModification(index) {
       if (this.PRODUCT.group_modifications[index].count > 0) {
         this.$store.state.product.group_modifications[index].count--;
+        this.FULL_PRICE(this.PRODUCT);
       }
     },
     addModification(index) {
       this.$store.state.product.group_modifications[index].count++;
+      this.FULL_PRICE(this.PRODUCT);
     },
     toggleSize(index) {
       this.TOGGLE_SIZE_OF_PIZZA(index);
+      this.FULL_PRICE(this.PRODUCT);
     },
+    // fullPrice() {
+    //   this.FULL_PRICE(this.PRODUCT)
+    // }
   },
   computed: {
     ...mapGetters(["PRODUCT", "POPULAR", "CATEGORY_PRODUCTS"]),
-    modificationPrice() {
-      if (this.PRODUCT.product_name.includes("Пицца")) {
-        let checkedModification = this.PRODUCT.group_modifications.filter(
-          (mode) => mode.checked == true
-        );
-        return (
-          this.PRODUCT.count *
-            checkedModification[0].modifications.map((mode) => mode.price) -
-          this.PRODUCT.price[1].slice(0, -2) * this.PRODUCT.count
-        );
-      } else {
-        let array = this.PRODUCT.group_modifications.map(
-          (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-        );
-        let reducer = (previousValue, currentValue) =>
-          previousValue + currentValue;
-        return array.reduce(reducer);
-      }
-    },
   },
   mounted() {
     // this.PRODUCT.group_modifications.map(modification => modification.count = 0)

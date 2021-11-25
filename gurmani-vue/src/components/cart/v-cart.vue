@@ -15,29 +15,46 @@
         class="cart-info__promocode"
         id="promocode"
         placeholder="У вас уже есть промокод? Жмите сюда!"
+        v-model="promocode_input"
+        @input="validatePromocode"
+        maxlength="10"
       />
       <div class="cart-info__list">
         <div class="cart-info__item">
           <p class="cart-info__description">Промежуточный итог</p>
-          <p class="cart-info__description">0 ₽</p>
+          <p class="cart-info__description">
+            {{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽
+          </p>
         </div>
         <div class="cart-info__item">
-          <p class="cart-info__description">Промокод</p>
-          <p class="cart-info__description">0 ₽</p>
+          <p class="cart-info__description">Промокод {{ promocode_input }}</p>
+          <p class="cart-info__description">
+            {{
+              this.DISCOUNT.promocode_type == 1
+                ? this.DISCOUNT.total_discount
+                : this.DISCOUNT.total_discount + " ₽"
+            }}
+            <!-- {{
+              this.DISCOUNT_CURRENT_PRODUCT
+            }} -->
+          </p>
         </div>
         <div class="cart-info__item">
           <p class="cart-info__description">Самовывоз</p>
           <p class="cart-info__description">0 ₽</p>
         </div>
+        <div class="cart-info__item">
+          <p class="cart-info__description" v-if="this.DISCOUNT.error"> {{ this.DISCOUNT.error }} </p>
+        </div>
       </div>
-      <p>
+      <p class="cart-info__description">
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
       <button class="buy-btn">
         <div>
           <p>Перейти к оформлению заказа</p>
-          <p>{{ totalPrice }}</p>
+          <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
         </div>
         <img src="@/assets/media/icons/plus-icon.svg" alt="" />
       </button>
@@ -45,10 +62,16 @@
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import vCartItem from "@/components/cart/v-cart-item";
 export default {
   name: "v-cart",
+  data() {
+    return {
+      promocode_input: "",
+      product_id: ""
+    };
+  },
   components: {
     vCartItem,
   },
@@ -65,6 +88,8 @@ export default {
       "INCREMENT_POPUP_ITEM",
       "DECREMENT_POPUP_ITEM",
       "TOGGLE_SIZE_OF_PIZZA",
+      "VALIDATE_PROMOCODE",
+      "GET_DISCOUNT_PRODUCT",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -75,38 +100,36 @@ export default {
     check(index) {
       localStorage.setItem("cartItem", index);
     },
-  },
-  computed: {
-    totalPrice() {
-      let cart = this.cart_data.map((item) => item);
+    validatePromocode() {
+      this.VALIDATE_PROMOCODE(this.promocode_input);
+      setTimeout(() => {
+        this.GET_DISCOUNT_PRODUCT(this.$store.state.discountProduct)
+      }, 700);
+      // setTimeout(() => {
+      //   this.GET_DISCOUNT_PRODUCT(this.product_id)
+      // }, 500);
 
-      console.log(cart.map(item => item.product_name));
-      // let reducer = (previousValue, currentValue) =>
-      //   +previousValue + +currentValue;
-      // return cart.reduce(reducer);
-      return 1
-
-      // Есть вариант сделать все вычисления в отдельный ключ объекта внутри v-cart-item и оттуда уже складывать стоимость корзины
     },
-    // modificationPrice() {
-    //   if (this.cart_data.product_name.includes("Пицца")) {
-    //     let checkedModification =
-    //       this.cart_data.group_modifications.filter(
-    //         (mode) => mode.checked == true
-    //       );
-    //     return (
-    //       this.cart_data.count *
-    //         checkedModification[0].modifications.map((mode) => mode.price) -
-    //       this.cart_data.price[1].slice(0, -2) * this.cart_data.count
-    //     );
-    //   } else {
-    //     let array = this.cart_data.group_modifications.map(
-    //       (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-    //     );
-    //     let reducer = (previousValue, currentValue) =>
-    //       previousValue + currentValue;
-    //     return array.reduce(reducer);
-    //   }
+    // getDisctountProduct() {
+    //   this.DISCOUNT_PRODUCT(this.product_id)
+    // }
+  },
+  // watch: {
+  //   product_id
+  // },
+  computed: {
+    ...mapGetters(["TOTAL_PRICE", "DISCOUNT", "DISCOUNT_PRODUCT", "DISCOUNT_CURRENT_PRODUCT"]),
+    // totalPrice() {
+
+    //   let cart = this.cart_data.map((item) => item.price[1]);
+
+    //   let reducer = (previousValue, currentValue) =>
+    //     +previousValue + +currentValue;
+    //   let result = cart.reduce(reducer).toString().slice(0, -2)
+    //   localStorage.setItem("totalPrice", result)
+    //   return result;
+
+    //   // Есть вариант сделать все вычисления в отдельный ключ объекта внутри v-cart-item и оттуда уже складывать стоимость корзины
     // },
   },
 };

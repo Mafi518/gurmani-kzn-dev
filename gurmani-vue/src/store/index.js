@@ -8,6 +8,10 @@ export default createStore({
     popular: [],
     product: {},
     cart: [],
+    promocodes: [],
+    discount: {},
+    discountProduct: {},
+    discountCurrentProduct: "0 ₽"
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -25,6 +29,24 @@ export default createStore({
     INCREMENT: (state, index) => {
       if (window.location.href == "http://localhost:8080/cart") {
         state.cart[index].count++;
+        console.log(state.cart[index]);
+        if (state.cart[index].product_name.includes("Пицца")) {
+          state.cart[index].price[1] =
+            state.cart[index].spots[0].actualPrice * state.cart[index].count +
+            "";
+        } else {
+          let array = state.cart[index].group_modifications.map(
+            (mode) =>
+              mode.count * mode.modifications.map((modif) => modif.price)
+          );
+          let reducer = (previousValue, currentValue) =>
+            previousValue + currentValue;
+          let result = array.reduce(reducer) + "";
+          state.cart[index].price[1] =
+            state.cart[index].spots[0].price * state.cart[index].count +
+            +result +
+            "";
+        }
       } else {
         state.product.count++;
       }
@@ -37,11 +59,27 @@ export default createStore({
         state.product.count--;
       } else if (state.cart[index].count <= 1) {
         state.cart.splice(index, 1);
+      } else if (state.cart[index].product_name.includes("Пицца")) {
+        state.cart[index].count--;
+        state.cart[index].price[1] =
+          state.cart[index].spots[0].actualPrice * state.cart[index].count + "";
       } else {
         state.cart[index].count--;
+        let array = state.cart[index].group_modifications.map(
+          (mode) => mode.count * mode.modifications.map((modif) => modif.price)
+        );
+        let reducer = (previousValue, currentValue) =>
+          previousValue + currentValue;
+        let result = array.reduce(reducer) + "";
+        // state.cart[index].modificationsPrice = result
+        state.cart[index].price[1] =
+          state.cart[index].spots[0].price * state.cart[index].count +
+          +result +
+          "";
       }
     },
     SET_CART: (state, data) => {
+      console.log("set cart");
       if (state.cart.length) {
         let dataExists = false;
         state.cart.map((item) => {
@@ -52,23 +90,14 @@ export default createStore({
               item.group_modifications[0].checked !==
               data.group_modifications[0].checked
             ) {
+              console.log("pizza clone");
               state.cart.push(data);
             } else {
               item.count = data.count;
               item.group_modifications = data.group_modifications;
+              item.price[1] = data.price[1];
+              // item.price = data.price[1] + data.count + ""
             }
-
-            console.log(item.group_modifications[0].checked);
-            console.log(data.group_modifications[0].checked);
-
-            // console.log(state.cart.indexOf(item));
-            // state.cart.splice(item, 1)
-            // state.cart.push(data)
-            // console.log(item);
-            // Нужно тут получить именно тот индекс объекта, который нужно запушить с новыми значениями
-            // Можно вообще проще ценник прятать в другой ключ объекта и по нему проверку проводить
-            // Стоит попробовать это! Если совпадение по айди происходит, то мы берем state продукта и обновляем state item в SET_CART
-            // Тут внутри ещё сделать проверку на размер пиццы, чтобы пушились разные продукты 25 см и 30 см пиццы по checked
           }
         });
         if (!dataExists) {
@@ -77,50 +106,88 @@ export default createStore({
       } else {
         state.cart.push(data);
       }
-      // localStorage.setItem('cart', JSON.stringify(state.cart.map(item => item)))
-      // console.log(localStorage.getItem('cart'));
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(state.cart.map((item) => item))
+      );
     },
     TOGGLE_SIZE: (state, index) => {
-      // console.log(index);
       if (state.product.product !== "empty") {
         state.product.group_modifications.map((mode) => (mode.checked = false));
         state.product.group_modifications[index].checked = true;
       }
-
       if (state.cart.length) {
         setTimeout(() => {
-          let switchArray = new Array(
-            state.cart[localStorage.getItem("cartItem")].group_modifications
-          );
+          let cartItem = localStorage.getItem("cartItem");
+          let switchArray = new Array(state.cart[cartItem].group_modifications);
           switchArray[0].map((mode) => (mode.checked = false));
-          state.cart[localStorage.getItem("cartItem")].group_modifications[
-            index
-          ].checked = true;
+          state.cart[cartItem].group_modifications[index].checked = true;
+          let checkedPrice = state.cart[cartItem].group_modifications.filter(
+            (mode) => mode.checked == true
+          )[0].modifications[0].price;
+          state.cart[cartItem].spots[0].actualPrice = checkedPrice.toString();
+          state.cart[cartItem].price[1] =
+            state.cart[cartItem].spots[0].actualPrice *
+              state.cart[cartItem].count +
+            "";
         }, 1);
       }
-      // console.log(state.cart[index].group_modifications[0]);
-      // let switchArray = state.cart[index].group_modifications
-      // let test = switchArray.filter(mode => mode.checked !== true)
-
-      // else if (state.cart[index].group_modifications[0].checked == true) {
-      //   state.cart[index].group_modifications[1].checked = true;
-      //   state.cart[index].group_modifications[0].checked = false;
-      // } else if (state.cart[index].group_modifications[1].checked == true) {
-      //   state.cart[index].group_modifications[0].checked = true;
-      //   state.cart[index].group_modifications[1].checked = false
-      // }
-      // state.cart[index].group_modifications.map((mode) => (mode.checked = false));
-      // state.cart[index].group_modifications[index].checked = true;
-      // console.log(state.cart[index])
-      // console.log(state.cart[index].group_modifications.name);
-      // let refreshCart = new Array(state.cart[index].group_modifications)
-      // refreshCart.filter(mode => mode.checked == true)
-      // console.log(refreshCart[0].filter(mode => !mode.checked));
-      // console.log(state.cart[index].group_modifications);
     },
     RESET_PRODUCT: (state) => {
       state.product = { product: "empty" };
     },
+    FULL_PRICE: (state, data) => {
+      console.log(data);
+      if (state.product.product_name.includes("Пицца")) {
+        let checked = data.group_modifications.filter(
+          (mode) => mode.checked == true
+        );
+        console.log(checked[0].modifications[0].price);
+        data.price[1] =
+          checked[0].modifications[0].price.toString() * data.count + "";
+      } else {
+        let array = data.group_modifications.map(
+          (mode) => mode.count * mode.modifications.map((modif) => modif.price)
+        );
+        let reducer = (previousValue, currentValue) =>
+          previousValue + currentValue;
+        let result = array.reduce(reducer) + "";
+        state.product.modificationsPrice = result + "";
+        state.product.price[1] = data.price[1] =
+          data.modified_price * data.count + +result + "";
+      }
+    },
+    SET_OLD_CART: (state, data) => {
+      JSON.parse(data).map((item) => state.cart.push(item));
+    },
+    SET_PROMOCODES: (state, promocode) => {
+      state.promocodes = promocode;
+    },
+    APPLY_PROMOCODE: (state, promocode) => {
+      let validPromo = state.promocodes.filter(
+        (item) => item.name == promocode
+      )[0];
+      // Находим промокод
+      console.log(validPromo);
+      if (validPromo) {
+        state.discount.promocode_name = validPromo.name;
+        state.discount.promocode_discount = validPromo.params.discount_value;
+        state.discount.promocode_type = validPromo.params.result_type;
+        state.discount.condition = validPromo.params.conditions[0].pcs;
+        state.discount.error = ''
+        if(state.discount.promocode_type == 1) {
+          state.discount.product_id = validPromo.params.bonus_products[0].id;
+        }
+        // state.discount.product_id = validPromo.params
+      } else {
+        state.discount = {};
+      }
+    },
+    DISCOUNT_PRODUCT: (state, product) => {
+      state.discountProduct = product;
+      state.discountCurrentProduct = state.discountProduct.product_name
+      console.log(state.discountProduct);
+    }
   },
   actions: {
     GET_CATEGORIES_FROM_API({ commit }) {
@@ -160,8 +227,19 @@ export default createStore({
         return populars;
       });
     },
+    GET_PROMOCODES({ commit }) {
+      return axios({
+        method: "GET",
+        url: `http://localhost:3000/promocodes`,
+      }).then((promocodes) => {
+        commit("SET_PROMOCODES", promocodes.data);
+      });
+    },
     GET_PRODUCT_INFO({ commit }, data) {
       data.count = 1;
+      data.modified_price = data.spots[0].price;
+      data.spots[0].actualPrice = data.spots[0].price;
+      data.modificationsPrice = "";
       if (data.group_modifications) {
         data.group_modifications.map((mode) => {
           mode.checked = false;
@@ -197,11 +275,28 @@ export default createStore({
     TOGGLE_SIZE_OF_PIZZA({ commit }, index) {
       commit("TOGGLE_SIZE", index);
     },
-    // TOGGLE_SIZE_OF_PIZZA_CART({ commit }, index) {
-
-    // },
     RESET_PRODUCT({ commit }) {
+      console.log("reset");
       commit("RESET_PRODUCT");
+    },
+    FULL_PRICE({ commit }, data) {
+      commit("FULL_PRICE", data);
+    },
+    SET_OLD_CART({ commit }, data) {
+      commit("SET_OLD_CART", data);
+    },
+    VALIDATE_PROMOCODE({ commit }, promocode) {
+      commit("APPLY_PROMOCODE", promocode);
+    },
+    GET_DISCOUNT_PRODUCT({ commit }, product) {
+      console.log(product);
+      return axios({
+        method: "GET",
+        url: `http://localhost:3000/getDiscountProduct${product}`,
+        body: product,
+      }).then((discount_product) => {
+        commit("DISCOUNT_PRODUCT", discount_product.data);
+      });
     },
   },
   getters: {
@@ -220,6 +315,57 @@ export default createStore({
     CART(state) {
       return state.cart;
     },
+    OLD_CART(state) {
+      return state.oldCart;
+    },
+    PROMOCODES(state) {
+      return state.promocodes;
+    },
+    TOTAL_PRICE(state) {
+      let cart = state.cart.map((item) => item.price[1]);
+
+      let reducer = (previousValue, currentValue) =>
+        +previousValue + +currentValue;
+      let result = cart.reduce(reducer);
+      state.discount.total_discount = 0;
+      state.discountProduct = state.discount.product_id
+      state.discount.error = ''
+      console.log(state.discount.condition);
+      if(result >= state.discount.condition) {
+        if (
+          state.discount.promocode_type == 2
+        ) {
+            state.discount.total_discount = state.discount.promocode_discount;
+            return (state.totalPrice = result - state.discount.promocode_discount);
+  
+        } else if (
+          state.discount.promocode_type == 3
+        ) {
+          state.discount.total_discount =
+            (result * state.discount.promocode_discount) / 100;
+          return (state.totalPrice =
+            result - (result * state.discount.promocode_discount) / 100);
+        } else if (
+          state.discount.promocode_type == 1
+        ) {
+          state.discount.total_discount = state.discountCurrentProduct;
+  
+          return (state.totalPrice = result);
+        }
+      } else if(result < state.discount.condition) {
+        state.discount.error = `Для применения промокода закажите ещё на ${state.discount.condition - result} ₽`
+      }
+        return (state.totalPrice = result);
+    },
+    DISCOUNT(state) {
+      return state.discount;
+    },
+    DISCOUNT_PRODUCT(state) {
+      return state.discountProduct
+    },
+    DISCOUNT_CURRENT_PRODUCT(state) {
+      return state.discountCurrentProduct
+    }
   },
   modules: {},
 });

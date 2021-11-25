@@ -14,16 +14,26 @@ export default {
     vCart,
   },
   methods: {
-    ...mapActions(["RESET_PRODUCT"]),
+    ...mapActions(["RESET_PRODUCT", "SET_OLD_CART", "GET_PROMOCODES"]),
     reset() {
       this.RESET_PRODUCT();
     },
+    getOldCart() {
+      if (this.CART.length <= 0) {
+        this.SET_OLD_CART(localStorage.getItem("cart"));
+      }
+    },
+    getPromocodes() {
+      this.GET_PROMOCODES();
+    },
   },
   computed: {
-    ...mapGetters(["CART"]),
+    ...mapGetters(["CART", "OLD_CART", "PROMOCODES"]),
   },
   mounted() {
     this.reset();
+    this.getOldCart();
+    this.getPromocodes();
   },
 };
 </script>
@@ -31,6 +41,7 @@ export default {
 <style lang="scss">
 .cart {
   padding: 0 20px 20px 20px;
+  padding-bottom: 350px;
 }
 .buy-btn {
   border-radius: 10px;
@@ -55,5 +66,4 @@ export default {
     font-weight: bold;
   }
 }
-
 </style>

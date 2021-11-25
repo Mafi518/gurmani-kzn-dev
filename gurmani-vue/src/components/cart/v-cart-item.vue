@@ -12,10 +12,7 @@
       <h3 class="cart__item-title">{{ cart_item_data.product_name }}</h3>
       <div class="cart__item-container">
         <p class="cart__item-price">
-          {{
-            cart_item_data.price[1].slice(0, -2) * cart_item_data.count +
-            modificationPrice
-          }}
+          {{ cart_item_data.price[1].slice(0, -2) }}
           ₽
           <!-- {{
             this.size == "small-size"
@@ -89,7 +86,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["TOGGLE_SIZE_OF_PIZZA"]),
+    ...mapActions(["TOGGLE_SIZE_OF_PIZZA", "FULL_PRICE"]),
     incrementItem() {
       this.$emit("increment");
     },
@@ -97,7 +94,7 @@ export default {
       this.$emit("decrement");
     },
     toggleSize(index) {
-      this.TOGGLE_SIZE_OF_PIZZA(index);
+      this.TOGGLE_SIZE_OF_PIZZA(index, this.cart_item_data);
       localStorage.setItem("pizzaSize", index);
     },
   },
