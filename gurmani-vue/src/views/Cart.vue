@@ -1,6 +1,5 @@
 <template>
   <section class="cart">
-    <v-back-menu><h2>Ваш заказ</h2></v-back-menu>
     <v-cart v-if="CART.length" :cart_data="CART"></v-cart>
   </section>
 </template>
@@ -28,7 +27,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["CART", "OLD_CART", "PROMOCODES"]),
+    ...mapGetters(["CART", "OLD_CART", "PROMOCODES", "TOTAL_PRICE"]),
   },
   mounted() {
     this.reset();

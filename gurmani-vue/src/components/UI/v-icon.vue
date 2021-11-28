@@ -17,6 +17,82 @@
   </svg>
 
   <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    v-else-if="name === 'cashless-icon'"
+  >
+    <g id="cashless-icon">
+      <path
+        id="icon/maps/place_24px"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM7 9C7 6.24 9.24 4 12 4C14.76 4 17 6.24 17 9C17 11.88 14.12 16.19 12 18.88C9.92 16.21 7 11.85 7 9ZM9.5 9C9.5 7.61929 10.6193 6.5 12 6.5C12.8932 6.5 13.7185 6.9765 14.1651 7.75C14.6116 8.5235 14.6116 9.4765 14.1651 10.25C13.7185 11.0235 12.8932 11.5 12 11.5C10.6193 11.5 9.5 10.3807 9.5 9Z"
+        fill="#6B6B6B"
+      />
+    </g>
+  </svg>
+
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    v-else-if="name === 'credit-card-icon'"
+  >
+    <g id="credit-card-icon">
+      <path
+        id="icon/action/credit_card_24px"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M20 4H4C2.89 4 2.01 4.89 2.01 6L2 18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4ZM20 18H4V12H20V18ZM4 8H20V6H4V8Z"
+        fill="#6B6B6B"
+      />
+    </g>
+  </svg>
+
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    v-else-if="name === 'delivery-icon'"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g id="delivery-icon">
+      <path
+        id="icon/maps/directions_car_24px"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M18.92 5.01C18.72 4.42 18.16 4 17.5 4H6.5C5.84 4 5.29 4.42 5.08 5.01L3 11V19C3 19.55 3.45 20 4 20H5C5.55 20 6 19.55 6 19V18H18V19C18 19.55 18.45 20 19 20H20C20.55 20 21 19.55 21 19V11L18.92 5.01ZM6.85 6H17.14L18.22 9.11H5.77L6.85 6ZM5 16H19V11H5V16ZM7.5 12C6.67157 12 6 12.6716 6 13.5C6 14.3284 6.67157 15 7.5 15C8.32843 15 9 14.3284 9 13.5C9 12.6716 8.32843 12 7.5 12ZM15 13.5C15 12.6716 15.6716 12 16.5 12C17.3284 12 18 12.6716 18 13.5C18 14.3284 17.3284 15 16.5 15C15.6716 15 15 14.3284 15 13.5Z"
+        fill="#6B6B6B"
+      />
+    </g>
+  </svg>
+
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    v-else-if="name === 'wallet-icon'"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g id="wallet-icon">
+      <path
+        id="icon/action/account_balance_wallet_24px"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M20.5 5V7.28C21.09 7.63 21.5 8.26 21.5 9V15C21.5 15.74 21.09 16.37 20.5 16.72V19C20.5 20.1 19.6 21 18.5 21H4.5C3.39 21 2.5 20.1 2.5 19V5C2.5 3.9 3.39 3 4.5 3H18.5C19.6 3 20.5 3.9 20.5 5ZM12.5 15H19.5V9H12.5V15ZM4.5 19V5H18.5V7H12.5C11.4 7 10.5 7.9 10.5 9V15C10.5 16.1 11.4 17 12.5 17H18.5V19H4.5ZM14 12C14 11.1716 14.6716 10.5 15.5 10.5C16.3284 10.5 17 11.1716 17 12C17 12.8284 16.3284 13.5 15.5 13.5C14.6716 13.5 14 12.8284 14 12Z"
+        fill="#6B6B6B"
+      />
+    </g>
+  </svg>
+
+  <svg
     width="32"
     height="32"
     viewBox="0 0 32 32"

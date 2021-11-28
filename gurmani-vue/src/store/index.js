@@ -11,7 +11,17 @@ export default createStore({
     promocodes: [],
     discount: {},
     discountProduct: {},
-    discountCurrentProduct: "0 ₽"
+    discountCurrentProduct: "0 ₽",
+    deliveryType: "2",
+    order: {},
+    selectAdresses: [],
+    selectAddress: {
+      delivery_pay: 0,
+    },
+    delivery_pay: "",
+    error: "",
+    current_time: "",
+    promocode_total: 0,
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -116,7 +126,7 @@ export default createStore({
         state.product.group_modifications.map((mode) => (mode.checked = false));
         state.product.group_modifications[index].checked = true;
       }
-      if (state.cart.length) {
+      if (state.cart.length && location.href == "http://localhost:8080/cart") {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
           let switchArray = new Array(state.cart[cartItem].group_modifications);
@@ -134,7 +144,9 @@ export default createStore({
       }
     },
     RESET_PRODUCT: (state) => {
-      state.product = { product: "empty" };
+      state.product = {
+        product: "empty",
+      };
     },
     FULL_PRICE: (state, data) => {
       console.log(data);
@@ -165,19 +177,30 @@ export default createStore({
     },
     APPLY_PROMOCODE: (state, promocode) => {
       let validPromo = state.promocodes.filter(
-        (item) => item.name == promocode
+        (item) => item.name.toUpperCase() == promocode.toUpperCase()
       )[0];
+
       // Находим промокод
-      console.log(validPromo);
       if (validPromo) {
         state.discount.promocode_name = validPromo.name;
         state.discount.promocode_discount = validPromo.params.discount_value;
         state.discount.promocode_type = validPromo.params.result_type;
         state.discount.condition = validPromo.params.conditions[0].pcs;
-        state.discount.error = ''
-        if(state.discount.promocode_type == 1) {
+        state.discount.period_start =
+          validPromo.params.periods[0].start.replace(":", "");
+        state.discount.period_end = validPromo.params.periods[0].end.replace(
+          ":",
+          ""
+        );
+        state.discount.error = "";
+        // state.discount.time = validPromo.params.
+        if (state.discount.promocode_type == 1) {
           state.discount.product_id = validPromo.params.bonus_products[0].id;
         }
+        // if (state.discount.promocode_type == 3 && state.discount.promocode_name == '16' && state.deliveryType == '2') {
+        //   console.log(state.discount.promocode_discount);
+        //   state.discount.promocode_discount = (+state.discount.promocode_discount / 2)
+        // }
         // state.discount.product_id = validPromo.params
       } else {
         state.discount = {};
@@ -185,9 +208,22 @@ export default createStore({
     },
     DISCOUNT_PRODUCT: (state, product) => {
       state.discountProduct = product;
-      state.discountCurrentProduct = state.discountProduct.product_name
+      state.discountCurrentProduct = state.discountProduct.product_name;
       console.log(state.discountProduct);
-    }
+    },
+    DELIVERY_TYPE: (state, type) => {
+      state.deliveryType = type;
+    },
+    ORDER_DATA: (state, data) => {
+      // state.order.data
+      state.order = data;
+    },
+    ADDRESSES: (state, addresses) => {
+      state.selectAdresses = addresses;
+    },
+    ADDRESS: (state, address) => {
+      state.selectAddress = address;
+    },
   },
   actions: {
     GET_CATEGORIES_FROM_API({ commit }) {
@@ -298,6 +334,23 @@ export default createStore({
         commit("DISCOUNT_PRODUCT", discount_product.data);
       });
     },
+    GET_DELIVERY_TYPE({ commit }, delivery_type) {
+      commit("DELIVERY_TYPE", delivery_type);
+    },
+    CONFIRM_ORDER_DATA({ commit }, order) {
+      commit("ORDER_DATA", order);
+    },
+    GET_ADDRESSES({ commit }) {
+      return axios({
+        method: "GET",
+        url: `http://localhost:3000/getAddresses`,
+      }).then((addresses) => {
+        commit("ADDRESSES", addresses.data);
+      });
+    },
+    GET_ADDRESS({ commit }, address) {
+      commit("ADDRESS", address);
+    },
   },
   getters: {
     CATEGORIES(state) {
@@ -321,51 +374,121 @@ export default createStore({
     PROMOCODES(state) {
       return state.promocodes;
     },
-    TOTAL_PRICE(state) {
+    SUBTOTAL_PRICE(state) {
       let cart = state.cart.map((item) => item.price[1]);
 
       let reducer = (previousValue, currentValue) =>
         +previousValue + +currentValue;
       let result = cart.reduce(reducer);
-      state.discount.total_discount = 0;
-      state.discountProduct = state.discount.product_id
-      state.discount.error = ''
-      console.log(state.discount.condition);
-      if(result >= state.discount.condition) {
-        if (
-          state.discount.promocode_type == 2
-        ) {
-            state.discount.total_discount = state.discount.promocode_discount;
-            return (state.totalPrice = result - state.discount.promocode_discount);
-  
-        } else if (
-          state.discount.promocode_type == 3
-        ) {
-          state.discount.total_discount =
-            (result * state.discount.promocode_discount) / 100;
-          return (state.totalPrice =
-            result - (result * state.discount.promocode_discount) / 100);
-        } else if (
-          state.discount.promocode_type == 1
-        ) {
-          state.discount.total_discount = state.discountCurrentProduct;
-  
-          return (state.totalPrice = result);
-        }
-      } else if(result < state.discount.condition) {
-        state.discount.error = `Для применения промокода закажите ещё на ${state.discount.condition - result} ₽`
+
+      return (state.subtotalPrice = result);
+    },
+    DELIVERY_PAY(state) {
+      if (state.subtotalPrice >= state.selectAddress.delivery_free) {
+        return (state.delivery_pay = 0);
+      } else if (state.deliveryType == 2) {
+        return (state.delivery_pay = (+state.subtotalPrice * 10) / 100);
+      } else {
+        return (state.delivery_pay = state.selectAddress.delivery_pay);
       }
-        return (state.totalPrice = result);
+    },
+    TOTAL_PRICE(state) {
+      if (typeof state.promocode_total == typeof 1) {
+        if (state.deliveryType == 2) {
+          return (state.totalPrice =
+            +state.subtotalPrice -
+            +state.delivery_pay -
+            +state.promocode_total);
+        } else {
+          return (state.totalPrice =
+            +state.subtotalPrice +
+            +state.delivery_pay -
+            +state.promocode_total);
+        }
+      } else {
+        return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay);
+      }
+    },
+    PROMOCODE_TOTAL(state) {
+      state.discount.total_discount = "0 ₽";
+      state.promocode_total = 0;
+
+      if (
+        state.subtotalPrice >= state.discount.condition &&
+        state.current_time < state.discount.period_end &&
+        state.current_time > state.discount.period_start
+      ) {
+        if (state.discount.promocode_type == 2) {
+          state.discount.total_discount = state.discount.promocode_discount;
+          return (state.promocode_total = state.discount.promocode_discount);
+        } else if (state.discount.promocode_type == 3) {
+          state.discount.total_discount =
+            (state.subtotalPrice * state.discount.promocode_discount) / 100;
+          return (state.promocode_total = +state.discount.total_discount);
+        } else if (state.discount.promocode_type == 1) {
+          state.discountProduct = state.discount.product_id;
+          state.discount.total_discount = state.discountCurrentProduct;
+          return (state.promocode_total = state.discountCurrentProduct);
+        }
+      } else {
+        return (state.promocode_total = 0);
+      }
     },
     DISCOUNT(state) {
       return state.discount;
     },
     DISCOUNT_PRODUCT(state) {
-      return state.discountProduct
+      return state.discountProduct;
     },
     DISCOUNT_CURRENT_PRODUCT(state) {
-      return state.discountCurrentProduct
-    }
+      return state.discountCurrentProduct;
+    },
+    DELIVERY_TYPE(state) {
+      return state.deliveryType;
+    },
+    ORDER_DATA(state) {
+      return state.order;
+    },
+    ADDRESSES(state) {
+      return state.selectAdresses;
+    },
+    ADDRESS(state) {
+      return state.selectAddress;
+    },
+    ERROR(state) {
+      if (state.subtotalPrice < state.discount.condition) {
+        return (state.error = `Для применения промокода закажите ещё на ${(
+          state.discount.condition - state.subtotalPrice
+        )
+          .toString()
+          .slice(0, -2)} ₽`);
+      } else if (
+        state.current_time > state.discount.period_end ||
+        state.current_time < state.discount.period_start
+      ) {
+        return (state.error = `Промокод работает с ${
+          state.discount.period_start.slice(0, 2) +
+          ":" +
+          state.discount.period_start.slice(2)
+        }  до ${
+          state.discount.period_end.slice(0, 2) +
+          ":" +
+          state.discount.period_end.slice(2)
+        }`);
+      } else {
+        return (state.error = ``);
+      }
+    },
+    CURRENT_TIME(state) {
+      var dateWithouthSecond = new Date();
+      let currentHour = dateWithouthSecond
+        .toLocaleTimeString(navigator.language, {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+        .replace(":", "");
+      return (state.current_time = currentHour);
+    },
   },
   modules: {},
 });

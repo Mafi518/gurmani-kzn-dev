@@ -1,14 +1,152 @@
 <template>
   <div>
-    <v-cart-item
-      v-for="(item, index) in cart_data"
-      :key="item.product_id"
-      :cart_item_data="item"
-      @increment="increment(index)"
-      @decrement="decrement(index)"
-      @click="check(index)"
+    <v-back-menu
+      ><h2>
+        {{ confirm_order == false ? "Ваш заказ" : "Продолжаем оформление" }}
+      </h2></v-back-menu
     >
-    </v-cart-item>
+
+    <div>
+      <v-cart-item
+        v-for="(item, index) in cart_data"
+        :key="item.product_id"
+        :cart_item_data="item"
+        @increment="increment(index)"
+        @decrement="decrement(index)"
+        @click="check(index)"
+      >
+      </v-cart-item>
+    </div>
+
+    <form v-if="confirm_order == true" action="" class="confirm" id="confirm">
+      <input
+        type="text"
+        name="name"
+        placeholder="Ваше имя"
+        id="name"
+        class="confirm__input block-input"
+        v-model="order_name"
+        @input="orderData"
+      />
+      <input
+        type="number"
+        name="phone"
+        placeholder="Номер телефона"
+        id="phone"
+        class="confirm__input"
+        v-model="order_phone"
+        @input="orderData"
+      />
+      <select name="person" id="person" class="confirm__input confirm__select">
+        <option
+          v-for="(item, index) in 11"
+          :key="item"
+          :value="`Кол-во персон (${index})`"
+        >
+          {{ index !== 0 ? "Кол-во персон " + index : "" }}
+        </option>
+      </select>
+
+      <input
+        type="radio"
+        name="delivery_type"
+        id="delivery"
+        class="confirm__radio"
+        value="3"
+        @click="getDeliveryType"
+      />
+
+      <label for="delivery" class="confirm__label confirm__input">
+        <v-icon name="delivery-icon"></v-icon>
+        Доставка по адресу
+      </label>
+
+      <input
+        type="radio"
+        name="delivery_type"
+        id="pickup"
+        class="confirm__radio"
+        value="2"
+        @click="getDeliveryType"
+        checked
+      />
+
+      <label for="pickup" class="confirm__label confirm__input">
+        <v-icon name="cashless-icon"></v-icon>
+        Самовывоз
+      </label>
+      <!-- dddddddddddddddddddddddddddddddddddddddddddddd -->
+
+      <input
+        type="text"
+        name="pickup-address"
+        id="pickup-address"
+        class="confirm__input block-input"
+        v-if="this.$store.state.deliveryType == 2"
+      />
+
+      <div class="confirm__delivery" v-if="this.$store.state.deliveryType == 3">
+        <input
+          type="text"
+          placeholder="Улица"
+          class="confirm__input block-input"
+          v-model="search_value"
+          @input="searchAddress"
+        />
+        <div class="confirm__delivery--spot">
+          <input type="text" placeholder="Дом" class="confirm__input" />
+          <input type="text" placeholder="Квартира" class="confirm__input" />
+          <input type="text" placeholder="Подъезд" class="confirm__input" />
+          <input type="text" placeholder="Этаж" class="confirm__input" />
+        </div>
+        <div class="confirm__addresses" v-if="search_flag">
+          <div
+            class="confirm__address confirm__input block-input"
+            v-for="item in CHECK_ADDRESS"
+            :key="item.id"
+            @click="getSelectAddress(item)"
+          >
+            {{ item.address }}
+          </div>
+        </div>
+      </div>
+
+      <!-- dddddddddddddddddddddddddddddddddddddddddddddd -->
+      <input
+        type="radio"
+        name="payment_type"
+        id="cashless"
+        class="confirm__radio"
+        value="delivery"
+        checked
+      />
+
+      <label for="cashless" class="confirm__label confirm__input">
+        <v-icon name="credit-card-icon"></v-icon>
+        Безналичными
+      </label>
+
+      <input
+        type="radio"
+        name="payment_type"
+        id="cash"
+        class="confirm__radio"
+        value="delivery"
+      />
+
+      <label for="cash" class="confirm__label confirm__input">
+        <v-icon name="wallet-icon"></v-icon>
+        Наличными
+      </label>
+      <input
+        type="text"
+        name="comment"
+        id="comment"
+        placeholder="Комментарий к заказу..."
+        class="confirm__input block-input"
+      />
+    </form>
+
     <form action="" class="cart-info" id="cart-info">
       <input
         type="text"
@@ -23,35 +161,48 @@
         <div class="cart-info__item">
           <p class="cart-info__description">Промежуточный итог</p>
           <p class="cart-info__description">
-            {{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽
+            {{ this.SUBTOTAL_PRICE.toString().slice(0, -2) }} ₽
           </p>
         </div>
         <div class="cart-info__item">
           <p class="cart-info__description">Промокод {{ promocode_input }}</p>
           <p class="cart-info__description">
             {{
-              this.DISCOUNT.promocode_type == 1
-                ? this.DISCOUNT.total_discount
-                : this.DISCOUNT.total_discount + " ₽"
+              // typeof this.PROMOCODE_TOTAL == typeof 1 ? this.PROMOCODE_TOTAL.toString().slice(0, -2) + ' ₽' : this.PROMOCODE_TOTAL == 0 ? '00000000' : this.PROMOCODE_TOTAL
+              this.PROMOCODE_TOTAL == 0
+                ? this.PROMOCODE_TOTAL + " ₽"
+                : typeof this.PROMOCODE_TOTAL == typeof 1
+                ? "- " + this.PROMOCODE_TOTAL.toString().slice(0, -2) + " ₽"
+                : this.PROMOCODE_TOTAL
             }}
-            <!-- {{
-              this.DISCOUNT_CURRENT_PRODUCT
-            }} -->
           </p>
         </div>
         <div class="cart-info__item">
-          <p class="cart-info__description">Самовывоз</p>
-          <p class="cart-info__description">0 ₽</p>
+          <p class="cart-info__description">
+            {{ this.$store.state.deliveryType == 3 ? "Доставка" : "Самовывоз" }}
+          </p>
+          <p class="cart-info__description">
+            {{
+              this.DELIVERY_PAY == 0
+                ? this.DELIVERY_PAY
+                : this.DELIVERY_TYPE == 2 && this.DELIVERY_PAY !== 0
+                ? "- " + this.DELIVERY_PAY.toString().slice(0, -2)
+                : this.DELIVERY_PAY.toString().slice(0, -2)
+            }}
+            ₽
+          </p>
         </div>
         <div class="cart-info__item">
-          <p class="cart-info__description" v-if="this.DISCOUNT.error"> {{ this.DISCOUNT.error }} </p>
+          <p class="cart-info__description" v-if="this.ERROR">
+            {{ this.ERROR }}
+          </p>
         </div>
       </div>
       <p class="cart-info__description">
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
-      <button class="buy-btn">
+      <button class="buy-btn" @click.prevent="confirm_order = true">
         <div>
           <p>Перейти к оформлению заказа</p>
           <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
@@ -69,7 +220,13 @@ export default {
   data() {
     return {
       promocode_input: "",
-      product_id: ""
+      product_id: "",
+      order_name: "",
+      order_phone: "",
+      order_address: "",
+      search_value: "",
+      confirm_order: true,
+      search_flag: false,
     };
   },
   components: {
@@ -90,6 +247,10 @@ export default {
       "TOGGLE_SIZE_OF_PIZZA",
       "VALIDATE_PROMOCODE",
       "GET_DISCOUNT_PRODUCT",
+      "GET_DELIVERY_TYPE",
+      "CONFIRM_ORDER_DATA",
+      "GET_ADDRESSES",
+      "GET_ADDRESS",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -102,35 +263,79 @@ export default {
     },
     validatePromocode() {
       this.VALIDATE_PROMOCODE(this.promocode_input);
-      setTimeout(() => {
-        this.GET_DISCOUNT_PRODUCT(this.$store.state.discountProduct)
-      }, 700);
-      // setTimeout(() => {
-      //   this.GET_DISCOUNT_PRODUCT(this.product_id)
-      // }, 500);
-
+      if (this.$store.state.discount.product_id) {
+        setTimeout(() => {
+          this.GET_DISCOUNT_PRODUCT(this.$store.state.discountProduct);
+        }, 1);
+      }
     },
-    // getDisctountProduct() {
-    //   this.DISCOUNT_PRODUCT(this.product_id)
-    // }
+    getDeliveryType(e) {
+      this.GET_DELIVERY_TYPE(e.target.value);
+      this.VALIDATE_PROMOCODE(this.promocode_input);
+      this.$store.state.selectAddress = { delivery_pay: 0 };
+      this.search_value = "";
+    },
+    orderData() {
+      this.CONFIRM_ORDER_DATA({
+        spot_id: 1,
+        first_name: this.order_name,
+        phone: this.order_phone,
+      });
+    },
+    searchAddress() {
+      this.search_flag = true;
+    },
+    getSelectAddress(data) {
+      this.GET_ADDRESS(data);
+      this.search_value = data.address;
+      if (data.address === this.search_value) {
+        this.search_flag = false;
+      } else {
+        this.search_flag = true;
+      }
+    },
   },
-  // watch: {
-  //   product_id
-  // },
+
   computed: {
-    ...mapGetters(["TOTAL_PRICE", "DISCOUNT", "DISCOUNT_PRODUCT", "DISCOUNT_CURRENT_PRODUCT"]),
-    // totalPrice() {
+    ...mapGetters([
+      "SUBTOTAL_PRICE",
+      "DISCOUNT",
+      "DISCOUNT_PRODUCT",
+      "DISCOUNT_CURRENT_PRODUCT",
+      "DELIVERY_TYPE",
+      "ADDRESSES",
+      "ADDRESS",
+      "TOTAL_PRICE",
+      "DELIVERY_PAY",
+      "ERROR",
+      "CURRENT_TIME",
+      "PROMOCODE_TOTAL",
+    ]),
+    CHECK_ADDRESS() {
+      if (
+        this.$store.state.selectAdresses.filter((elem) =>
+          elem.address.toLowerCase().includes(this.search_value.toLowerCase())
+        )
+      ) {
+        return this.$store.state.selectAdresses.filter((elem) =>
+          elem.address.toLowerCase().includes(this.search_value.toLowerCase())
+        );
+      } else {
+        return this.$store.state.selectAddress;
+      }
+    },
+  },
+  mounted() {
+    this.INCREMENT_POPUP_ITEM(0);
+    this.DECREMENT_POPUP_ITEM(0);
 
-    //   let cart = this.cart_data.map((item) => item.price[1]);
-
-    //   let reducer = (previousValue, currentValue) =>
-    //     +previousValue + +currentValue;
-    //   let result = cart.reduce(reducer).toString().slice(0, -2)
-    //   localStorage.setItem("totalPrice", result)
-    //   return result;
-
-    //   // Есть вариант сделать все вычисления в отдельный ключ объекта внутри v-cart-item и оттуда уже складывать стоимость корзины
-    // },
+    // this.DELIVERY_TYPE()
+    document
+      .querySelectorAll('input[name="delivery_type"]:checked')
+      .forEach((element) => {
+        this.GET_DELIVERY_TYPE(element.attributes.value.nodeValue);
+      });
+    this.GET_ADDRESSES();
   },
 };
 </script>
@@ -142,6 +347,7 @@ export default {
   bottom: 52px;
   left: 0;
   width: 100%;
+  z-index: 2;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -166,6 +372,90 @@ export default {
     }
   }
   &__description {
+  }
+}
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 30px;
+  &__input {
+    @include container;
+    max-width: 47%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: none;
+    outline: none;
+    &::placeholder {
+      color: $second-black;
+    }
+  }
+  &__select {
+    option:first-child {
+      display: none;
+    }
+  }
+  &__radio {
+    // appearance: none;
+    // display: none;
+    display: none;
+    &:checked + label {
+      background-color: $accent;
+      color: $white;
+      svg {
+        path {
+          fill: $white;
+        }
+      }
+    }
+  }
+  &__label {
+    color: $second-black;
+    padding: 10px 8px;
+  }
+  &__delivery {
+    position: relative;
+  }
+  &__addresses {
+    position: absolute;
+    top: 40%;
+    @include container;
+    box-shadow: none;
+    z-index: 1;
+    width: 100%;
+    max-height: 175px;
+    overflow: auto;
+  }
+  &__address {
+    box-shadow: none;
+    &:hover {
+      border-bottom: 1px solid $accent;
+    }
+  }
+}
+.block-input {
+  max-width: 100%;
+  width: 100%;
+}
+.radio--active {
+  background-color: $accent;
+  color: $white;
+  svg {
+    path {
+      fill: $white;
+    }
+  }
+}
+.confirm__delivery--spot {
+  display: flex;
+  justify-content: space-between;
+  input {
+    max-width: 23%;
+    width: 100%;
+    text-align: center;
   }
 }
 </style>

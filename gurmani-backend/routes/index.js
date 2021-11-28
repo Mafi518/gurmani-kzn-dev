@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require('../manifest');
 const PosterApi = require('../api/poster');
+const addresses = require('../addresses.json')
 
 const router = new express.Router();
 
@@ -56,6 +57,12 @@ router.get('/getDiscountProduct:id', async (req, res) => {
     console.log(req.params.id);
     res.send(discount_product);
 });
+
+router.get('/getAddresses', async (req, res) => {
+
+    res.send(addresses)
+
+})
 
 // router.get('/getDiscountProduct:id', async (req, res) => {
 

@@ -1,0 +1,27 @@
+[{
+        "id": 0,
+        "address": "Школьный",
+        "delivery_zone": 1,
+        "delivery_pay": 35000,
+        "delivery_free": 150000,
+        "delivery_time": "60 - 80 минут"
+    },
+    {
+        "id": 1,
+        "address": "Шишкинский",
+        "delivery_zone": 2,
+        "delivery_time": "60 - 80 минут"
+    },
+    {
+        "id": 2,
+        "address": "Карамельный",
+        "delivery_zone": 2,
+        "delivery_time": "60 - 80 минут"
+    },
+    {
+        "id": 3,
+        "address": "Мезозоид",
+        "delivery_zone": 2,
+        "delivery_time": "60 - 80 минут"
+    }
+]

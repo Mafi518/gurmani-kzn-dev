@@ -14,16 +14,6 @@
         <p class="cart__item-price">
           {{ cart_item_data.price[1].slice(0, -2) }}
           ₽
-          <!-- {{
-            this.size == "small-size"
-              ? cart_item_data.spots[0].price.slice(0, -2) *
-                cart_item_data.count
-              : ""
-              ? this.size == "big-size"
-              : cart_item_data.group_modifications[0].modifications[0].price *
-                cart_item_data.count
-          }}
-          ₽ -->
         </p>
         <div class="cart__item-controls">
           <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
@@ -46,6 +36,7 @@
       >
         <input
           type="radio"
+          ref="radio"
           :checked="cart_item_data.group_modifications[index].checked == true"
           :name="cart_item_data.photo_origin"
           class="popup__input"
@@ -106,7 +97,14 @@ export default {
       },
     },
   },
-  mounted() {},
+  mounted() {
+    let inputs = document.querySelectorAll(".popup__input:checked");
+    setTimeout(() => {
+      inputs.forEach((element) => {
+        element.click();
+      });
+    }, 100);
+  },
 };
 </script>
 <style lang="scss" scoped>
