@@ -19,9 +19,9 @@
           {{ product_data.product_production_description }}
         </p>
       </div>
-      <div class="card__footer">
+      <div class="card__footer buy-btn">
         <p class="card__price">
-          {{ product_data.spots[0].price.slice(0, -2) }} ₽
+          {{ product_data.price[1].slice(0, -2) }} ₽
         </p>
         <v-icon name="plus-icon"></v-icon>
       </div>
@@ -43,7 +43,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["GET_PRODUCT_INFO", "GET_POPULAR_FROM_API"]),
+    ...mapActions(["GET_PRODUCT_INFO", "GET_POPULAR_FROM_API", "ADD_TO_CART"]),
     reset() {
       this.size = "small-size";
     },
@@ -51,9 +51,13 @@ export default {
       data = this.PRODUCT.menu_category_id;
       console.log(data);
     },
-    getProductInfo(data) {
+    getProductInfo(e, data) {
       data = this.product_data;
-      this.GET_PRODUCT_INFO(data);
+      if (e.target.classList.contains("buy-btn")) {
+        this.ADD_TO_CART(data);
+      } else {
+        this.GET_PRODUCT_INFO(data);
+      }
     },
   },
   computed: {
@@ -107,6 +111,7 @@ export default {
   &__footer {
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
   &__price {
     font-weight: 500;

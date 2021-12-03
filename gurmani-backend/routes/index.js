@@ -64,35 +64,48 @@ router.get('/getAddresses', async (req, res) => {
 
 })
 
-// router.get('/getDiscountProduct:id', async (req, res) => {
 
-//     const posterApi = new PosterApi({ token: config.token });
+router.post('/order', async (req, res) => {
+    const posterApi = new PosterApi({ token: config.token });
+    const order_data = req.query;
+    const order_products = order_data.products.map(item => JSON.parse(item))
 
-//     const products = await posterApi.makePosterRequest('menu.getProduct', 'GET', {
-//         body: {
-//             category_id: req.params.id
-//         }
-//     })
-//     res.send(products);
-// });
-// router.post('/buy', async (req, res) => {
-//     const posterApi = new PosterApi({ token: config.token });
-//     const { productId } = req.body;
+    console.log(order_data);
 
-//     const order = await posterApi.makePosterRequest('incomingOrders.createIncomingOrder', 'post', {
-//         body: {
-//             spot_id: 1,
-//             phone: '+380680000000',
-//             products: [
-//                 { product_id: productId, count: 1 },
-//             ],
-//         }
-//     });
+    function getOrderProducts() {
+        let arr = []
+        for (let item of order_products) {
+            arr.push(
+                {
+                    product_id: item.product_id,
+                    count: item.count,
+                    price: item.price[1],
+                    modification: [
+                        {
+                            m: 1,
+                            a: 2
+                        }
+                    ]
+                }
+            );
+        }
+        return arr
+    }
 
-//     // const order = { incoming_order_id: 1 };
 
-//     // res.render('order', { order: order });
-// });
+    const order = await posterApi.makePosterRequest('incomingOrders.createIncomingOrder', 'post', {
+        body: {
+            spot_id: 1,
+            first_name: 'Andrew Dev',
+            phone: '+79176446552',
+            client_address: order_data.client_address ? order_data.client_address : 'Самовывоз',
+            products: getOrderProducts()
+        }
+    });
+
+    res.send(order)
+
+});
 
 
 module.exports = router;

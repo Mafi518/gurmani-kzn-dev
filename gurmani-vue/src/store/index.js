@@ -1,4 +1,6 @@
-import { createStore } from "vuex";
+import {
+  createStore
+} from "vuex";
 import axios from "axios";
 
 export default createStore({
@@ -8,6 +10,7 @@ export default createStore({
     popular: [],
     product: {},
     cart: [],
+    oldCart: [],
     promocodes: [],
     discount: {},
     discountProduct: {},
@@ -20,6 +23,7 @@ export default createStore({
     },
     delivery_pay: "",
     error: "",
+    warning: "",
     current_time: "",
     promocode_total: 0,
   },
@@ -28,9 +32,11 @@ export default createStore({
       state.categories = categories;
     },
     SET_CATEGORY_PRODUCTS_TO_STATE: (state, products) => {
+      products.map(item => item.count = 1)
       state.categoryProducts = products;
     },
     SET_POPULAR_TO_STATE: (state, populars) => {
+      populars.map(item => item.count = 1)
       state.popular = populars;
     },
     SET_PRODUCT_TO_STATE: (state, product) => {
@@ -39,7 +45,6 @@ export default createStore({
     INCREMENT: (state, index) => {
       if (window.location.href == "http://localhost:8080/cart") {
         state.cart[index].count++;
-        console.log(state.cart[index]);
         if (state.cart[index].product_name.includes("Пицца")) {
           state.cart[index].price[1] =
             state.cart[index].spots[0].actualPrice * state.cart[index].count +
@@ -47,7 +52,7 @@ export default createStore({
         } else {
           let array = state.cart[index].group_modifications.map(
             (mode) =>
-              mode.count * mode.modifications.map((modif) => modif.price)
+            mode.count * mode.modifications.map((modif) => modif.price)
           );
           let reducer = (previousValue, currentValue) =>
             previousValue + currentValue;
@@ -138,7 +143,7 @@ export default createStore({
           state.cart[cartItem].spots[0].actualPrice = checkedPrice.toString();
           state.cart[cartItem].price[1] =
             state.cart[cartItem].spots[0].actualPrice *
-              state.cart[cartItem].count +
+            state.cart[cartItem].count +
             "";
         }, 1);
       }
@@ -215,7 +220,6 @@ export default createStore({
       state.deliveryType = type;
     },
     ORDER_DATA: (state, data) => {
-      // state.order.data
       state.order = data;
     },
     ADDRESSES: (state, addresses) => {
@@ -224,9 +228,15 @@ export default createStore({
     ADDRESS: (state, address) => {
       state.selectAddress = address;
     },
+    SEND_ORDER_DATA: (state, order_data) => {
+      state.order = order_data;
+    },
+
   },
   actions: {
-    GET_CATEGORIES_FROM_API({ commit }) {
+    GET_CATEGORIES_FROM_API({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: "http://localhost:3000/categories",
@@ -240,16 +250,22 @@ export default createStore({
         return categories;
       });
     },
-    GET_CATEGORY_PRODUCTS_FROM_API({ commit }, categoryID) {
+    GET_CATEGORY_PRODUCTS_FROM_API({
+      commit
+    }, categoryID) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
         body: categoryID,
       }).then((products) => {
+        // products.data.count = 1
+        // products.data.map(item => item.count = 1)
         commit("SET_CATEGORY_PRODUCTS_TO_STATE", products.data);
       });
     },
-    GET_POPULAR_FROM_API({ commit }) {
+    GET_POPULAR_FROM_API({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/populars`,
@@ -263,7 +279,9 @@ export default createStore({
         return populars;
       });
     },
-    GET_PROMOCODES({ commit }) {
+    GET_PROMOCODES({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/promocodes`,
@@ -271,7 +289,9 @@ export default createStore({
         commit("SET_PROMOCODES", promocodes.data);
       });
     },
-    GET_PRODUCT_INFO({ commit }, data) {
+    GET_PRODUCT_INFO({
+      commit
+    }, data) {
       data.count = 1;
       data.modified_price = data.spots[0].price;
       data.spots[0].actualPrice = data.spots[0].price;
@@ -299,32 +319,50 @@ export default createStore({
       });
       commit("SET_PRODUCT_TO_STATE", data);
     },
-    INCREMENT_POPUP_ITEM({ commit }, index) {
+    INCREMENT_POPUP_ITEM({
+      commit
+    }, index) {
       commit("INCREMENT", index);
     },
-    DECREMENT_POPUP_ITEM({ commit }, index) {
+    DECREMENT_POPUP_ITEM({
+      commit
+    }, index) {
       commit("DECREMENT", index);
     },
-    ADD_TO_CART({ commit }, data) {
+    ADD_TO_CART({
+      commit
+    }, data) {
       commit("SET_CART", data);
     },
-    TOGGLE_SIZE_OF_PIZZA({ commit }, index) {
+    TOGGLE_SIZE_OF_PIZZA({
+      commit
+    }, index) {
       commit("TOGGLE_SIZE", index);
     },
-    RESET_PRODUCT({ commit }) {
+    RESET_PRODUCT({
+      commit
+    }) {
       console.log("reset");
       commit("RESET_PRODUCT");
     },
-    FULL_PRICE({ commit }, data) {
+    FULL_PRICE({
+      commit
+    }, data) {
       commit("FULL_PRICE", data);
     },
-    SET_OLD_CART({ commit }, data) {
+    SET_OLD_CART({
+      commit
+    }, data) {
       commit("SET_OLD_CART", data);
     },
-    VALIDATE_PROMOCODE({ commit }, promocode) {
+    VALIDATE_PROMOCODE({
+      commit
+    }, promocode) {
       commit("APPLY_PROMOCODE", promocode);
     },
-    GET_DISCOUNT_PRODUCT({ commit }, product) {
+    GET_DISCOUNT_PRODUCT({
+      commit
+    }, product) {
       console.log(product);
       return axios({
         method: "GET",
@@ -334,13 +372,19 @@ export default createStore({
         commit("DISCOUNT_PRODUCT", discount_product.data);
       });
     },
-    GET_DELIVERY_TYPE({ commit }, delivery_type) {
+    GET_DELIVERY_TYPE({
+      commit
+    }, delivery_type) {
       commit("DELIVERY_TYPE", delivery_type);
     },
-    CONFIRM_ORDER_DATA({ commit }, order) {
+    CONFIRM_ORDER_DATA({
+      commit
+    }, order) {
       commit("ORDER_DATA", order);
     },
-    GET_ADDRESSES({ commit }) {
+    GET_ADDRESSES({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getAddresses`,
@@ -348,8 +392,20 @@ export default createStore({
         commit("ADDRESSES", addresses.data);
       });
     },
-    GET_ADDRESS({ commit }, address) {
+    GET_ADDRESS({
+      commit
+    }, address) {
       commit("ADDRESS", address);
+    },
+    SEND_ORDER({commit}, order_data) {
+      return axios({
+        method: "POST",
+        url: `http://localhost:3000/order`,
+        params: order_data,
+      }).then((order_data) => {
+        console.log(order_data);
+        commit("SEND_ORDER_DATA", order_data);
+      })
     },
   },
   getters: {
@@ -384,27 +440,23 @@ export default createStore({
       return (state.subtotalPrice = result);
     },
     DELIVERY_PAY(state) {
+      state.warning = ''
       if (state.subtotalPrice >= state.selectAddress.delivery_free) {
         return (state.delivery_pay = 0);
       } else if (state.deliveryType == 2) {
-        return (state.delivery_pay = (+state.subtotalPrice * 10) / 100);
+        return (state.delivery_pay = -(+state.subtotalPrice * 10) / 100);
       } else {
+        if (state.selectAddress.delivery_zone) {
+          state.warning = `Закажите ещё на ${(state.selectAddress.delivery_free - state.subtotalPrice).toString().slice(0, -2)} ₽ для бесплатной доставки`
+        }
         return (state.delivery_pay = state.selectAddress.delivery_pay);
       }
     },
     TOTAL_PRICE(state) {
       if (typeof state.promocode_total == typeof 1) {
-        if (state.deliveryType == 2) {
-          return (state.totalPrice =
-            +state.subtotalPrice -
-            +state.delivery_pay -
-            +state.promocode_total);
-        } else {
-          return (state.totalPrice =
-            +state.subtotalPrice +
-            +state.delivery_pay -
-            +state.promocode_total);
-        }
+        return (state.totalPrice = +state.subtotalPrice +
+          +state.delivery_pay -
+          +state.promocode_total);
       } else {
         return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay);
       }
@@ -447,8 +499,20 @@ export default createStore({
       return state.deliveryType;
     },
     ORDER_DATA(state) {
-      return state.order;
+      //   product_id: item.product_id,
+      //   price: item.price[1],
+      //   count: item.count
+      return state.order = {
+        spot_id: 1,
+        first_name: state.order_name ? state.order_name : 'Баг! Обратиться к разработчику',
+        phone: state.order_phone ? '+' + state.order_phone : 'Баг! Обратиться к разработчику',
+        client_address: state.selectAddress.address,
+        delivery_price: state.delivery_pay,
+        service_mode: state.deliveryType,
+        products: state.cart
+      };
     },
+
     ADDRESSES(state) {
       return state.selectAdresses;
     },
@@ -489,6 +553,10 @@ export default createStore({
         .replace(":", "");
       return (state.current_time = currentHour);
     },
+    WARNING(state) {
+      return state.warning
+    },
+
   },
   modules: {},
 });

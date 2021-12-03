@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(routes);
 
 http.createServer(app).listen(PORT, function () {
-    console.log(`Poster manage example running on http://localhost:${PORT}/`);
+    console.log(`server has been started on http://localhost:${PORT}/`);
 });
 
 

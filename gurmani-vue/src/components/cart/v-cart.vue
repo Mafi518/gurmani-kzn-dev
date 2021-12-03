@@ -29,12 +29,16 @@
         @input="orderData"
       />
       <input
-        type="number"
+        type="tel"
         name="phone"
         placeholder="Номер телефона"
         id="phone"
         class="confirm__input"
+        maxlength="16"
+        pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}"
         v-model="order_phone"
+        v-phone
+        autocomplete="tel"
         @input="orderData"
       />
       <select name="person" id="person" class="confirm__input confirm__select">
@@ -94,10 +98,10 @@
           @input="searchAddress"
         />
         <div class="confirm__delivery--spot">
-          <input type="text" placeholder="Дом" class="confirm__input" />
-          <input type="text" placeholder="Квартира" class="confirm__input" />
-          <input type="text" placeholder="Подъезд" class="confirm__input" />
-          <input type="text" placeholder="Этаж" class="confirm__input" />
+          <input type="number" placeholder="Дом" class="confirm__input" />
+          <input type="number" placeholder="Квартира" class="confirm__input" />
+          <input type="number" placeholder="Подъезд" class="confirm__input" />
+          <input type="number" placeholder="Этаж" class="confirm__input" />
         </div>
         <div class="confirm__addresses" v-if="search_flag">
           <div
@@ -186,14 +190,19 @@
               this.DELIVERY_PAY == 0
                 ? this.DELIVERY_PAY
                 : this.DELIVERY_TYPE == 2 && this.DELIVERY_PAY !== 0
-                ? "- " + this.DELIVERY_PAY.toString().slice(0, -2)
+                ? this.DELIVERY_PAY.toString().slice(0, -2)
                 : this.DELIVERY_PAY.toString().slice(0, -2)
             }}
             ₽
           </p>
         </div>
         <div class="cart-info__item">
-          <p class="cart-info__description" v-if="this.ERROR">
+          <p class="cart-info__description" v-if="this.WARNING.length !== 0">
+            {{ this.WARNING }}
+          </p>
+        </div>
+        <div class="cart-info__item">
+          <p class="cart-info__description" v-if="this.ERROR.length !== 0">
             {{ this.ERROR }}
           </p>
         </div>
@@ -202,7 +211,7 @@
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
-      <button class="buy-btn" @click.prevent="confirm_order = true">
+      <button class="buy-btn" @click.prevent="sendOrder">
         <div>
           <p>Перейти к оформлению заказа</p>
           <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
@@ -251,6 +260,7 @@ export default {
       "CONFIRM_ORDER_DATA",
       "GET_ADDRESSES",
       "GET_ADDRESS",
+      "SEND_ORDER",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -276,11 +286,10 @@ export default {
       this.search_value = "";
     },
     orderData() {
-      this.CONFIRM_ORDER_DATA({
-        spot_id: 1,
-        first_name: this.order_name,
-        phone: this.order_phone,
-      });
+      this.CONFIRM_ORDER_DATA();
+      // console.log(this.order_phone.replace(/[^0-9]/g, ''));
+      this.$store.state.order_name = this.order_name;
+      this.$store.state.order_phone = this.order_phone.replace(/[^0-9]/g, '');
     },
     searchAddress() {
       this.search_flag = true;
@@ -294,6 +303,9 @@ export default {
         this.search_flag = true;
       }
     },
+    sendOrder() {
+      this.SEND_ORDER(this.$store.state.order)
+    }
   },
 
   computed: {
@@ -310,6 +322,7 @@ export default {
       "ERROR",
       "CURRENT_TIME",
       "PROMOCODE_TOTAL",
+      "WARNING",
     ]),
     CHECK_ADDRESS() {
       if (

@@ -20,7 +20,7 @@
       </div>
       <v-favorite-btn></v-favorite-btn>
     </div>
-    <v-add-btn @click.prevent=""
+    <v-add-btn
       >{{ popular_data.spots[0].price.slice(0, -2) }} ₽</v-add-btn
     >
   </article>
@@ -39,10 +39,15 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["GET_PRODUCT_INFO"]),
-    getProductInfo(data) {
-      data = this.popular_data;
-      this.GET_PRODUCT_INFO(data);
+    ...mapActions(["GET_PRODUCT_INFO", "ADD_TO_CART"]),
+    getProductInfo(e, data) {
+      if (e.target.classList.contains("buy-btn")) {
+        data = this.popular_data;
+        this.ADD_TO_CART(data);
+      } else {
+        data = this.popular_data;
+        this.GET_PRODUCT_INFO(data);
+      }
     },
   },
 };
