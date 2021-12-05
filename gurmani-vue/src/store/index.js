@@ -223,6 +223,40 @@ export default createStore({
       state.order = data;
     },
     ADDRESSES: (state, addresses) => {
+      addresses.map(item => {
+        switch (item.delivery_zone) {
+          case '1':
+            item.delivery_pay = 1
+            item.delivery_free = 60000
+            break;
+          case '2': 
+            item.delivery_pay = 10000
+            item.delivery_free = 80000
+            break;
+          case '3': 
+            item.delivery_pay = 15000
+            item.delivery_free = 100000
+            break;
+          case '4': 
+            item.delivery_pay = 15000
+            item.delivery_free = 120000
+            break;
+          case '5': 
+            item.delivery_pay = 20000
+            item.delivery_free = 140000
+            break;
+          case '6': 
+            item.delivery_pay = 25000
+            item.delivery_free = 180000
+            break;
+          case '7': 
+            item.delivery_pay = 30000
+            item.delivery_free = 200000
+            break;
+          default:
+            break;
+        }
+      })
       state.selectAdresses = addresses;
     },
     ADDRESS: (state, address) => {
@@ -389,6 +423,15 @@ export default createStore({
         method: "GET",
         url: `http://localhost:3000/getAddresses`,
       }).then((addresses) => {
+        // if(addresses.delivery_zone == 2) {
+        //   addresses.map(item => {
+        //     item.delivery_pay = 10000
+        //     item.delivery_free = 80000
+        //   })
+        // }
+        // console.log(addresses.data);
+        // console.log(addresses.data.filter(address => address.delivery_zone == 2));
+
         commit("ADDRESSES", addresses.data);
       });
     },
@@ -499,17 +542,32 @@ export default createStore({
       return state.deliveryType;
     },
     ORDER_DATA(state) {
-      //   product_id: item.product_id,
-      //   price: item.price[1],
-      //   count: item.count
+
+      function getOrderProducts() {
+        let arr = []
+        for (let item of state.cart) {
+            arr.push(
+                {
+                    product_id: item.product_id,
+                    count: item.count,
+                    price: (item.price[1] / item.count).toString(),
+                }
+            );
+        }
+        return arr
+    }
+
+    console.log(getOrderProducts());
+
       return state.order = {
         spot_id: 1,
         first_name: state.order_name ? state.order_name : 'Баг! Обратиться к разработчику',
-        phone: state.order_phone ? '+' + state.order_phone : 'Баг! Обратиться к разработчику',
+      phone: state.order_phone ? '+' + state.order_phone.charAt(0).replace('8', '7') + state.order_phone.slice(1, 11) : 'Баг! Обратиться к разработчику',
         client_address: state.selectAddress.address,
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
-        products: state.cart
+        products: getOrderProducts(),
+        comment: state.order_comment + state.error.trim() === '' ? 'Пользователь применил промокод: ' + state.discount.promocode_name : 'Промокод не применился'
       };
     },
 

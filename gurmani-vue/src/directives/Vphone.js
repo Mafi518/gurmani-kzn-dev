@@ -16,8 +16,9 @@ export default {
         function replaceNumberForPaste(value) {
             const r = value.replace(/\D/g, '')
             let val = r
-            if (val.charAt(0) === '7') {
-                val = '8' + val.slice(1)
+
+            if (val.charAt(0) === '8') {
+                val = '7' + val.slice(1)
             }
             return replaceNumberForInput(val)
         }

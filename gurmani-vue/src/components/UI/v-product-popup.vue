@@ -275,8 +275,42 @@ export default {
   }
   &__item {
   }
-  &__input {
+  &__size {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 140px;
+    width: 100%;
+    margin-top: 8px;
   }
+  &__label {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  &__input {
+    appearance: none;
+    margin-right: 6px;
+    &:checked::after {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: $accent;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+    &::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid $accent;
+      display: flex;
+    }
+  }
+
   &__head {
     padding-right: 20px;
     display: flex;
@@ -310,6 +344,7 @@ export default {
 
   &__subtitle {
     font-size: 18px;
+    margin-top: 8px;
     font-weight: bold;
   }
   &__price {
@@ -318,8 +353,10 @@ export default {
   &__controls {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     padding-left: 15px;
+    max-width: 150px;
+    width: 100%;
   }
   &__counter {
     display: flex;

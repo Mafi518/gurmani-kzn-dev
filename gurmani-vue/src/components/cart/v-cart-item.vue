@@ -9,40 +9,58 @@
     </div>
 
     <div class="cart__item-info">
-      <h3 class="cart__item-title">{{ cart_item_data.product_name }}</h3>
       <div class="cart__item-container">
-        <p class="cart__item-price">
-          {{ cart_item_data.price[1].slice(0, -2) }}
-          ₽
-        </p>
-        <div class="cart__item-controls">
+        <h3 class="cart__item-title">{{ cart_item_data.product_name }}</h3>
+        <div
+          class="cart__item-controls"
+          v-if="cart_item_data.product_name.includes('Пицца')"
+        >
           <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
           <p class="cart__item-count">{{ cart_item_data.count }}</p>
           <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
         </div>
       </div>
 
-      <p class="cart__item-weight">{{ cart_item_data.out }} г</p>
-    </div>
-    <div
-      class="popup__size"
-      v-if="cart_item_data.product_name.includes('Пицца')"
-    >
-      <label
-        class="popup__label"
-        v-for="(modification, index) in cart_item_data.group_modifications"
-        :key="modification.dish_modification_group_id"
-        @click="toggleSize(index)"
-      >
-        <input
-          type="radio"
-          ref="radio"
-          :checked="cart_item_data.group_modifications[index].checked == true"
-          :name="cart_item_data.photo_origin"
-          class="popup__input"
-        />
-        {{ modification.name }}
-      </label>
+      <div class="cart__item-container">
+        <p class="cart__item-price">
+          {{ cart_item_data.price[1].slice(0, -2) }}
+          ₽
+        </p>
+        <div
+          class="cart__item-controls"
+          v-if="!cart_item_data.product_name.includes('Пицца')"
+        >
+          <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
+          <p class="cart__item-count">{{ cart_item_data.count }}</p>
+          <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
+        </div>
+      </div>
+
+      <div class="cart__item-container">
+        <p class="cart__item-weight">{{ cart_item_data.out }} г</p>
+        <div
+          class="cart__item-size"
+          v-if="cart_item_data.product_name.includes('Пицца')"
+        >
+          <label
+            class="cart__item-label"
+            v-for="(modification, index) in cart_item_data.group_modifications"
+            :key="modification.dish_modification_group_id"
+            @click="toggleSize(index)"
+          >
+            <input
+              type="radio"
+              ref="radio"
+              :checked="
+                cart_item_data.group_modifications[index].checked == true
+              "
+              :name="cart_item_data.photo_origin"
+              class="cart__item-input"
+            />
+            {{ modification.name }}
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -134,7 +152,7 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       width: 100%;
-      min-height: 72px;
+      min-height: 80px;
       margin-left: 13px;
     }
     &-title {
@@ -162,6 +180,40 @@ export default {
     &-weight {
       color: $second-black;
       font-size: 10px;
+    }
+    &-size {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 136px;
+      width: 100%;
+    }
+    &-label {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    &-input {
+      appearance: none;
+      margin-right: 6px;
+      &:checked::after {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: $accent;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+      }
+      &::before {
+        content: "";
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1px solid $accent;
+        display: flex;
+      }
     }
   }
 }

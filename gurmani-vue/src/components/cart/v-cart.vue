@@ -75,7 +75,7 @@
         checked
       />
 
-      <label for="pickup" class="confirm__label confirm__input">
+      <label for="pickup"  class="confirm__label confirm__input">
         <v-icon name="cashless-icon"></v-icon>
         Самовывоз
       </label>
@@ -85,6 +85,8 @@
         type="text"
         name="pickup-address"
         id="pickup-address"
+        value="Казань, Оренбургский тракт, 8в (самовывоз)"
+        readonly
         class="confirm__input block-input"
         v-if="this.$store.state.deliveryType == 2"
       />
@@ -146,8 +148,10 @@
         type="text"
         name="comment"
         id="comment"
+        v-model="order_comment"
         placeholder="Комментарий к заказу..."
         class="confirm__input block-input"
+        @input="orderData"
       />
     </form>
 
@@ -233,6 +237,7 @@ export default {
       order_name: "",
       order_phone: "",
       order_address: "",
+      order_comment: "",
       search_value: "",
       confirm_order: true,
       search_flag: false,
@@ -290,6 +295,7 @@ export default {
       // console.log(this.order_phone.replace(/[^0-9]/g, ''));
       this.$store.state.order_name = this.order_name;
       this.$store.state.order_phone = this.order_phone.replace(/[^0-9]/g, '');
+      this.$store.state.order_comment = this.order_comment
     },
     searchAddress() {
       this.search_flag = true;
