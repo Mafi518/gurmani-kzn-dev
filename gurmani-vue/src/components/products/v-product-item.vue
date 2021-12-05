@@ -20,9 +20,7 @@
         </p>
       </div>
       <div class="card__footer buy-btn">
-        <p class="card__price">
-          {{ product_data.price[1].slice(0, -2) }} ₽
-        </p>
+        <p class="card__price">{{ product_data.price[1].slice(0, -2) }} ₽</p>
         <v-icon name="plus-icon"></v-icon>
       </div>
     </slot>

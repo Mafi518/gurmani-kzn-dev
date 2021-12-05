@@ -68,25 +68,8 @@ router.get('/getAddresses', async (req, res) => {
 router.post('/order', async (req, res) => {
     const posterApi = new PosterApi({ token: config.token });
     const order_data = req.query;
-    // const order_products = order_data.products.map(item => JSON.parse(item))
-
-    // console.log(order_data);
-
-    // function getOrderProducts() {
-    //     let arr = []
-    //     for (let item of order_products) {
-    //         arr.push(
-    //             {
-    //                 product_id: item.product_id,
-    //                 count: item.count,
-    //                 price: item.price[1] / item.count,
-    //             }
-    //         );
-    //     }
-    //     return arr
-    // }
-
-    // console.log(order_data.client_address);
+    const order_data_address1 = JSON.parse(order_data.client_address)
+    const order_data_address2 = JSON.parse(order_data.client_address2)
 
     const order = await posterApi.makePosterRequest('incomingOrders.createIncomingOrder', 'post', {
         body: {
@@ -94,7 +77,10 @@ router.post('/order', async (req, res) => {
             first_name: order_data.first_name,
             phone: order_data.phone,
             delivery_price: order_data.service_mode == '3' ? order_data.delivery_price : '',
-            client_address: {address1: order_data.service_mode == '3' ? order_data.client_address : ''},
+            client_address: {
+                address1: order_data.service_mode == '3' ? `${order_data_address1.street} |` : '',
+                address2: `Дом: ${order_data_address2.house} | Квартира: ${order_data_address2.apartment} | Подъезд: ${order_data_address2.entrance} | Этаж ${order_data_address2.floor}`
+            },
             comment: order_data.comment,
             products: order_data.products.map(item => JSON.parse(item))
         }

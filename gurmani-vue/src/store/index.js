@@ -21,22 +21,24 @@ export default createStore({
     selectAddress: {
       delivery_pay: 0,
     },
+    address2: {},
     delivery_pay: "",
     error: "",
     warning: "",
     current_time: "",
     promocode_total: 0,
+    form_validation_error: '',
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
       state.categories = categories;
     },
     SET_CATEGORY_PRODUCTS_TO_STATE: (state, products) => {
-      products.map(item => item.count = 1)
+      products.map((item) => (item.count = 1));
       state.categoryProducts = products;
     },
     SET_POPULAR_TO_STATE: (state, populars) => {
-      populars.map(item => item.count = 1)
+      populars.map((item) => (item.count = 1));
       state.popular = populars;
     },
     SET_PRODUCT_TO_STATE: (state, product) => {
@@ -223,49 +225,71 @@ export default createStore({
       state.order = data;
     },
     ADDRESSES: (state, addresses) => {
-      addresses.map(item => {
+      addresses.map((item) => {
         switch (item.delivery_zone) {
-          case '1':
-            item.delivery_pay = 1
-            item.delivery_free = 60000
+          case "1":
+            item.delivery_pay = 1;
+            item.delivery_free = 60000;
             break;
-          case '2': 
-            item.delivery_pay = 10000
-            item.delivery_free = 80000
+          case "2":
+            item.delivery_pay = 10000;
+            item.delivery_free = 80000;
             break;
-          case '3': 
-            item.delivery_pay = 15000
-            item.delivery_free = 100000
+          case "3":
+            item.delivery_pay = 15000;
+            item.delivery_free = 100000;
             break;
-          case '4': 
-            item.delivery_pay = 15000
-            item.delivery_free = 120000
+          case "4":
+            item.delivery_pay = 15000;
+            item.delivery_free = 120000;
             break;
-          case '5': 
-            item.delivery_pay = 20000
-            item.delivery_free = 140000
+          case "5":
+            item.delivery_pay = 20000;
+            item.delivery_free = 140000;
             break;
-          case '6': 
-            item.delivery_pay = 25000
-            item.delivery_free = 180000
+          case "6":
+            item.delivery_pay = 25000;
+            item.delivery_free = 180000;
             break;
-          case '7': 
-            item.delivery_pay = 30000
-            item.delivery_free = 200000
+          case "7":
+            item.delivery_pay = 30000;
+            item.delivery_free = 200000;
             break;
           default:
             break;
         }
-      })
+      });
       state.selectAdresses = addresses;
     },
     ADDRESS: (state, address) => {
       state.selectAddress = address;
     },
+    ADDRESS2: (state, address) => {
+      console.log(address);
+      switch (address.key) {
+        case 'house':
+          state.address2.house = address.value.toString()
+          break;
+        case 'apartment':
+          state.address2.apartment = address.value.toString()
+          break;
+        case 'entrance':
+          state.address2.entrance = address.value.toString()
+          break;
+        case 'floor':
+          state.address2.floor = address.value.toString()
+          break;
+      
+        default:
+          break;
+      }
+    },
     SEND_ORDER_DATA: (state, order_data) => {
       state.order = order_data;
     },
-
+    FORM_ERROR: (state, error) => {
+      state.form_validation_error = error
+    }
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -440,7 +464,12 @@ export default createStore({
     }, address) {
       commit("ADDRESS", address);
     },
-    SEND_ORDER({commit}, order_data) {
+    GET_ADDRESS2({commit}, address) {
+      commit("ADDRESS2", address)
+    },
+    SEND_ORDER({
+      commit
+    }, order_data) {
       return axios({
         method: "POST",
         url: `http://localhost:3000/order`,
@@ -448,7 +477,10 @@ export default createStore({
       }).then((order_data) => {
         console.log(order_data);
         commit("SEND_ORDER_DATA", order_data);
-      })
+      });
+    },
+    FORM_VALIDATION_ERROR({commit}, error) {
+      commit("FORM_ERROR", error)
     },
   },
   getters: {
@@ -483,23 +515,25 @@ export default createStore({
       return (state.subtotalPrice = result);
     },
     DELIVERY_PAY(state) {
-      state.warning = ''
+      state.warning = "";
       if (state.subtotalPrice >= state.selectAddress.delivery_free) {
         return (state.delivery_pay = 0);
       } else if (state.deliveryType == 2) {
         return (state.delivery_pay = -(+state.subtotalPrice * 10) / 100);
       } else {
         if (state.selectAddress.delivery_zone) {
-          state.warning = `Закажите ещё на ${(state.selectAddress.delivery_free - state.subtotalPrice).toString().slice(0, -2)} ₽ для бесплатной доставки`
+          state.warning = `Закажите ещё на ${(
+            state.selectAddress.delivery_free - state.subtotalPrice
+          )
+            .toString()
+            .slice(0, -2)} ₽ для бесплатной доставки`;
         }
         return (state.delivery_pay = state.selectAddress.delivery_pay);
       }
     },
     TOTAL_PRICE(state) {
       if (typeof state.promocode_total == typeof 1) {
-        return (state.totalPrice = +state.subtotalPrice +
-          +state.delivery_pay -
-          +state.promocode_total);
+        return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay - +state.promocode_total);
       } else {
         return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay);
       }
@@ -542,33 +576,37 @@ export default createStore({
       return state.deliveryType;
     },
     ORDER_DATA(state) {
-
       function getOrderProducts() {
-        let arr = []
+        let arr = [];
         for (let item of state.cart) {
-            arr.push(
-                {
-                    product_id: item.product_id,
-                    count: item.count,
-                    price: (item.price[1] / item.count).toString(),
-                }
-            );
+          arr.push({
+            product_id: item.product_id,
+            count: item.count,
+            price: (item.price[1] / item.count).toString(),
+          });
         }
-        return arr
-    }
+        return arr;
+      }
 
-    console.log(getOrderProducts());
+      // console.log(getOrderProducts());
 
-      return state.order = {
+      return (state.order = {
         spot_id: 1,
-        first_name: state.order_name ? state.order_name : 'Баг! Обратиться к разработчику',
-      phone: state.order_phone ? '+' + state.order_phone.charAt(0).replace('8', '7') + state.order_phone.slice(1, 11) : 'Баг! Обратиться к разработчику',
-        client_address: state.selectAddress.address,
+        first_name: state.order_name ?
+          state.order_name : "Баг! Обратиться к разработчику",
+        phone: state.order_phone ?
+          "+" +
+          state.order_phone.charAt(0).replace("8", "7") +
+          state.order_phone.slice(1, 11) : "Баг! Обратиться к разработчику",
+        client_address: {
+          street: state.selectAddress.address,
+        },
+        client_address2: state.address2,
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: state.order_comment + state.error.trim() === '' ? 'Пользователь применил промокод: ' + state.discount.promocode_name : 'Промокод не применился'
-      };
+        comment: state.order_comment + state.discount.promocode_name ? "Пользователь применил промокод: " + state.discount.promocode_name : "Промокод не применился",
+      });
     },
 
     ADDRESSES(state) {
@@ -576,6 +614,9 @@ export default createStore({
     },
     ADDRESS(state) {
       return state.selectAddress;
+    },
+    ADDRESS2(state) {
+      return state
     },
     ERROR(state) {
       if (state.subtotalPrice < state.discount.condition) {
@@ -601,6 +642,9 @@ export default createStore({
         return (state.error = ``);
       }
     },
+    FORM_ERROR(state) {
+      return state.form_validation_error
+    },
     CURRENT_TIME(state) {
       var dateWithouthSecond = new Date();
       let currentHour = dateWithouthSecond
@@ -612,9 +656,8 @@ export default createStore({
       return (state.current_time = currentHour);
     },
     WARNING(state) {
-      return state.warning
+      return state.warning;
     },
-
   },
   modules: {},
 });

@@ -70,26 +70,7 @@ import { mapActions } from "vuex";
 export default {
   name: "v-cart-item",
   computed: {
-    // modificationPrice() {
-    //   if (this.cart_item_data.product_name.includes("Пицца")) {
-    //     let checkedModification =
-    //       this.cart_item_data.group_modifications.filter(
-    //         (mode) => mode.checked == true
-    //       );
-    //     return (
-    //       this.cart_item_data.count *
-    //         checkedModification[0].modifications.map((mode) => mode.price) -
-    //       this.cart_item_data.price[1].slice(0, -2) * this.cart_item_data.count
-    //     );
-    //   } else {
-    //     let array = this.cart_item_data.group_modifications.map(
-    //       (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-    //     );
-    //     let reducer = (previousValue, currentValue) =>
-    //       previousValue + currentValue;
-    //     return array.reduce(reducer);
-    //   }
-    // },
+
   },
   data() {
     return {};

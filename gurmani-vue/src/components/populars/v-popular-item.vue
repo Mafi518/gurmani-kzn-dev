@@ -20,9 +20,7 @@
       </div>
       <v-favorite-btn></v-favorite-btn>
     </div>
-    <v-add-btn
-      >{{ popular_data.spots[0].price.slice(0, -2) }} ₽</v-add-btn
-    >
+    <v-add-btn>{{ popular_data.spots[0].price.slice(0, -2) }} ₽</v-add-btn>
   </article>
 </template>
 <script>
