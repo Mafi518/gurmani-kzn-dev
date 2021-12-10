@@ -1,6 +1,9 @@
 <template>
   <article v-if="PRODUCT.photo_origin" class="popup">
-    <v-back-menu @click="reset"><v-favorite-btn></v-favorite-btn></v-back-menu>
+    <v-back-menu
+      ><v-back-btn @click="clearPopupState"></v-back-btn>
+      <v-favorite-btn @click="addToFavorites"></v-favorite-btn
+    ></v-back-menu>
     <article class="popup__item">
       <div class="popup__head">
         <picture>
@@ -204,13 +207,17 @@ export default {
       "TOGGLE_SIZE_OF_PIZZA",
       "RESET_PRODUCT",
       "FULL_PRICE",
+      "ADD_TO_FAVORITES",
     ]),
-    reset() {
-      this.RESET_PRODUCT();
-    },
     getProductInfo(data) {
       this.GET_PRODUCT_INFO(data);
       window.scrollBy(0, -400);
+    },
+    addToFavorites() {
+      this.ADD_TO_FAVORITES(this.PRODUCT);
+    },
+    clearPopupState() {
+      this.RESET_PRODUCT();
     },
     incrementItem() {
       this.INCREMENT_POPUP_ITEM();

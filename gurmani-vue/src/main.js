@@ -7,8 +7,6 @@ import phoneDerictive from "@/directives/Vphone";
 
 const app = createApp(App);
 
-
-
 components.forEach((component) => {
   app.component(component.name, component);
 });

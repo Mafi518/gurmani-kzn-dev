@@ -5,13 +5,14 @@ import vBackMenu from "@/components/UI/v-back-menu";
 import vAddBtn from "@/components/UI/v-add-btn";
 import vCardSmall from "@/components/UI/v-card-small";
 import vProductPopup from "@/components/UI/v-product-popup";
+import vBackBtn from "@/components/UI/v-back-button";
 
 export default [
   vIcon,
   vFavoriteBtn,
   vBackMenu,
   vProductPopup,
-  // vCategoryPopup,
+  vBackBtn,
   vAddBtn,
   vCardSmall,
 ];

@@ -21,9 +21,16 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   components: {},
-  mounted() {},
+  mounted() {
+    this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
+  },
+  methods: {
+    ...mapActions(["SET_SAVED_FAVORITES_TO_STATE"]),
+  },
 };
 </script>
 

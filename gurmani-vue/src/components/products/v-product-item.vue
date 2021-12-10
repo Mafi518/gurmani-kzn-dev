@@ -41,7 +41,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["GET_PRODUCT_INFO", "GET_POPULAR_FROM_API", "ADD_TO_CART"]),
+    ...mapActions([
+      "GET_PRODUCT_INFO",
+      "GET_POPULAR_FROM_API",
+      "ADD_TO_CART",
+      "ADD_TO_FAVORITES",
+    ]),
     reset() {
       this.size = "small-size";
     },
@@ -53,6 +58,12 @@ export default {
       data = this.product_data;
       if (e.target.classList.contains("buy-btn")) {
         this.ADD_TO_CART(data);
+      } else if (
+        e.target.parentNode.classList.contains("favorite") ||
+        e.target.classList.contains("favorite-icon")
+      ) {
+        this.ADD_TO_FAVORITES(data);
+        e.target.parentNode.style.backgroundColor = "#FF6800";
       } else {
         this.GET_PRODUCT_INFO(data);
       }

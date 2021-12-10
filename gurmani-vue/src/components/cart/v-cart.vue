@@ -31,7 +31,7 @@
           @input="orderData"
         />
         <span class="form-error" v-if="v$.form.order_name.$error">
-          Поле обязательно для заполнения
+          {{ v$.form.order_name.$errors[0].$message }}
         </span>
       </div>
       <div class="confirm__input-wrapper">
@@ -43,13 +43,14 @@
           class="confirm__input"
           maxlength="16"
           pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}"
+          :class="{ invalid: v$.form.order_phone.$error }"
           v-model.trim="form.order_phone"
           v-phone
           autocomplete="tel"
           @input="orderData"
         />
-        <span class="form-error" v-if="v$.form.order_name.$error">
-          Поле обязательно для заполнения
+        <span class="form-error" v-if="v$.form.order_phone.$error">
+          {{ v$.form.order_phone.$errors[0].$message }}
         </span>
       </div>
       <div class="confirm__input-wrapper">
@@ -113,42 +114,66 @@
           class="confirm__delivery"
           v-if="this.$store.state.deliveryType == 3"
         >
-          <input
-            type="text"
-            placeholder="Улица"
-            class="confirm__input block-input inp--fix"
-            v-model.trim="search_value"
-            @input="searchAddress"
-          />
+          <div class="confirm__input-wrapper block-input">
+            <input
+              type="text"
+              placeholder="Улица"
+              class="confirm__input block-input"
+              v-model.trim="form.order_address.search_value"
+              @input="searchAddress"
+              :class="{ invalid: v$.form.order_address.search_value.$error }"
+            />
+
+            <span
+              class="form-error"
+              v-if="v$.form.order_address.search_value.$error"
+            >
+              {{ v$.form.order_address.search_value.$errors[0].$message }}
+            </span>
+          </div>
+
+          <!-- {{ v$.form.search_value.$errors[0].$message }} -->
           <div class="confirm__delivery--spot">
             <input
-              type="number"
+              type="text"
               placeholder="Дом"
               name="house"
               v-model.trim="form.order_address.house"
-              @input="test('house', this.form.order_address.house)"
+              @input="sendAddress2('house', this.form.order_address.house)"
               class="confirm__input"
+              maxlength="5"
+              :class="{ invalid: v$.form.order_address.house.$error }"
             />
             <input
               type="number"
               placeholder="Квартира"
               v-model.trim="form.order_address.apartment"
-              @input="test('apartment', this.form.order_address.apartment)"
+              @input="
+                sendAddress2('apartment', this.form.order_address.apartment)
+              "
               class="confirm__input"
+              pattern="[0-9]+"
+              :class="{ invalid: v$.form.order_address.apartment.$error }"
             />
             <input
               type="number"
               placeholder="Подъезд"
               v-model.trim="form.order_address.entrance"
-              @input="test('entrance', this.form.order_address.entrance)"
+              @input="
+                sendAddress2('entrance', this.form.order_address.entrance)
+              "
               class="confirm__input"
+              pattern="[0-9]+"
+              :class="{ invalid: v$.form.order_address.entrance.$error }"
             />
             <input
               type="number"
               placeholder="Этаж"
               v-model.trim="form.order_address.floor"
-              @input="test('floor', this.form.order_address.floor)"
+              @input="sendAddress2('floor', this.form.order_address.floor)"
               class="confirm__input"
+              pattern="[0-9]+"
+              :class="{ invalid: v$.form.order_address.floor.$error }"
             />
           </div>
           <div class="confirm__addresses" v-if="search_flag">
@@ -169,7 +194,9 @@
           name="payment_type"
           id="cashless"
           class="confirm__radio"
-          value="delivery"
+          value="Безнал"
+          v-model="form.order_payment_type"
+          @click="getPaymentType"
           checked
         />
 
@@ -184,7 +211,9 @@
           name="payment_type"
           id="cash"
           class="confirm__radio"
-          value="delivery"
+          value="Нал"
+          @click="getPaymentType"
+          v-model="form.order_payment_type"
         />
 
         <label for="cash" class="confirm__label confirm__input">
@@ -284,28 +313,11 @@
 import { mapActions, mapGetters } from "vuex";
 import vCartItem from "@/components/cart/v-cart-item";
 import useValidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-// import { validationMixin } from 'vuelidate'
-// import { required, minLength } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, sameAs } from "@vuelidate/validators";
 
 export default {
   name: "v-cart",
-  validations() {
-    return {
-      form: {
-        order_name: { required },
-        order_phone: { required },
-        order_address: {
-          street: "",
-          house: "",
-          apartment: "",
-          entrance: "",
-          floor: "",
-        },
-        order_comment: "",
-      },
-    };
-  },
+
   data() {
     return {
       v$: useValidate(),
@@ -313,20 +325,74 @@ export default {
         order_name: "",
         order_phone: "",
         order_address: {
-          street: "",
+          search_value: "",
           house: "",
           apartment: "",
           entrance: "",
           floor: "",
         },
         order_comment: "",
+        order_payment_type: "",
       },
       promocode_input: "",
       product_id: "",
-      search_value: "",
       confirm_order: true,
       search_flag: false,
     };
+  },
+  validations() {
+    if (this.DELIVERY_TYPE == 3) {
+      return {
+        form: {
+          order_name: { required },
+          order_phone: { required, minLength: minLength(16) },
+          order_address: {
+            search_value: {
+              sameAs: sameAs(
+                this.ADDRESSES.filter(
+                  (item) => item.address == this.form.order_address.search_value
+                )
+                  .map((item) => item.address)
+                  .toString()
+              ),
+              required,
+            },
+            house: {
+              maxLength: maxLength(4),
+              minLength: minLength(1),
+              required,
+            },
+            apartment: {
+              maxLength: maxLength(4),
+              minLength: minLength(1),
+              required,
+            },
+            entrance: {
+              maxLength: maxLength(4),
+              minLength: minLength(1),
+              required,
+            },
+            floor: {
+              maxLength: maxLength(4),
+              minLength: minLength(1),
+              required,
+            },
+          },
+          order_comment: "",
+        },
+      };
+    } else {
+      return {
+        form: {
+          order_name: { required },
+          order_phone: { required, minLength: minLength(16) },
+          order_address: {
+            street: "",
+          },
+          order_comment: "",
+        },
+      };
+    }
   },
   components: {
     vCartItem,
@@ -353,6 +419,7 @@ export default {
       "SEND_ORDER",
       "FORM_VALIDATION_ERROR",
       "GET_ADDRESS2",
+      "GET_PAYMENT_TYPE",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -375,7 +442,11 @@ export default {
       this.GET_DELIVERY_TYPE(e.target.value);
       this.VALIDATE_PROMOCODE(this.promocode_input);
       this.$store.state.selectAddress = { delivery_pay: 0 };
-      this.search_value = "";
+      this.form.order_address.search_value = "";
+    },
+    getPaymentType(e) {
+      this.GET_PAYMENT_TYPE(e.target.value);
+      console.log(e.target.value);
     },
     orderData() {
       this.CONFIRM_ORDER_DATA();
@@ -392,8 +463,8 @@ export default {
     },
     getSelectAddress(data) {
       this.GET_ADDRESS(data);
-      this.search_value = data.address;
-      if (data.address === this.search_value) {
+      this.form.order_address.search_value = data.address;
+      if (data.address === this.form.order_address.search_value) {
         this.search_flag = false;
       } else {
         this.search_flag = true;
@@ -401,24 +472,48 @@ export default {
     },
     sendOrder() {
       this.v$.$validate();
+      console.log(this.v$.$errors);
       if (!this.v$.$error) {
         console.log("form has been submited");
+        // console.log(this.SEND_ORDER(this.ORDER_DATA));
+        // this.SEND_ORDER(this.ORDER_DATA)
+        // this.SEND_ORDER(this.$store.state.order);
       } else {
         console.log("error");
+
+        if (this.v$.form.order_phone.$errors.length >= 1) {
+          this.v$.form.order_phone.$errors[0].$message == "Value is required"
+            ? (this.v$.form.order_phone.$errors[0].$message =
+                "Поле обязательно для заполнения")
+            : this.v$.form.order_phone.$errors[0].$message ==
+              "This field should be at least 16 long"
+            ? "Заполните поле до конца"
+            : "";
+        }
+
+        if (this.v$.form.order_name.$errors.length >= 1) {
+          this.v$.form.order_name.$errors[0].$message == "Value is required"
+            ? (this.v$.form.order_name.$errors[0].$message =
+                "Поле обязательно для заполнения")
+            : "";
+        }
+
+        if (this.v$.form.order_address.search_value.$errors.length >= 1) {
+          this.v$.form.order_address.search_value.$errors[0].$message ==
+          "Value is required"
+            ? (this.v$.form.order_address.search_value.$errors[0].$message =
+                "Поле обязательно для заполнения")
+            : "";
+        }
       }
 
       // this.SEND_ORDER(this.$store.state.order);
     },
-    test(key, value) {
-      // console.log(key == "house");
+    sendAddress2(key, value) {
       this.GET_ADDRESS2({
         key: key,
         value: value,
       });
-      // console.log(this);
-      // console.log(this.form.order_address.house);
-      // // console.log(this.getAttribute('name'));
-      // console.log(this);
     },
   },
 
@@ -438,15 +533,20 @@ export default {
       "PROMOCODE_TOTAL",
       "WARNING",
       "FORM_ERROR",
+      "ORDER_DATA",
     ]),
     CHECK_ADDRESS() {
       if (
         this.$store.state.selectAdresses.filter((elem) =>
-          elem.address.toLowerCase().includes(this.search_value.toLowerCase())
+          elem.address
+            .toLowerCase()
+            .includes(this.form.order_address.search_value.toLowerCase())
         )
       ) {
         return this.$store.state.selectAdresses.filter((elem) =>
-          elem.address.toLowerCase().includes(this.search_value.toLowerCase())
+          elem.address
+            .toLowerCase()
+            .includes(this.form.order_address.search_value.toLowerCase())
         );
       } else {
         return this.$store.state.selectAddress;
@@ -519,12 +619,15 @@ export default {
     display: flex;
     align-items: center;
     padding: 14px;
+    font-size: 13px;
     border: none;
     outline: none;
     &::placeholder {
       color: $second-black;
     }
     &-wrapper {
+      display: flex;
+      flex-direction: column;
       max-width: 47%;
       width: 100%;
       margin-bottom: 18px;
@@ -596,11 +699,13 @@ export default {
   }
 }
 .form-error {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  margin-top: 4px;
+  white-space: normal;
+  color: tomato;
+  margin-left: 5px;
+  font-size: 12px;
 }
-.inp--fix {
-  margin-bottom: 18px;
+.invalid {
+  border: 2px solid tomato;
 }
 </style>

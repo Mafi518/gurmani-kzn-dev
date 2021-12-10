@@ -1,6 +1,4 @@
-import {
-  createStore
-} from "vuex";
+import { createStore } from "vuex";
 import axios from "axios";
 
 export default createStore({
@@ -16,6 +14,7 @@ export default createStore({
     discountProduct: {},
     discountCurrentProduct: "0 ₽",
     deliveryType: "2",
+    payment_type: "Безнал",
     order: {},
     selectAdresses: [],
     selectAddress: {
@@ -27,7 +26,10 @@ export default createStore({
     warning: "",
     current_time: "",
     promocode_total: 0,
-    form_validation_error: '',
+    form_validation_error: "",
+
+    favorites: [],
+    saved_favorites: [],
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -54,7 +56,7 @@ export default createStore({
         } else {
           let array = state.cart[index].group_modifications.map(
             (mode) =>
-            mode.count * mode.modifications.map((modif) => modif.price)
+              mode.count * mode.modifications.map((modif) => modif.price)
           );
           let reducer = (previousValue, currentValue) =>
             previousValue + currentValue;
@@ -145,7 +147,7 @@ export default createStore({
           state.cart[cartItem].spots[0].actualPrice = checkedPrice.toString();
           state.cart[cartItem].price[1] =
             state.cart[cartItem].spots[0].actualPrice *
-            state.cart[cartItem].count +
+              state.cart[cartItem].count +
             "";
         }, 1);
       }
@@ -221,6 +223,9 @@ export default createStore({
     DELIVERY_TYPE: (state, type) => {
       state.deliveryType = type;
     },
+    PAYMENT_TYPE: (state, type) => {
+      return (state.payment_type = type);
+    },
     ORDER_DATA: (state, data) => {
       state.order = data;
     },
@@ -265,21 +270,20 @@ export default createStore({
       state.selectAddress = address;
     },
     ADDRESS2: (state, address) => {
-      console.log(address);
       switch (address.key) {
-        case 'house':
-          state.address2.house = address.value.toString()
+        case "house":
+          state.address2.house = address.value.toString();
           break;
-        case 'apartment':
-          state.address2.apartment = address.value.toString()
+        case "apartment":
+          state.address2.apartment = address.value.toString();
           break;
-        case 'entrance':
-          state.address2.entrance = address.value.toString()
+        case "entrance":
+          state.address2.entrance = address.value.toString();
           break;
-        case 'floor':
-          state.address2.floor = address.value.toString()
+        case "floor":
+          state.address2.floor = address.value.toString();
           break;
-      
+
         default:
           break;
       }
@@ -288,13 +292,71 @@ export default createStore({
       state.order = order_data;
     },
     FORM_ERROR: (state, error) => {
-      state.form_validation_error = error
-    }
+      state.form_validation_error = error;
+    },
+    ADD_TO_FAVORITES: (state, product) => {
+      if (state.favorites.length) {
+        let dataExists = false;
+        state.favorites.map((item) => {
+          if (item.product_id === product.product_id) {
+            dataExists = true;
+            let favoriteArr = JSON.parse(
+              localStorage.getItem("saved favorites")
+            );
+            if (
+              favoriteArr.filter(
+                (item) => item.product_id == product.product_id
+              )
+            ) {
+              // JSON.parse(localStorage.getItem('saved favorites')).map
+              for (const key in favoriteArr) {
+                console.log(
+                  favoriteArr[key].product_id == product.product_id,
+                  key
+                );
+                if (favoriteArr[key].product_id == product.product_id) {
+                  state.favorites.splice(key, 1);
+                  localStorage.setItem(
+                    "saved favorites",
+                    JSON.stringify(state.favorites.map((item) => item))
+                  );
+                }
+              }
+            }
+          }
+        });
+        if (!dataExists) {
+          state.favorites.push(product);
+          localStorage.setItem(
+            "saved favorites",
+            JSON.stringify(state.favorites.map((item) => item))
+          );
+        }
+      } else {
+        product.favorites = true;
+        state.favorites.push(product);
+        localStorage.setItem(
+          "saved favorites",
+          JSON.stringify(state.favorites.map((item) => item))
+        );
+      }
+    },
+    SET_SAVED_FAVORITES: (state, data) => {
+      if (data) {
+        JSON.parse(data).map((item) => state.favorites.push(item));
+      }
+      console.log(JSON.parse(data));
+      // state.popular.map(item => {
+      //   if (item.product_name === 0) {
+      //     console.log(item.product_name);
+      //   } else {
+      //     console.log('favor');
+      //   }
+      // })
+    },
   },
   actions: {
-    GET_CATEGORIES_FROM_API({
-      commit
-    }) {
+    GET_CATEGORIES_FROM_API({ commit }) {
       return axios({
         method: "GET",
         url: "http://localhost:3000/categories",
@@ -308,9 +370,7 @@ export default createStore({
         return categories;
       });
     },
-    GET_CATEGORY_PRODUCTS_FROM_API({
-      commit
-    }, categoryID) {
+    GET_CATEGORY_PRODUCTS_FROM_API({ commit }, categoryID) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
@@ -321,9 +381,7 @@ export default createStore({
         commit("SET_CATEGORY_PRODUCTS_TO_STATE", products.data);
       });
     },
-    GET_POPULAR_FROM_API({
-      commit
-    }) {
+    GET_POPULAR_FROM_API({ commit }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/populars`,
@@ -337,9 +395,7 @@ export default createStore({
         return populars;
       });
     },
-    GET_PROMOCODES({
-      commit
-    }) {
+    GET_PROMOCODES({ commit }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/promocodes`,
@@ -347,9 +403,7 @@ export default createStore({
         commit("SET_PROMOCODES", promocodes.data);
       });
     },
-    GET_PRODUCT_INFO({
-      commit
-    }, data) {
+    GET_PRODUCT_INFO({ commit }, data) {
       data.count = 1;
       data.modified_price = data.spots[0].price;
       data.spots[0].actualPrice = data.spots[0].price;
@@ -377,50 +431,32 @@ export default createStore({
       });
       commit("SET_PRODUCT_TO_STATE", data);
     },
-    INCREMENT_POPUP_ITEM({
-      commit
-    }, index) {
+    INCREMENT_POPUP_ITEM({ commit }, index) {
       commit("INCREMENT", index);
     },
-    DECREMENT_POPUP_ITEM({
-      commit
-    }, index) {
+    DECREMENT_POPUP_ITEM({ commit }, index) {
       commit("DECREMENT", index);
     },
-    ADD_TO_CART({
-      commit
-    }, data) {
+    ADD_TO_CART({ commit }, data) {
       commit("SET_CART", data);
     },
-    TOGGLE_SIZE_OF_PIZZA({
-      commit
-    }, index) {
+    TOGGLE_SIZE_OF_PIZZA({ commit }, index) {
       commit("TOGGLE_SIZE", index);
     },
-    RESET_PRODUCT({
-      commit
-    }) {
+    RESET_PRODUCT({ commit }) {
       console.log("reset");
       commit("RESET_PRODUCT");
     },
-    FULL_PRICE({
-      commit
-    }, data) {
+    FULL_PRICE({ commit }, data) {
       commit("FULL_PRICE", data);
     },
-    SET_OLD_CART({
-      commit
-    }, data) {
+    SET_OLD_CART({ commit }, data) {
       commit("SET_OLD_CART", data);
     },
-    VALIDATE_PROMOCODE({
-      commit
-    }, promocode) {
+    VALIDATE_PROMOCODE({ commit }, promocode) {
       commit("APPLY_PROMOCODE", promocode);
     },
-    GET_DISCOUNT_PRODUCT({
-      commit
-    }, product) {
+    GET_DISCOUNT_PRODUCT({ commit }, product) {
       console.log(product);
       return axios({
         method: "GET",
@@ -430,19 +466,16 @@ export default createStore({
         commit("DISCOUNT_PRODUCT", discount_product.data);
       });
     },
-    GET_DELIVERY_TYPE({
-      commit
-    }, delivery_type) {
+    GET_DELIVERY_TYPE({ commit }, delivery_type) {
       commit("DELIVERY_TYPE", delivery_type);
     },
-    CONFIRM_ORDER_DATA({
-      commit
-    }, order) {
+    GET_PAYMENT_TYPE({ commit }, type) {
+      commit("PAYMENT_TYPE", type);
+    },
+    CONFIRM_ORDER_DATA({ commit }, order) {
       commit("ORDER_DATA", order);
     },
-    GET_ADDRESSES({
-      commit
-    }) {
+    GET_ADDRESSES({ commit }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getAddresses`,
@@ -459,17 +492,13 @@ export default createStore({
         commit("ADDRESSES", addresses.data);
       });
     },
-    GET_ADDRESS({
-      commit
-    }, address) {
+    GET_ADDRESS({ commit }, address) {
       commit("ADDRESS", address);
     },
-    GET_ADDRESS2({commit}, address) {
-      commit("ADDRESS2", address)
+    GET_ADDRESS2({ commit }, address) {
+      commit("ADDRESS2", address);
     },
-    SEND_ORDER({
-      commit
-    }, order_data) {
+    SEND_ORDER({ commit }, order_data) {
       return axios({
         method: "POST",
         url: `http://localhost:3000/order`,
@@ -479,8 +508,14 @@ export default createStore({
         commit("SEND_ORDER_DATA", order_data);
       });
     },
-    FORM_VALIDATION_ERROR({commit}, error) {
-      commit("FORM_ERROR", error)
+    FORM_VALIDATION_ERROR({ commit }, error) {
+      commit("FORM_ERROR", error);
+    },
+    ADD_TO_FAVORITES({ commit }, product) {
+      commit("ADD_TO_FAVORITES", product);
+    },
+    SET_SAVED_FAVORITES_TO_STATE({ commit }, data) {
+      commit("SET_SAVED_FAVORITES", data);
     },
   },
   getters: {
@@ -533,7 +568,8 @@ export default createStore({
     },
     TOTAL_PRICE(state) {
       if (typeof state.promocode_total == typeof 1) {
-        return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay - +state.promocode_total);
+        return (state.totalPrice =
+          +state.subtotalPrice + +state.delivery_pay - +state.promocode_total);
       } else {
         return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay);
       }
@@ -575,6 +611,9 @@ export default createStore({
     DELIVERY_TYPE(state) {
       return state.deliveryType;
     },
+    PAYMENT_TYPE(state) {
+      return state.payment_type;
+    },
     ORDER_DATA(state) {
       function getOrderProducts() {
         let arr = [];
@@ -583,21 +622,27 @@ export default createStore({
             product_id: item.product_id,
             count: item.count,
             price: (item.price[1] / item.count).toString(),
+            modification: item.group_modifications.map((mode) => {
+              return {
+                m: mode.modifications[0].dish_modification_id,
+                a: mode.count,
+              };
+            }),
           });
         }
         return arr;
       }
 
-      // console.log(getOrderProducts());
-
       return (state.order = {
         spot_id: 1,
-        first_name: state.order_name ?
-          state.order_name : "Баг! Обратиться к разработчику",
-        phone: state.order_phone ?
-          "+" +
-          state.order_phone.charAt(0).replace("8", "7") +
-          state.order_phone.slice(1, 11) : "Баг! Обратиться к разработчику",
+        first_name: state.order_name
+          ? state.order_name
+          : "Баг! Обратиться к разработчику",
+        phone: state.order_phone
+          ? "+" +
+            state.order_phone.charAt(0).replace("8", "7") +
+            state.order_phone.slice(1, 11)
+          : "Баг! Обратиться к разработчику",
         client_address: {
           street: state.selectAddress.address,
         },
@@ -605,10 +650,14 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: state.order_comment + state.discount.promocode_name ? "Пользователь применил промокод: " + state.discount.promocode_name : "Промокод не применился",
+        comment:
+          state.order_comment +
+          (state.discount.promocode_name !== undefined
+            ? "промо: " + state.discount.promocode_name
+            : "") +
+          state.payment_type,
       });
     },
-
     ADDRESSES(state) {
       return state.selectAdresses;
     },
@@ -616,7 +665,7 @@ export default createStore({
       return state.selectAddress;
     },
     ADDRESS2(state) {
-      return state
+      return state;
     },
     ERROR(state) {
       if (state.subtotalPrice < state.discount.condition) {
@@ -643,7 +692,7 @@ export default createStore({
       }
     },
     FORM_ERROR(state) {
-      return state.form_validation_error
+      return state.form_validation_error;
     },
     CURRENT_TIME(state) {
       var dateWithouthSecond = new Date();
@@ -658,6 +707,16 @@ export default createStore({
     WARNING(state) {
       return state.warning;
     },
+    FAVORITES(state) {
+      return state.favorites;
+    },
+    // SAVED_FAVORITES(state) {
+    //   // return state.saved_favorites = JSON.parse(localStorage.getItem('saved favorites'));
+    //   // return state.saved_favorites = state.favorites
+    // },
+    // SET_SAVED_FAVORITES(state) {
+    //   return state.favorites
+    // }
   },
   modules: {},
 });

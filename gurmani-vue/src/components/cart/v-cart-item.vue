@@ -69,9 +69,7 @@ import { mapActions } from "vuex";
 
 export default {
   name: "v-cart-item",
-  computed: {
-
-  },
+  computed: {},
   data() {
     return {};
   },

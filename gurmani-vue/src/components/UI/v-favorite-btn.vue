@@ -1,6 +1,10 @@
 <template>
   <button class="btn favorite">
-    <v-icon style="fill: #fff" name="favorite-icon"></v-icon>
+    <v-icon
+      style="fill: #fff"
+      class="favorite-icon"
+      name="favorite-icon"
+    ></v-icon>
   </button>
 </template>
 
