@@ -6,6 +6,7 @@ import vAddBtn from "@/components/UI/v-add-btn";
 import vCardSmall from "@/components/UI/v-card-small";
 import vProductPopup from "@/components/UI/v-product-popup";
 import vBackBtn from "@/components/UI/v-back-button";
+import vFavoriteBtnActive from "@/components/UI/v-favorite-btn-active";
 
 export default [
   vIcon,
@@ -15,4 +16,5 @@ export default [
   vBackBtn,
   vAddBtn,
   vCardSmall,
+  vFavoriteBtnActive,
 ];

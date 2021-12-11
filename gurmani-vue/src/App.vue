@@ -21,15 +21,21 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex'
 
 export default {
   components: {},
-  mounted() {
-    this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
-  },
   methods: {
-    ...mapActions(["SET_SAVED_FAVORITES_TO_STATE"]),
+    ...mapActions(["SET_SAVED_FAVORITES_TO_STATE", "GET_POPULAR_FROM_API"]),
+    async test() {
+      await this.GET_POPULAR_FROM_API()
+
+
+      this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
+    }
+  },
+  mounted() {
+    this.test()
   },
 };
 </script>

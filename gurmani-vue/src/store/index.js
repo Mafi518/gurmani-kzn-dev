@@ -1,4 +1,6 @@
-import { createStore } from "vuex";
+import {
+  createStore
+} from "vuex";
 import axios from "axios";
 
 export default createStore({
@@ -56,7 +58,7 @@ export default createStore({
         } else {
           let array = state.cart[index].group_modifications.map(
             (mode) =>
-              mode.count * mode.modifications.map((modif) => modif.price)
+            mode.count * mode.modifications.map((modif) => modif.price)
           );
           let reducer = (previousValue, currentValue) =>
             previousValue + currentValue;
@@ -147,7 +149,7 @@ export default createStore({
           state.cart[cartItem].spots[0].actualPrice = checkedPrice.toString();
           state.cart[cartItem].price[1] =
             state.cart[cartItem].spots[0].actualPrice *
-              state.cart[cartItem].count +
+            state.cart[cartItem].count +
             "";
         }, 1);
       }
@@ -297,25 +299,23 @@ export default createStore({
     ADD_TO_FAVORITES: (state, product) => {
       if (state.favorites.length) {
         let dataExists = false;
+        let favoriteArr = JSON.parse(
+          localStorage.getItem("saved favorites")
+        );
+
         state.favorites.map((item) => {
           if (item.product_id === product.product_id) {
             dataExists = true;
-            let favoriteArr = JSON.parse(
-              localStorage.getItem("saved favorites")
-            );
+
             if (
               favoriteArr.filter(
                 (item) => item.product_id == product.product_id
               )
             ) {
-              // JSON.parse(localStorage.getItem('saved favorites')).map
               for (const key in favoriteArr) {
-                console.log(
-                  favoriteArr[key].product_id == product.product_id,
-                  key
-                );
                 if (favoriteArr[key].product_id == product.product_id) {
                   state.favorites.splice(key, 1);
+                  product.favorites = false
                   localStorage.setItem(
                     "saved favorites",
                     JSON.stringify(state.favorites.map((item) => item))
@@ -325,7 +325,9 @@ export default createStore({
             }
           }
         });
+
         if (!dataExists) {
+          product.favorites = true;
           state.favorites.push(product);
           localStorage.setItem(
             "saved favorites",
@@ -340,12 +342,15 @@ export default createStore({
           JSON.stringify(state.favorites.map((item) => item))
         );
       }
+
     },
     SET_SAVED_FAVORITES: (state, data) => {
       if (data) {
         JSON.parse(data).map((item) => state.favorites.push(item));
+        // console.log(state.popular.filter(item => item.product_id == JSON.parse(data).map(item => item.product_id)));
       }
-      console.log(JSON.parse(data));
+
+
       // state.popular.map(item => {
       //   if (item.product_name === 0) {
       //     console.log(item.product_name);
@@ -356,7 +361,9 @@ export default createStore({
     },
   },
   actions: {
-    GET_CATEGORIES_FROM_API({ commit }) {
+    GET_CATEGORIES_FROM_API({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: "http://localhost:3000/categories",
@@ -370,7 +377,9 @@ export default createStore({
         return categories;
       });
     },
-    GET_CATEGORY_PRODUCTS_FROM_API({ commit }, categoryID) {
+    GET_CATEGORY_PRODUCTS_FROM_API({
+      commit
+    }, categoryID) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
@@ -381,7 +390,9 @@ export default createStore({
         commit("SET_CATEGORY_PRODUCTS_TO_STATE", products.data);
       });
     },
-    GET_POPULAR_FROM_API({ commit }) {
+    GET_POPULAR_FROM_API({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/populars`,
@@ -395,7 +406,9 @@ export default createStore({
         return populars;
       });
     },
-    GET_PROMOCODES({ commit }) {
+    GET_PROMOCODES({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/promocodes`,
@@ -403,7 +416,9 @@ export default createStore({
         commit("SET_PROMOCODES", promocodes.data);
       });
     },
-    GET_PRODUCT_INFO({ commit }, data) {
+    GET_PRODUCT_INFO({
+      commit
+    }, data) {
       data.count = 1;
       data.modified_price = data.spots[0].price;
       data.spots[0].actualPrice = data.spots[0].price;
@@ -431,32 +446,50 @@ export default createStore({
       });
       commit("SET_PRODUCT_TO_STATE", data);
     },
-    INCREMENT_POPUP_ITEM({ commit }, index) {
+    INCREMENT_POPUP_ITEM({
+      commit
+    }, index) {
       commit("INCREMENT", index);
     },
-    DECREMENT_POPUP_ITEM({ commit }, index) {
+    DECREMENT_POPUP_ITEM({
+      commit
+    }, index) {
       commit("DECREMENT", index);
     },
-    ADD_TO_CART({ commit }, data) {
+    ADD_TO_CART({
+      commit
+    }, data) {
       commit("SET_CART", data);
     },
-    TOGGLE_SIZE_OF_PIZZA({ commit }, index) {
+    TOGGLE_SIZE_OF_PIZZA({
+      commit
+    }, index) {
       commit("TOGGLE_SIZE", index);
     },
-    RESET_PRODUCT({ commit }) {
+    RESET_PRODUCT({
+      commit
+    }) {
       console.log("reset");
       commit("RESET_PRODUCT");
     },
-    FULL_PRICE({ commit }, data) {
+    FULL_PRICE({
+      commit
+    }, data) {
       commit("FULL_PRICE", data);
     },
-    SET_OLD_CART({ commit }, data) {
+    SET_OLD_CART({
+      commit
+    }, data) {
       commit("SET_OLD_CART", data);
     },
-    VALIDATE_PROMOCODE({ commit }, promocode) {
+    VALIDATE_PROMOCODE({
+      commit
+    }, promocode) {
       commit("APPLY_PROMOCODE", promocode);
     },
-    GET_DISCOUNT_PRODUCT({ commit }, product) {
+    GET_DISCOUNT_PRODUCT({
+      commit
+    }, product) {
       console.log(product);
       return axios({
         method: "GET",
@@ -466,16 +499,24 @@ export default createStore({
         commit("DISCOUNT_PRODUCT", discount_product.data);
       });
     },
-    GET_DELIVERY_TYPE({ commit }, delivery_type) {
+    GET_DELIVERY_TYPE({
+      commit
+    }, delivery_type) {
       commit("DELIVERY_TYPE", delivery_type);
     },
-    GET_PAYMENT_TYPE({ commit }, type) {
+    GET_PAYMENT_TYPE({
+      commit
+    }, type) {
       commit("PAYMENT_TYPE", type);
     },
-    CONFIRM_ORDER_DATA({ commit }, order) {
+    CONFIRM_ORDER_DATA({
+      commit
+    }, order) {
       commit("ORDER_DATA", order);
     },
-    GET_ADDRESSES({ commit }) {
+    GET_ADDRESSES({
+      commit
+    }) {
       return axios({
         method: "GET",
         url: `http://localhost:3000/getAddresses`,
@@ -492,13 +533,19 @@ export default createStore({
         commit("ADDRESSES", addresses.data);
       });
     },
-    GET_ADDRESS({ commit }, address) {
+    GET_ADDRESS({
+      commit
+    }, address) {
       commit("ADDRESS", address);
     },
-    GET_ADDRESS2({ commit }, address) {
+    GET_ADDRESS2({
+      commit
+    }, address) {
       commit("ADDRESS2", address);
     },
-    SEND_ORDER({ commit }, order_data) {
+    SEND_ORDER({
+      commit
+    }, order_data) {
       return axios({
         method: "POST",
         url: `http://localhost:3000/order`,
@@ -508,13 +555,19 @@ export default createStore({
         commit("SEND_ORDER_DATA", order_data);
       });
     },
-    FORM_VALIDATION_ERROR({ commit }, error) {
+    FORM_VALIDATION_ERROR({
+      commit
+    }, error) {
       commit("FORM_ERROR", error);
     },
-    ADD_TO_FAVORITES({ commit }, product) {
+    ADD_TO_FAVORITES({
+      commit
+    }, product) {
       commit("ADD_TO_FAVORITES", product);
     },
-    SET_SAVED_FAVORITES_TO_STATE({ commit }, data) {
+    SET_SAVED_FAVORITES_TO_STATE({
+      commit
+    }, data) {
       commit("SET_SAVED_FAVORITES", data);
     },
   },
@@ -568,8 +621,7 @@ export default createStore({
     },
     TOTAL_PRICE(state) {
       if (typeof state.promocode_total == typeof 1) {
-        return (state.totalPrice =
-          +state.subtotalPrice + +state.delivery_pay - +state.promocode_total);
+        return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay - +state.promocode_total);
       } else {
         return (state.totalPrice = +state.subtotalPrice + +state.delivery_pay);
       }
@@ -635,14 +687,12 @@ export default createStore({
 
       return (state.order = {
         spot_id: 1,
-        first_name: state.order_name
-          ? state.order_name
-          : "Баг! Обратиться к разработчику",
-        phone: state.order_phone
-          ? "+" +
-            state.order_phone.charAt(0).replace("8", "7") +
-            state.order_phone.slice(1, 11)
-          : "Баг! Обратиться к разработчику",
+        first_name: state.order_name ?
+          state.order_name : "Баг! Обратиться к разработчику",
+        phone: state.order_phone ?
+          "+" +
+          state.order_phone.charAt(0).replace("8", "7") +
+          state.order_phone.slice(1, 11) : "Баг! Обратиться к разработчику",
         client_address: {
           street: state.selectAddress.address,
         },
@@ -650,11 +700,10 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment:
-          state.order_comment +
-          (state.discount.promocode_name !== undefined
-            ? "промо: " + state.discount.promocode_name
-            : "") +
+        comment: state.order_comment +
+          (state.discount.promocode_name !== undefined ?
+            "промо: " + state.discount.promocode_name :
+            "") +
           state.payment_type,
       });
     },
@@ -714,9 +763,40 @@ export default createStore({
     //   // return state.saved_favorites = JSON.parse(localStorage.getItem('saved favorites'));
     //   // return state.saved_favorites = state.favorites
     // },
-    // SET_SAVED_FAVORITES(state) {
-    //   return state.favorites
-    // }
+    SET_SAVED_FAVORITES(state) {
+      // console.log('popular', state.popular.filter(item => item.product_id == state.favorites.map(item => item.product_id)));
+      // if (state.popular.length > 0) {
+      //   console.log('length');
+      //   state.popular.filter(item => item.product_id == state.favorites.map(item => item.product_id)).map(item => item.favorites = true)
+      // }
+
+
+      let arra1 = state.categoryProducts.map(item => item.product_id)
+      let arra2 = state.popular.map(item => item.product_id)
+      let arra3 = state.favorites.map(item => item.product_id)
+
+      let intersect = function(arr1, arr2) {
+        return arr1.filter(function(id) {
+          return arr2.indexOf(id) !== -1
+        })
+      }
+
+      // intersect(arra1, arra3).map(item => item)
+
+      for (const item of intersect(arra1, arra3).map(item => item)) {
+        state.categoryProducts.filter(it => it.product_id == item)[0].favorites = true
+      }
+      for (const item of intersect(arra2, arra3)) {
+        state.popular.filter(it => it.product_id == item)[0].favorites = true
+      }
+
+      // console.log(arra1.map);
+
+      // console.log(arr1[0].map(item => item.barcode) == );
+      // console.log(state.categoryProducts);
+
+      // state.categoryProducts.filter(item => item.product_id == state.favorites.map(item => item.product_id))
+    },
   },
   modules: {},
 });

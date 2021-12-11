@@ -1,7 +1,7 @@
 <template>
   <section class="products">
     <v-back-menu class="fix">
-      <v-back-btn :to="`/cart`"> </v-back-btn>
+      <v-back-btn :to="`/`"> </v-back-btn>
       <h2 class="products__title" v-if="CATEGORY_PRODUCTS.length !== 0">
         {{ CATEGORY_PRODUCTS[0].category_name }}
       </h2>

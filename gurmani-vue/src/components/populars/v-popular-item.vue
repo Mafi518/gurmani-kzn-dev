@@ -18,7 +18,8 @@
       <div class="popular__weight">
         <v-icon name="scales-icon"></v-icon> {{ popular_data.out }} г
       </div>
-      <v-favorite-btn></v-favorite-btn>
+      <v-favorite-btn v-if="!popular_data.favorites"></v-favorite-btn>
+      <v-favorite-btn-active v-if="popular_data.favorites == true"></v-favorite-btn-active>
     </div>
     <v-add-btn>{{ popular_data.spots[0].price.slice(0, -2) }} ₽</v-add-btn>
   </article>
@@ -42,11 +43,12 @@ export default {
       if (e.target.classList.contains("buy-btn")) {
         this.ADD_TO_CART(this.popular_data);
       } else if (
-        e.target.parentNode.classList.contains("favorite") ||
+        e.target.parentNode.classList.contains("favorite-btn") ||
+        e.target.classList.contains("favorite-icon-path") ||
+        e.target.classList.contains("favorite-icon-active") ||
         e.target.classList.contains("favorite-icon")
       ) {
         this.ADD_TO_FAVORITES(this.popular_data);
-        e.target.parentNode.style.backgroundColor = "#FF6800";
       } else {
         this.GET_PRODUCT_INFO(this.popular_data);
       }

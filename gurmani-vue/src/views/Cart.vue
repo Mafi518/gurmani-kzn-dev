@@ -42,27 +42,27 @@ export default {
   padding: 0 20px 20px 20px;
   padding-bottom: 350px;
 }
-.buy-btn {
-  border-radius: 10px;
-  background-color: $accent;
-  color: $white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 76px;
-  padding: 15px;
-  font-family: roboto, sans-serif;
-  width: 100%;
-  p {
-    text-align: left;
-  }
-  p:nth-child(1) {
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
-  p:nth-child(2) {
-    font-size: 18px;
-    font-weight: bold;
-  }
-}
+// .buy-btn {
+//   border-radius: 10px;
+//   background-color: $accent;
+//   color: $white;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   height: 76px;
+//   padding: 15px;
+//   font-family: roboto, sans-serif;
+//   width: 100%;
+//   p {
+//     text-align: left;
+//   }
+//   p:nth-child(1) {
+//     font-size: 16px;
+//     margin-bottom: 6px;
+//   }
+//   p:nth-child(2) {
+//     font-size: 18px;
+//     font-weight: bold;
+//   }
+// }
 </style>

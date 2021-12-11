@@ -1,40 +1,41 @@
 <template>
-  <article class="card" @click="getProductInfo">
+  <article class="favorite" @click="getProductInfo">
     <slot>
-      <div class="card__head">
-        <picture class="card__image">
+      <div class="favorite__head">
+        <picture class="favorite__image">
           <source
-            :srcset="`https://gurmanikzndev.joinposter.com${product_data.photo_origin}`"
+            :srcset="`https://gurmanikzndev.joinposter.com${favorite_data.photo_origin}`"
           />
           <img
-            :src="`https://gurmanikzndev.joinposter.com${product_data.photo_origin}`"
+            :src="`https://gurmanikzndev.joinposter.com${favorite_data.photo_origin}`"
             alt=""
           />
         </picture>
-      <v-favorite-btn v-if="!product_data.favorites"></v-favorite-btn>
-      <v-favorite-btn-active v-if="product_data.favorites == true"></v-favorite-btn-active>
+      <v-favorite-btn v-if="!favorite_data.favorites"></v-favorite-btn>
+      <v-favorite-btn-active v-if="favorite_data.favorites == true"></v-favorite-btn-active>
       </div>
-      <div class="card__body">
-        <h3 class="card__title">{{ product_data.product_name }}</h3>
-        <p class="card__description">
-          {{ product_data.product_production_description }}
+      <div class="favorite__body">
+        <h3 class="favorite__title">{{ favorite_data.product_name }}</h3>
+        <p class="favorite__description">
+          {{ favorite_data.product_production_description }}
         </p>
       </div>
-      <div class="card__footer buy-btn">
-        <p class="card__price">{{ product_data.price[1].slice(0, -2) }} ₽</p>
+      <div class="favorite__footer buy-btn">
+        <p class="favorite__price">
+          {{ favorite_data.price[1].slice(0, -2) }} ₽
+        </p>
         <v-icon name="plus-icon"></v-icon>
       </div>
     </slot>
   </article>
+  <v-product-popup></v-product-popup>
 </template>
-
 <script>
-import { mapActions, mapGetters } from "vuex";
-
+import { mapActions, mapGetters } from 'vuex'
 export default {
-  name: "v-product-item",
+  name: "v-favorite-item",
   props: {
-    product_data: {
+    favorite_data: {
       type: Object,
       default() {
         return {};
@@ -56,7 +57,7 @@ export default {
       console.log(data);
     },
     getProductInfo(e, data) {
-      data = this.product_data;
+      data = this.favorite_data;
       if (e.target.classList.contains("buy-btn")) {
         this.ADD_TO_CART(data);
       } else if (
@@ -77,13 +78,12 @@ export default {
   mounted() {},
 };
 </script>
-
 <style lang="scss" scoped>
-.product {
-  margin-left: 20px;
-}
+// .favorite {
+//   margin-left: 20px;
+// }
 
-.card {
+.favorite {
   @include container;
   min-width: 176px;
   max-width: 176px;

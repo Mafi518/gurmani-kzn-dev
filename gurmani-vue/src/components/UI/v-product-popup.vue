@@ -2,8 +2,9 @@
   <article v-if="PRODUCT.photo_origin" class="popup">
     <v-back-menu
       ><v-back-btn @click="clearPopupState"></v-back-btn>
-      <v-favorite-btn @click="addToFavorites"></v-favorite-btn
-    ></v-back-menu>
+      <v-favorite-btn @click="addToFavorites" v-if="!PRODUCT.favorites"></v-favorite-btn>
+      <v-favorite-btn-active @click="addToFavorites" v-if="PRODUCT.favorites == true"></v-favorite-btn-active>
+    </v-back-menu>
     <article class="popup__item">
       <div class="popup__head">
         <picture>
