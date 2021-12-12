@@ -2,7 +2,6 @@ import {
   createStore
 } from "vuex";
 import axios from "axios";
-import auth from './auth'
 
 export default createStore({
   state: {
@@ -764,6 +763,5 @@ export default createStore({
     },
   },
   modules: {
-    auth
   },
 });

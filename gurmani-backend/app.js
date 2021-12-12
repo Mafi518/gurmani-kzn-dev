@@ -1,13 +1,13 @@
 var bodyParser = require('body-parser');
 var express = require('express');
 var path = require('path');
+// const mongoose = require('mongoose');
 var http = require('http');
 var routes = require('./routes/index');
 var PORT = process.env.PORT || 3000
 var cors = require('cors');
 
 var app = express();
-
 
 /** Express **/
 
