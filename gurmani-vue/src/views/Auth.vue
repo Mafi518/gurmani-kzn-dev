@@ -4,7 +4,6 @@
       <input
         type="email"
         v-model.trim="email"
-        @input="login"
         name="email"
         id="email"
         class="auth__input"
@@ -13,7 +12,6 @@
       <input
         type="password"
         v-model.trim="password"
-        @input="login"
         name="password"
         id="password"
         class="auth__input"
@@ -56,10 +54,7 @@ export default {
     return { handleSubmit };
   },
   methods: {
-    login() {
-      console.log(this.email);
-      console.log(this.password);
-    },
+
     logout() {},
     // async logout() {
     //   await this.$store.dispatch('logout')

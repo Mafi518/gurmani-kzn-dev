@@ -216,7 +216,6 @@ export default createStore({
     DISCOUNT_PRODUCT: (state, product) => {
       state.discountProduct = product;
       state.discountCurrentProduct = state.discountProduct.product_name;
-      console.log(state.discountProduct);
     },
     DELIVERY_TYPE: (state, type) => {
       state.deliveryType = type;
