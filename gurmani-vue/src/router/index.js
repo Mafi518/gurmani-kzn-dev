@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
+import { getAuth } from "firebase/auth";
 
 const routes = [
   {
@@ -37,11 +38,41 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Products.vue"),
   },
+  {
+    path: "/auth",
+    name: "Auth",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Auth.vue"),
+  },
+  {
+    path: "/admin-dashboard",
+    name: "Admin-dashboard",
+    meta: {auth: true},
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Admin-dashboard.vue"),
+  },
 ];
+
+
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+
+router.beforeEach((to, from, next) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  console.log(user);
+  const requireAuth = to.matched.some(record => record.meta.auth)
+  if (requireAuth && !user) {
+    console.log('Войдите в систему');
+    next('/auth')
+  } else {
+    next()
+  }
+  to, from
+})
 
 export default router;

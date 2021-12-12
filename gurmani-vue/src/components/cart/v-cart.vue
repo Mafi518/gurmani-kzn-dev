@@ -255,7 +255,6 @@
           <p class="cart-info__description">Промокод {{ promocode_input }}</p>
           <p class="cart-info__description">
             {{
-              // typeof this.PROMOCODE_TOTAL == typeof 1 ? this.PROMOCODE_TOTAL.toString().slice(0, -2) + ' ₽' : this.PROMOCODE_TOTAL == 0 ? '00000000' : this.PROMOCODE_TOTAL
               this.PROMOCODE_TOTAL == 0
                 ? this.PROMOCODE_TOTAL + " ₽"
                 : typeof this.PROMOCODE_TOTAL == typeof 1
@@ -289,17 +288,12 @@
             {{ this.ERROR }}
           </p>
         </div>
-        <div class="cart-info__item" v-if="this.FORM_ERROR.length !== 0">
-          <p class="cart-info__description">
-            {{ this.FORM_ERROR }}
-          </p>
-        </div>
       </div>
       <p class="cart-info__description">
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
-      <button class="buy-btn" @click.prevent="sendOrder">
+      <button class="send-form-btn" @click.prevent="sendOrder">
         <div>
           <p>Перейти к оформлению заказа</p>
           <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
@@ -477,7 +471,6 @@ export default {
         console.log("form has been submited");
         // console.log(this.SEND_ORDER(this.ORDER_DATA));
         // this.SEND_ORDER(this.ORDER_DATA)
-        // this.SEND_ORDER(this.$store.state.order);
       } else {
         console.log("error");
 
@@ -552,11 +545,6 @@ export default {
         return this.$store.state.selectAddress;
       }
     },
-    // phoneErrors() {
-    //   // const error = ''
-    //   if(!this.$v.form.order_name.required) this.FORM_VALIDATION_ERROR('Поле имя обязательно для заполнения')
-    //   return 1
-    // }
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
@@ -707,5 +695,29 @@ export default {
 }
 .invalid {
   border: 2px solid tomato;
+}
+.send-form-btn {
+  border-radius: 10px;
+  background-color: $accent;
+  color: $white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 76px;
+  padding: 15px;
+  font-family: roboto, sans-serif;
+  width: 100%;
+  bottom: 64px;
+  p {
+    text-align: left;
+  }
+  p:nth-child(1) {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  p:nth-child(2) {
+    font-size: 18px;
+    font-weight: bold;
+  }
 }
 </style>

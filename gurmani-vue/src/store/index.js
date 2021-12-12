@@ -2,6 +2,7 @@ import {
   createStore
 } from "vuex";
 import axios from "axios";
+import auth from './auth'
 
 export default createStore({
   state: {
@@ -31,7 +32,6 @@ export default createStore({
     form_validation_error: "",
 
     favorites: [],
-    saved_favorites: [],
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -198,11 +198,8 @@ export default createStore({
         state.discount.promocode_type = validPromo.params.result_type;
         state.discount.condition = validPromo.params.conditions[0].pcs;
         state.discount.period_start =
-          validPromo.params.periods[0].start.replace(":", "");
-        state.discount.period_end = validPromo.params.periods[0].end.replace(
-          ":",
-          ""
-        );
+          validPromo.params.periods[0].start
+        state.discount.period_end = validPromo.params.periods[0].end
         state.discount.error = "";
         // state.discount.time = validPromo.params.
         if (state.discount.promocode_type == 1) {
@@ -347,17 +344,7 @@ export default createStore({
     SET_SAVED_FAVORITES: (state, data) => {
       if (data) {
         JSON.parse(data).map((item) => state.favorites.push(item));
-        // console.log(state.popular.filter(item => item.product_id == JSON.parse(data).map(item => item.product_id)));
       }
-
-
-      // state.popular.map(item => {
-      //   if (item.product_name === 0) {
-      //     console.log(item.product_name);
-      //   } else {
-      //     console.log('favor');
-      //   }
-      // })
     },
   },
   actions: {
@@ -728,13 +715,9 @@ export default createStore({
         state.current_time < state.discount.period_start
       ) {
         return (state.error = `Промокод работает с ${
-          state.discount.period_start.slice(0, 2) +
-          ":" +
-          state.discount.period_start.slice(2)
+          state.discount.period_start
         }  до ${
-          state.discount.period_end.slice(0, 2) +
-          ":" +
-          state.discount.period_end.slice(2)
+          state.discount.period_end
         }`);
       } else {
         return (state.error = ``);
@@ -744,13 +727,14 @@ export default createStore({
       return state.form_validation_error;
     },
     CURRENT_TIME(state) {
-      var dateWithouthSecond = new Date();
-      let currentHour = dateWithouthSecond
+      var dateWithoutSecond = new Date();
+      let currentHour = dateWithoutSecond
         .toLocaleTimeString(navigator.language, {
           hour: "2-digit",
           minute: "2-digit",
         })
-        .replace(":", "");
+        // .replace(":", "");
+      console.log(currentHour);
       return (state.current_time = currentHour);
     },
     WARNING(state) {
@@ -759,17 +743,7 @@ export default createStore({
     FAVORITES(state) {
       return state.favorites;
     },
-    // SAVED_FAVORITES(state) {
-    //   // return state.saved_favorites = JSON.parse(localStorage.getItem('saved favorites'));
-    //   // return state.saved_favorites = state.favorites
-    // },
     SET_SAVED_FAVORITES(state) {
-      // console.log('popular', state.popular.filter(item => item.product_id == state.favorites.map(item => item.product_id)));
-      // if (state.popular.length > 0) {
-      //   console.log('length');
-      //   state.popular.filter(item => item.product_id == state.favorites.map(item => item.product_id)).map(item => item.favorites = true)
-      // }
-
 
       let arra1 = state.categoryProducts.map(item => item.product_id)
       let arra2 = state.popular.map(item => item.product_id)
@@ -781,22 +755,15 @@ export default createStore({
         })
       }
 
-      // intersect(arra1, arra3).map(item => item)
-
       for (const item of intersect(arra1, arra3).map(item => item)) {
         state.categoryProducts.filter(it => it.product_id == item)[0].favorites = true
       }
       for (const item of intersect(arra2, arra3)) {
         state.popular.filter(it => it.product_id == item)[0].favorites = true
       }
-
-      // console.log(arra1.map);
-
-      // console.log(arr1[0].map(item => item.barcode) == );
-      // console.log(state.categoryProducts);
-
-      // state.categoryProducts.filter(item => item.product_id == state.favorites.map(item => item.product_id))
     },
   },
-  modules: {},
+  modules: {
+    auth
+  },
 });
