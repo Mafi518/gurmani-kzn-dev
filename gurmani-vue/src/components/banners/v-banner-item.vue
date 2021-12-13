@@ -4,7 +4,17 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  name: 'v-banner-item',
+  props: {
+    banner_data: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  }
+};
 </script>
 <style lang="scss">
 .banner__item {

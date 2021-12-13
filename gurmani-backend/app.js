@@ -1,11 +1,10 @@
 var bodyParser = require('body-parser');
 var express = require('express');
-var path = require('path');
-// const mongoose = require('mongoose');
 var http = require('http');
 var routes = require('./routes/index');
 var PORT = process.env.PORT || 3000
 var cors = require('cors');
+const fs = require('fs')
 
 var app = express();
 
@@ -13,7 +12,9 @@ var app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 
 /** Подключаем роуты **/

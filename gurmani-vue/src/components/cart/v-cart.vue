@@ -99,16 +99,24 @@
           Самовывоз
         </label>
       </div>
+
       <div class="confirm__input-wrapper block-input">
-        <input
-          type="text"
+        <select
           name="pickup-address"
           id="pickup-address"
-          value="Казань, Оренбургский тракт, 8в (самовывоз)"
           readonly
-          class="confirm__input block-input"
+          class="confirm__input confirm__label block-input"
           v-if="this.$store.state.deliveryType == 2"
-        />
+          @change="pickupTime"
+        >
+          <option
+            v-for="item in SORT_PICKUP_TIME"
+            :key="item"
+            :value="`Самовывоз ${item}`"
+          >
+            {{ `Казань, Оренбургский тракт, 8в (${item})` }}
+          </option>
+        </select>
 
         <div
           class="confirm__delivery"
@@ -226,7 +234,7 @@
           type="text"
           name="comment"
           id="comment"
-          v-model.trim="form.order_comment"
+          v-model="form.order_comment"
           placeholder="Комментарий к заказу..."
           class="confirm__input block-input"
           @input="orderData"
@@ -332,6 +340,37 @@ export default {
       product_id: "",
       confirm_order: true,
       search_flag: false,
+      pickup_time: "",
+      pickup: [
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "22:00",
+        "22:30",
+        "23:00",
+        "23:30",
+        "00:00",
+      ],
     };
   },
   validations() {
@@ -470,7 +509,7 @@ export default {
       if (!this.v$.$error) {
         console.log("form has been submited");
         // console.log(this.SEND_ORDER(this.ORDER_DATA));
-        // this.SEND_ORDER(this.ORDER_DATA)
+        this.SEND_ORDER(this.ORDER_DATA);
       } else {
         console.log("error");
 
@@ -507,6 +546,17 @@ export default {
         key: key,
         value: value,
       });
+    },
+    pickupTime(e) {
+      this.pickup_time = e.target.value;
+      this.orderData();
+    },
+    sendPickupTime() {
+      this.pickup_time == "" && this.$store.state.deliveryType == 2
+        ? "Самовывоз " + this.SORT_PICKUP_TIME[0] + " "
+        : this.$store.state.deliveryType == 3
+        ? ""
+        : this.pickup_time + " ";
     },
   },
 
@@ -545,11 +595,17 @@ export default {
         return this.$store.state.selectAddress;
       }
     },
+
+    SORT_PICKUP_TIME() {
+      return this.pickup.filter(
+        (item) => item > this.$store.state.current_time
+      );
+    },
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
     this.DECREMENT_POPUP_ITEM(0);
-
+    this.orderData();
     // this.DELIVERY_TYPE()
     document
       .querySelectorAll('input[name="delivery_type"]:checked')

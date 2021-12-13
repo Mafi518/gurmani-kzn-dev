@@ -11,14 +11,16 @@
         type="text"
         placeholder="Название акции (промокод)"
         class="form__input form__input-block"
+        v-model.trim="promo_name"
       />
       <input
         type="text"
         placeholder="Название картинки (banner1.jpg)"
         class="form__input form__input-block"
+        v-model.trim="promo_picture"
       />
-      <button class="form__button form__add">Добавить</button>
-      <button class="form__button form__delete">Удалить</button>
+      <button class="form__button form__add" title="add" @click.prevent="changeBanners">Добавить</button>
+      <button class="form__button form__delete" title="delete" @click.prevent="changeBanners">Удалить</button>
     </form>
   </section>
 </template>
@@ -26,11 +28,14 @@
 import { getAuth, signOut } from "firebase/auth";
 import { useAuthState } from "@/firebase";
 import { useRouter } from "vue-router";
+import { mapActions } from 'vuex'
 
 export default {
   data() {
     return {
       image: "",
+      promo_name: "",
+      promo_picture: "",
     };
   },
   setup() {
@@ -49,7 +54,18 @@ export default {
 
     return { user, signOutUser };
   },
-  methods: {},
+  methods: {
+    ...mapActions(["ADD_BANNER"]),
+    async changeBanners(e) {
+      const data = await {
+        action: e.target.getAttribute("title"),
+        promo_name: this.promo_name,
+        promo_picture: this.promo_picture
+      }
+      this.ADD_BANNER(data)
+
+    }
+  },
   mounted() {},
 };
 </script>

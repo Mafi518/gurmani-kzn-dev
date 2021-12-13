@@ -31,6 +31,7 @@ export default createStore({
     form_validation_error: "",
 
     favorites: [],
+    banner: {},
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -344,6 +345,9 @@ export default createStore({
         JSON.parse(data).map((item) => state.favorites.push(item));
       }
     },
+    SET_BANNER: (state, banner) => {
+      state.banner = banner;
+    }
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -555,6 +559,15 @@ export default createStore({
     }, data) {
       commit("SET_SAVED_FAVORITES", data);
     },
+    ADD_BANNER({commit}, data) {
+      return axios({
+        method: "POST",
+        url: `http://localhost:3000/promoD`,
+        params: data,
+      }).then((data) => {
+        commit("SET_BANNER", data);
+      });
+    },
   },
   getters: {
     CATEGORIES(state) {
@@ -667,6 +680,8 @@ export default createStore({
             }),
           });
         }
+        // С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
+        
         return arr;
       }
 
@@ -732,7 +747,6 @@ export default createStore({
           minute: "2-digit",
         })
         // .replace(":", "");
-      console.log(currentHour);
       return (state.current_time = currentHour);
     },
     WARNING(state) {
@@ -760,6 +774,9 @@ export default createStore({
         state.popular.filter(it => it.product_id == item)[0].favorites = true
       }
     },
+    SET_BANNER(state) {
+      return state.banner
+    }
   },
   modules: {
   },
