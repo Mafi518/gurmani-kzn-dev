@@ -1,7 +1,8 @@
 <template>
   <div>
-    <v-back-menu
-      ><h2>
+    <v-back-menu>
+      <v-back-btn :to="`/`"></v-back-btn>
+      <h2>
         {{ confirm_order == false ? "Ваш заказ" : "Продолжаем оформление" }}
       </h2></v-back-menu
     >
@@ -139,7 +140,6 @@
             </span>
           </div>
 
-          <!-- {{ v$.form.search_value.$errors[0].$message }} -->
           <div class="confirm__delivery--spot">
             <input
               type="text"
@@ -300,15 +300,30 @@
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
-      <button class="send-form-btn" @click.prevent="sendOrder">
+      <button
+        class="send-form-btn"
+        v-if="confirm_order == false"
+        @click="this.confirm_order = true"
+      >
         <div>
           <p>Перейти к оформлению заказа</p>
           <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
         </div>
         <img src="@/assets/media/icons/plus-icon.svg" alt="" />
       </button>
+      <button
+        class="send-form-btn"
+        v-if="confirm_order == true"
+        @click.prevent="sendOrder"
+        ref="sendOrderBtn"
+      >
+        <div>
+          <p>Оформить заказ</p>
+          <p>{{ this.TOTAL_PRICE.toString().slice(0, -2) }} ₽</p>
+        </div>
+        <img src="@/assets/media/icons/plus-icon.svg" alt="" />
+      </button>
     </form>
-
   </div>
 </template>
 <script>
@@ -340,6 +355,7 @@ export default {
       confirm_order: false,
       search_flag: false,
       pickup_time: "",
+      order_btn: "",
       pickup: [
         "10:00",
         "10:30",
@@ -503,23 +519,22 @@ export default {
         this.search_flag = true;
       }
     },
-    sendOrder() {
+    async sendOrder() {
       this.v$.$validate();
       console.log(this.v$.$errors);
       if (!this.v$.$error) {
-        console.log("form has been submited");
-        this.SEND_ORDER(this.ORDER_DATA);
+        this.$refs.sendOrderBtn.disabled = true;
+        await this.SEND_ORDER(this.ORDER_DATA);
+        this.$refs.sendOrderBtn.disabled = false
       } else {
-        console.log("error");
+
+        this.$refs.sendOrderBtn.disabled = true;
 
         if (this.v$.form.order_phone.$errors.length >= 1) {
-          this.v$.form.order_phone.$errors[0].$message == "Value is required"
+          (this.v$.form.order_phone.$errors[0].$message == "Value is required")
             ? (this.v$.form.order_phone.$errors[0].$message =
-                "Поле обязательно для заполнения")
-            : this.v$.form.order_phone.$errors[0].$message ==
-              "This field should be at least 16 long"
-            ? "Заполните поле до конца"
-            : "";
+                "Телефон должен состоять из 11 цифр")
+            : ""
         }
 
         if (this.v$.form.order_name.$errors.length >= 1) {
@@ -530,11 +545,13 @@ export default {
         }
 
         if (this.v$.form.order_address.search_value.$errors.length >= 1) {
-          this.v$.form.order_address.search_value.$errors[0].$message ==
-          "Value is required"
-            ? (this.v$.form.order_address.search_value.$errors[0].$message =
-                "Поле обязательно для заполнения")
-            : "";
+          if (
+            this.v$.form.order_address.search_value.$errors[0].$message ==
+            "Value is required"
+          ) {
+            this.v$.form.order_address.search_value.$errors[0].$message =
+              "Выберите адрес из списка";
+          } 
         }
       }
 
@@ -593,6 +610,16 @@ export default {
     COMPUTE_CUTLERY() {
       return 1;
     },
+  },
+  watch: {
+    form: {
+      handler() {
+        if (!this.v$.$error) {
+          this.$refs.sendOrderBtn.disabled = false
+        }
+      },
+      deep: true
+    }
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
