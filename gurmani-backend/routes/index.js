@@ -112,7 +112,7 @@ router.post('/order', async (req, res) => {
 
 });
 
-router.get('/promo', async (req, res) => {
+router.get('/banners', async (req, res) => {
     res.send(banners)
 })
 

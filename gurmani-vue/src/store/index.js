@@ -29,9 +29,11 @@ export default createStore({
     current_time: "",
     promocode_total: 0,
     form_validation_error: "",
+    pickup_time: '',
 
     favorites: [],
     banner: {},
+    banners: [],
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -345,8 +347,14 @@ export default createStore({
         JSON.parse(data).map((item) => state.favorites.push(item));
       }
     },
-    SET_BANNER: (state, banner) => {
+    GET_BANNER: (state, banner) => {
       state.banner = banner;
+    },
+    PICKUP_TIME: (state, time) => {
+      state.pickup_time = time
+    },
+    SET_BANNERS: (state, banner) => {
+      state.banners = banner
     }
   },
   actions: {
@@ -510,15 +518,6 @@ export default createStore({
         method: "GET",
         url: `http://localhost:3000/getAddresses`,
       }).then((addresses) => {
-        // if(addresses.delivery_zone == 2) {
-        //   addresses.map(item => {
-        //     item.delivery_pay = 10000
-        //     item.delivery_free = 80000
-        //   })
-        // }
-        // console.log(addresses.data);
-        // console.log(addresses.data.filter(address => address.delivery_zone == 2));
-
         commit("ADDRESSES", addresses.data);
       });
     },
@@ -559,15 +558,32 @@ export default createStore({
     }, data) {
       commit("SET_SAVED_FAVORITES", data);
     },
-    ADD_BANNER({commit}, data) {
+    ADD_BANNER({
+      commit
+    }, data) {
       return axios({
         method: "POST",
         url: `http://localhost:3000/promoD`,
         params: data,
       }).then((data) => {
-        commit("SET_BANNER", data);
+        commit("GET_BANNER", data);
       });
     },
+    GET_BANNERS({
+      commit
+    }) {
+      return axios({
+        method: "GET",
+        url: `http://localhost:3000/banners`,
+      }).then((banners) => {
+        commit("SET_BANNERS", banners.data);
+      });
+    },
+    GET_PICKUP_TIME({
+      commit
+    }, time) {
+      commit("PICKUP_TIME", time)
+    }
   },
   getters: {
     CATEGORIES(state) {
@@ -668,6 +684,13 @@ export default createStore({
       function getOrderProducts() {
         let arr = [];
         for (let item of state.cart) {
+
+          // let mode = item.group_modifications.filter(modif => modif.count > 0).length
+
+          if (item.group_modifications.filter(modif => modif.count > 0).length) {
+            console.log(item.group_modifications.filter(modif => modif.count > 0));
+          }
+
           arr.push({
             product_id: item.product_id,
             count: item.count,
@@ -680,8 +703,8 @@ export default createStore({
             }),
           });
         }
-        // С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
-        
+        // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
+
         return arr;
       }
 
@@ -700,11 +723,10 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: state.order_comment +
-          (state.discount.promocode_name !== undefined ?
-            "промо: " + state.discount.promocode_name :
+        comment: (state.discount.promocode_name !== undefined ?
+            state.discount.promocode_name + " | " :
             "") +
-          state.payment_type,
+          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? state.order_comment + ' | ' : ''),
       });
     },
     ADDRESSES(state) {
@@ -746,7 +768,7 @@ export default createStore({
           hour: "2-digit",
           minute: "2-digit",
         })
-        // .replace(":", "");
+      // .replace(":", "");
       return (state.current_time = currentHour);
     },
     WARNING(state) {
@@ -761,8 +783,8 @@ export default createStore({
       let arra2 = state.popular.map(item => item.product_id)
       let arra3 = state.favorites.map(item => item.product_id)
 
-      let intersect = function(arr1, arr2) {
-        return arr1.filter(function(id) {
+      let intersect = function (arr1, arr2) {
+        return arr1.filter(function (id) {
           return arr2.indexOf(id) !== -1
         })
       }
@@ -774,10 +796,15 @@ export default createStore({
         state.popular.filter(it => it.product_id == item)[0].favorites = true
       }
     },
-    SET_BANNER(state) {
+    GET_BANNER(state) {
       return state.banner
+    },
+    PICKUP_TIME(state) {
+      return state.pickup_time
+    },
+    SET_BANNERS(state) {
+      return state.banners
     }
   },
-  modules: {
-  },
+  modules: {},
 });

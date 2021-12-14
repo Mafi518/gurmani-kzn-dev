@@ -107,12 +107,13 @@
           readonly
           class="confirm__input confirm__label block-input"
           v-if="this.$store.state.deliveryType == 2"
-          @change="pickupTime"
+          @change="sendPickupTime"
         >
           <option
             v-for="item in SORT_PICKUP_TIME"
             :key="item"
             :value="`Самовывоз ${item}`"
+            
           >
             {{ `Казань, Оренбургский тракт, 8в (${item})` }}
           </option>
@@ -453,6 +454,7 @@ export default {
       "FORM_VALIDATION_ERROR",
       "GET_ADDRESS2",
       "GET_PAYMENT_TYPE",
+      "GET_PICKUP_TIME",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -508,7 +510,6 @@ export default {
       console.log(this.v$.$errors);
       if (!this.v$.$error) {
         console.log("form has been submited");
-        // console.log(this.SEND_ORDER(this.ORDER_DATA));
         this.SEND_ORDER(this.ORDER_DATA);
       } else {
         console.log("error");
@@ -547,16 +548,8 @@ export default {
         value: value,
       });
     },
-    pickupTime(e) {
-      this.pickup_time = e.target.value;
-      this.orderData();
-    },
-    sendPickupTime() {
-      this.pickup_time == "" && this.$store.state.deliveryType == 2
-        ? "Самовывоз " + this.SORT_PICKUP_TIME[0] + " "
-        : this.$store.state.deliveryType == 3
-        ? ""
-        : this.pickup_time + " ";
+    sendPickupTime(e) {
+      this.GET_PICKUP_TIME(e.target.value)
     },
   },
 
@@ -595,12 +588,16 @@ export default {
         return this.$store.state.selectAddress;
       }
     },
-
     SORT_PICKUP_TIME() {
       return this.pickup.filter(
         (item) => item > this.$store.state.current_time
       );
     },
+    COMPUTE_CUTLERY() {
+
+      // console.log(this.ORDER_DATA.products.map(item => item));
+      return 1
+    }
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
@@ -613,6 +610,7 @@ export default {
         this.GET_DELIVERY_TYPE(element.attributes.value.nodeValue);
       });
     this.GET_ADDRESSES();
+    this.GET_PICKUP_TIME( 'Самовывоз ' + this.SORT_PICKUP_TIME[0])
   },
 };
 </script>

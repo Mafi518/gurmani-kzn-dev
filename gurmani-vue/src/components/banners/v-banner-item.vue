@@ -1,6 +1,6 @@
 <template>
   <div class="banner__item">
-    <img src="@/assets/media/img/banner.png" alt="" />
+    <img src="../../assets/media/img/banners/web.png"  alt="" />
   </div>
 </template>
 <script>
