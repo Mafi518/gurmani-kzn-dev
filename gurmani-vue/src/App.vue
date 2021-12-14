@@ -97,4 +97,11 @@ export default {
     stoke: $black;
   }
 }
+.plus-icon {
+  width: 38px;
+  height: 38px;
+  path {
+    fill: $accent;
+  }
+}
 </style>

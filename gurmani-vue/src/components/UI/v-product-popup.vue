@@ -217,8 +217,15 @@ export default {
     addToFavorites() {
       this.ADD_TO_FAVORITES(this.PRODUCT);
     },
-    clearPopupState() {
-      this.RESET_PRODUCT();
+    async clearPopupState() {
+      await this.RESET_PRODUCT();
+      if (window.location.href.includes('products')) {
+        this.$router.push('/products')
+      } else if (window.location.href.includes('favorite')) {
+        this.$router.push('/favorite')
+      } else {
+        this.$router.push('/')
+      }
     },
     incrementItem() {
       this.INCREMENT_POPUP_ITEM();

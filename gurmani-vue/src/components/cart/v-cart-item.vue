@@ -74,7 +74,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["TOGGLE_SIZE_OF_PIZZA", "FULL_PRICE"]),
+    ...mapActions(["TOGGLE_SIZE_OF_PIZZA"]),
     incrementItem() {
       this.$emit("increment");
     },

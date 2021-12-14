@@ -813,6 +813,7 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
+      class="plus-icon-path"
     />
     <path
       d="M12 8V16"
@@ -820,6 +821,7 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
+      class="plus-icon-path"
     />
     <path
       d="M8 12H16"
@@ -827,6 +829,7 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
+      class="plus-icon-path"
     />
   </svg>
 

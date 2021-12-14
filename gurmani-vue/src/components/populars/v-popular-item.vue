@@ -39,9 +39,11 @@ export default {
   },
   methods: {
     ...mapActions(["GET_PRODUCT_INFO", "ADD_TO_CART", "ADD_TO_FAVORITES"]),
-    getProductInfo(e) {
+    async getProductInfo(e) {
       if (e.target.classList.contains("buy-btn")) {
-        this.ADD_TO_CART(this.popular_data);
+        await this.GET_PRODUCT_INFO(this.popular_data);
+        await this.ADD_TO_CART(this.popular_data);
+        this.$store.state.product = {product: 'empty'}
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||

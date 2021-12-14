@@ -11,8 +11,10 @@
             alt=""
           />
         </picture>
-      <v-favorite-btn v-if="!product_data.favorites"></v-favorite-btn>
-      <v-favorite-btn-active v-if="product_data.favorites == true"></v-favorite-btn-active>
+        <v-favorite-btn v-if="!product_data.favorites"></v-favorite-btn>
+        <v-favorite-btn-active
+          v-if="product_data.favorites == true"
+        ></v-favorite-btn-active>
       </div>
       <div class="card__body">
         <h3 class="card__title">{{ product_data.product_name }}</h3>
@@ -22,7 +24,7 @@
       </div>
       <div class="card__footer buy-btn">
         <p class="card__price">{{ product_data.price[1].slice(0, -2) }} ₽</p>
-        <v-icon name="plus-icon"></v-icon>
+        <v-icon name="plus-icon" class="plus-icon"></v-icon>
       </div>
     </slot>
   </article>
@@ -55,10 +57,16 @@ export default {
       data = this.PRODUCT.menu_category_id;
       console.log(data);
     },
-    getProductInfo(e, data) {
+    async getProductInfo(e, data) {
       data = this.product_data;
-      if (e.target.classList.contains("buy-btn")) {
-        this.ADD_TO_CART(data);
+      if (
+        e.target.classList.contains("buy-btn") ||
+        e.target.classList.contains("plus-icon") ||
+        e.target.classList.contains("plus-icon-path")
+      ) {
+        await this.GET_PRODUCT_INFO(this.product_data);
+        await this.ADD_TO_CART(this.product_data);
+        this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||

@@ -6,7 +6,6 @@
         :key="item.promo_name"
         :banner_data="item"
       ></v-banner-item>
-      <!-- <v-banner-item></v-banner-item> -->
     </div>
   </section>
 </template>
@@ -18,14 +17,6 @@ export default {
   components: {
     vBannerItem,
   },
-  // props: {
-  //   banners_data: {
-  //     type: Array,
-  //     default() {
-  //       return []
-  //     }
-  //   }
-  // },
   methods: {
     ...mapActions(["GET_BANNERS"])
   },
@@ -34,7 +25,6 @@ export default {
   },
   mounted() {
     this.GET_BANNERS()
-    console.log('ddd');
   },
 };
 </script>

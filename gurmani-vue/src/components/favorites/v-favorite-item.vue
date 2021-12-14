@@ -56,10 +56,12 @@ export default {
       data = this.PRODUCT.menu_category_id;
       console.log(data);
     },
-    getProductInfo(e, data) {
+    async getProductInfo(e, data) {
       data = this.favorite_data;
       if (e.target.classList.contains("buy-btn")) {
-        this.ADD_TO_CART(data);
+        await this.GET_PRODUCT_INFO(data);
+        await this.ADD_TO_CART(data);
+        this.$store.state.product = {product: 'empty'}
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||

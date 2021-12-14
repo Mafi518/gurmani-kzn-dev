@@ -5,7 +5,6 @@
         {{ confirm_order == false ? "Ваш заказ" : "Продолжаем оформление" }}
       </h2></v-back-menu
     >
-
     <div>
       <v-cart-item
         v-for="(item, index) in cart_data"
@@ -113,7 +112,6 @@
             v-for="item in SORT_PICKUP_TIME"
             :key="item"
             :value="`Самовывоз ${item}`"
-            
           >
             {{ `Казань, Оренбургский тракт, 8в (${item})` }}
           </option>
@@ -310,6 +308,7 @@
         <img src="@/assets/media/icons/plus-icon.svg" alt="" />
       </button>
     </form>
+
   </div>
 </template>
 <script>
@@ -320,7 +319,6 @@ import { required, minLength, maxLength, sameAs } from "@vuelidate/validators";
 
 export default {
   name: "v-cart",
-
   data() {
     return {
       v$: useValidate(),
@@ -339,7 +337,7 @@ export default {
       },
       promocode_input: "",
       product_id: "",
-      confirm_order: true,
+      confirm_order: false,
       search_flag: false,
       pickup_time: "",
       pickup: [
@@ -549,10 +547,9 @@ export default {
       });
     },
     sendPickupTime(e) {
-      this.GET_PICKUP_TIME(e.target.value)
+      this.GET_PICKUP_TIME(e.target.value);
     },
   },
-
   computed: {
     ...mapGetters([
       "SUBTOTAL_PRICE",
@@ -594,23 +591,22 @@ export default {
       );
     },
     COMPUTE_CUTLERY() {
-
-      // console.log(this.ORDER_DATA.products.map(item => item));
-      return 1
-    }
+      return 1;
+    },
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
     this.DECREMENT_POPUP_ITEM(0);
     this.orderData();
-    // this.DELIVERY_TYPE()
     document
       .querySelectorAll('input[name="delivery_type"]:checked')
       .forEach((element) => {
         this.GET_DELIVERY_TYPE(element.attributes.value.nodeValue);
       });
     this.GET_ADDRESSES();
-    this.GET_PICKUP_TIME( 'Самовывоз ' + this.SORT_PICKUP_TIME[0])
+    setTimeout(() => {
+      this.GET_PICKUP_TIME("Самовывоз " + this.SORT_PICKUP_TIME[0]);
+    }, 500);
   },
 };
 </script>

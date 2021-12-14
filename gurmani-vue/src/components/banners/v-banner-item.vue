@@ -1,6 +1,6 @@
 <template>
   <div class="banner__item">
-    <img src="../../assets/media/img/banners/web.png"  alt="" />
+    <img :src="require(`@/assets/media/img/banners/${banner_data.promo_picture}`)"  alt="" />
   </div>
 </template>
 <script>

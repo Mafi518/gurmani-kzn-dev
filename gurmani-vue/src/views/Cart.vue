@@ -1,6 +1,10 @@
 <template>
   <section class="cart">
     <v-cart v-if="CART.length" :cart_data="CART"></v-cart>
+    <div class="cart__empty" v-if="!CART.length">
+      <img src="@/assets/media/img/logo.png" alt="" />
+      Корзина пуста, но это пока :)
+    </div>
   </section>
 </template>
 
@@ -41,28 +45,18 @@ export default {
 .cart {
   padding: 0 20px 20px 20px;
   padding-bottom: 350px;
+  width: 100%;
+  min-height: 100vh;
 }
-// .buy-btn {
-//   border-radius: 10px;
-//   background-color: $accent;
-//   color: $white;
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   height: 76px;
-//   padding: 15px;
-//   font-family: roboto, sans-serif;
-//   width: 100%;
-//   p {
-//     text-align: left;
-//   }
-//   p:nth-child(1) {
-//     font-size: 16px;
-//     margin-bottom: 6px;
-//   }
-//   p:nth-child(2) {
-//     font-size: 18px;
-//     font-weight: bold;
-//   }
-// }
+.cart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 80vh;
+  img {
+    margin-bottom: 30px;
+  }
+  font-size: 16px;
+}
 </style>

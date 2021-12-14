@@ -57,7 +57,7 @@ export default createStore({
           state.cart[index].price[1] =
             state.cart[index].spots[0].actualPrice * state.cart[index].count +
             "";
-        } else {
+        } else if (state.cart[index].group_modifications) {
           let array = state.cart[index].group_modifications.map(
             (mode) =>
             mode.count * mode.modifications.map((modif) => modif.price)
@@ -68,6 +68,10 @@ export default createStore({
           state.cart[index].price[1] =
             state.cart[index].spots[0].price * state.cart[index].count +
             +result +
+            "";
+        } else {
+          state.cart[index].price[1] =
+            state.cart[index].spots[0].price * state.cart[index].count +
             "";
         }
       } else {
@@ -82,11 +86,12 @@ export default createStore({
         state.product.count--;
       } else if (state.cart[index].count <= 1) {
         state.cart.splice(index, 1);
+        console.log('deleted');
       } else if (state.cart[index].product_name.includes("Пицца")) {
         state.cart[index].count--;
         state.cart[index].price[1] =
           state.cart[index].spots[0].actualPrice * state.cart[index].count + "";
-      } else {
+      } else if ((state.cart[index].group_modifications)) {
         state.cart[index].count--;
         let array = state.cart[index].group_modifications.map(
           (mode) => mode.count * mode.modifications.map((modif) => modif.price)
@@ -98,6 +103,11 @@ export default createStore({
         state.cart[index].price[1] =
           state.cart[index].spots[0].price * state.cart[index].count +
           +result +
+          "";
+      } else {
+        state.cart[index].count--;
+        state.cart[index].price[1] =
+          state.cart[index].spots[0].price * state.cart[index].count +
           "";
       }
     },
@@ -162,7 +172,6 @@ export default createStore({
       };
     },
     FULL_PRICE: (state, data) => {
-      console.log(data);
       if (state.product.product_name.includes("Пицца")) {
         let checked = data.group_modifications.filter(
           (mode) => mode.checked == true
@@ -183,7 +192,9 @@ export default createStore({
       }
     },
     SET_OLD_CART: (state, data) => {
-      JSON.parse(data).map((item) => state.cart.push(item));
+      if (data) {
+        JSON.parse(data).map((item) => state.cart.push(item));
+      }
     },
     SET_PROMOCODES: (state, promocode) => {
       state.promocodes = promocode;
@@ -683,28 +694,22 @@ export default createStore({
     ORDER_DATA(state) {
       function getOrderProducts() {
         let arr = [];
+
         for (let item of state.cart) {
-
-          // let mode = item.group_modifications.filter(modif => modif.count > 0).length
-
-          if (item.group_modifications.filter(modif => modif.count > 0).length) {
-            console.log(item.group_modifications.filter(modif => modif.count > 0));
-          }
 
           arr.push({
             product_id: item.product_id,
             count: item.count,
             price: (item.price[1] / item.count).toString(),
-            modification: item.group_modifications.map((mode) => {
-              return {
+            modification: item.group_modifications ? item.group_modifications.filter(mode => mode.count > 0).map(mode => {
+              return { 
                 m: mode.modifications[0].dish_modification_id,
                 a: mode.count,
-              };
-            }),
+              }
+            }) : null
           });
         }
         // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
-
         return arr;
       }
 
