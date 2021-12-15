@@ -58,13 +58,15 @@
           name="person"
           id="person"
           class="confirm__input confirm__select"
+          @change="sendCutleryCount"
         >
           <option
             v-for="(item, index) in 11"
             :key="item"
-            :value="`Кол-во персон (${index})`"
+            :value="`Приборы ${index}`"
+            
           >
-            {{ index !== 0 ? "Кол-во персон " + index : "" }}
+            {{ "Кол-во персон " + index }}
           </option>
         </select>
       </div>
@@ -351,6 +353,7 @@ export default {
         order_payment_type: "",
       },
       promocode_input: "",
+      choosen_cutlery_count: 0,
       product_id: "",
       confirm_order: false,
       search_flag: false,
@@ -469,6 +472,7 @@ export default {
       "GET_ADDRESS2",
       "GET_PAYMENT_TYPE",
       "GET_PICKUP_TIME",
+      "GET_CUTLERY_COUNT",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -525,16 +529,15 @@ export default {
       if (!this.v$.$error) {
         this.$refs.sendOrderBtn.disabled = true;
         await this.SEND_ORDER(this.ORDER_DATA);
-        this.$refs.sendOrderBtn.disabled = false
+        this.$refs.sendOrderBtn.disabled = false;
       } else {
-
         this.$refs.sendOrderBtn.disabled = true;
 
         if (this.v$.form.order_phone.$errors.length >= 1) {
-          (this.v$.form.order_phone.$errors[0].$message == "Value is required")
+          this.v$.form.order_phone.$errors[0].$message == "Value is required"
             ? (this.v$.form.order_phone.$errors[0].$message =
                 "Телефон должен состоять из 11 цифр")
-            : ""
+            : "";
         }
 
         if (this.v$.form.order_name.$errors.length >= 1) {
@@ -551,7 +554,7 @@ export default {
           ) {
             this.v$.form.order_address.search_value.$errors[0].$message =
               "Выберите адрес из списка";
-          } 
+          }
         }
       }
 
@@ -566,6 +569,9 @@ export default {
     sendPickupTime(e) {
       this.GET_PICKUP_TIME(e.target.value);
     },
+    sendCutleryCount(e) {
+      this.GET_CUTLERY_COUNT(e.target.value);
+    }
   },
   computed: {
     ...mapGetters([
@@ -607,19 +613,24 @@ export default {
         (item) => item > this.$store.state.current_time
       );
     },
-    COMPUTE_CUTLERY() {
-      return 1;
+    COMPUTED_CUTLERY() {
+      return this.cart_data
+        .map((item) => item.ingredients)
+        .map((item) =>
+          item.filter((item) => item.ingredient_name == "Рис Shinaki")
+        )
+        .filter((sorted) => sorted.length > 0).length;
     },
   },
   watch: {
     form: {
       handler() {
         if (!this.v$.$error) {
-          this.$refs.sendOrderBtn.disabled = false
+          this.$refs.sendOrderBtn.disabled = false;
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
@@ -632,7 +643,8 @@ export default {
       });
     this.GET_ADDRESSES();
     setTimeout(() => {
-      this.GET_PICKUP_TIME("Самовывоз " + this.SORT_PICKUP_TIME[0]);
+      this.GET_PICKUP_TIME("Сам-з " + this.SORT_PICKUP_TIME[0]);
+      this.GET_CUTLERY_COUNT("Перс " + this.COMPUTED_CUTLERY)
     }, 500);
   },
 };

@@ -30,6 +30,7 @@ export default createStore({
     promocode_total: 0,
     form_validation_error: "",
     pickup_time: '',
+    cutlery_count: 0,
 
     favorites: [],
     banner: {},
@@ -366,6 +367,9 @@ export default createStore({
     },
     SET_BANNERS: (state, banner) => {
       state.banners = banner
+    },
+    CUTLERY_COUNT: (state, cutlery) => {
+      state.cutlery_count = cutlery
     }
   },
   actions: {
@@ -594,6 +598,9 @@ export default createStore({
       commit
     }, time) {
       commit("PICKUP_TIME", time)
+    },
+    GET_CUTLERY_COUNT({commit}, cutlery) {
+      commit("CUTLERY_COUNT", cutlery)
     }
   },
   getters: {
@@ -728,7 +735,7 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: (state.discount.promocode_name !== undefined ?
+        comment: (state.cutlery_count + ' | ') + (state.discount.promocode_name !== undefined ?
             state.discount.promocode_name + " | " :
             "") +
           state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? state.order_comment + ' | ' : ''),
@@ -809,6 +816,9 @@ export default createStore({
     },
     SET_BANNERS(state) {
       return state.banners
+    },
+    CUTLERY_COUNT(state) {
+      return state.cutlery_count
     }
   },
   modules: {},
