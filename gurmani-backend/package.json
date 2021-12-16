@@ -21,6 +21,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.2",
     "md5": "^2.2.1",
+    "node-telegram-bot-api": "^0.56.0",
     "nodemon": "^2.0.15",
     "promise-polyfill": "^8.1.0",
     "prop-types": "^15.6.2",

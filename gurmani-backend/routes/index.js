@@ -1,14 +1,10 @@
 const express = require('express');
 const config = require('../manifest');
 const PosterApi = require('../api/poster');
+const ctrlTelegram = require('../api/telegram');
 const addresses = require('../addresses.json')
 const banners = require('../banners.json')
 const fs = require('fs')
-
-
-
-
-
 
 
 const router = new express.Router();
@@ -138,5 +134,8 @@ router.post("/promoD", async (req, res) => {
 
 
 })
+
+router.post('/telegram', ctrlTelegram.sendMsg);
+
 
 module.exports = router;
