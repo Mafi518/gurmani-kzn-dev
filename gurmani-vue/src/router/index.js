@@ -45,6 +45,13 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/Products.vue"),
   },
   {
+    path: "/thx",
+    name: "Thx",
+    meta: {requiresUnAuth: true},
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Thx.vue"),
+  },
+  {
     path: "/auth",
     name: "Auth",
     meta: {requiresUnAuth: true},

@@ -4,21 +4,23 @@ module.exports.sendMsg = (req, res) => {
         let http = require('request')
         //каждый элемент обьекта запихиваем в массив
 
-        console.log(req.query);
+        let { comment, phone, first_name, client_address, client_address2, products, total_order_price } = req.query
 
-        // let msg = req.query.comment
+        let clAddress = JSON.parse(client_address)
+        let clAddress2 = JSON.parse(client_address2)
+        
 
-        let { comment, phone, first_name, client_address, client_address2, service_mode, products } = req.query
 
-        let test = `Имя: ${first_name} \nТелефон: ${phone} \nКомментарий: ${comment}`
+
+        let telegram_order = `Имя: ${first_name} \nТелефон: ${phone} ${clAddress.street !== undefined ? '\nАдрес доставки: ' + clAddress.street + ' Дом: ' + clAddress2.house + ' Квартира: ' + clAddress2.apartment + ' Подъезд: ' + clAddress2.entrance + ' Этаж: ' + clAddress2.floor : ''} \nБлюда: ${products.map(item => { return `${JSON.parse(item).product_name + '| Кол-во ' + JSON.parse(item).count + ' | Цена: ' + JSON.parse(item).price + '₽ |' + (JSON.parse(item).modification.length ? ' Допки: ' + JSON.parse(item).modification.map(item => {return (` | ${item.m + item.a}`)}) : '')  + '\n'}` })} \nКомментарий: ${comment} \nОбщая сумма: ${total_order_price} ₽`
         //проходимся по массиву и склеиваем все в одну строку
-        test = encodeURI(test)
+        telegram_order = encodeURI(telegram_order)
         //делаем запрос
-        http.post(`https://api.telegram.org/bot${config.token}/sendMessage?chat_id=${config.chat}&parse_mode=html&text=${test}`, function (error, response, body) {
+        http.post(`https://api.telegram.org/bot${config.token}/sendMessage?chat_id=${config.chat}&parse_mode=html&text=${telegram_order}`, function (error, response, body) {
             //не забываем обработать ответ
-            console.log('error:', error);
-            console.log('statusCode:', response && response.statusCode);
-            console.log('body:', body);
+            // console.log('error:', error);
+            // console.log('statusCode:', response && response.statusCode);
+            // console.log('body:', body);
             if (response.statusCode === 200) {
                 res.status(200).json({
                     status: 'ok',

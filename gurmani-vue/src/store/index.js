@@ -18,6 +18,7 @@ export default createStore({
     deliveryType: "2",
     payment_type: "Безнал",
     order: {},
+    telegram_order: {},
     selectAdresses: [],
     selectAddress: {
       delivery_pay: 0,
@@ -233,6 +234,7 @@ export default createStore({
       state.discountCurrentProduct = state.discountProduct.product_name;
     },
     DELIVERY_TYPE: (state, type) => {
+      state.selectAddress = {}
       state.deliveryType = type;
     },
     PAYMENT_TYPE: (state, type) => {
@@ -302,6 +304,9 @@ export default createStore({
     },
     SEND_ORDER_DATA: (state, order_data) => {
       state.order = order_data;
+    },
+    TELEGRAM_ORDER: (state, order_data) => {
+      state.telegram_order = order_data
     },
     FORM_ERROR: (state, error) => {
       state.form_validation_error = error;
@@ -554,9 +559,20 @@ export default createStore({
         url: `http://localhost:3000/order`,
         params: order_data,
       }).then((order_data) => {
-        console.log(order_data);
         commit("SEND_ORDER_DATA", order_data);
       });
+    },
+    SEND_ORDER_TO_TELEGRAM({
+      commit
+    }, order_data) {
+      return axios({
+        method: "POST",
+        url: `http://localhost:3000/telegram`,
+        params: order_data,
+      }).then((order_data) => {
+        commit("SEND_ORDER_DATA", order_data);
+      });
+
     },
     FORM_VALIDATION_ERROR({
       commit
@@ -599,7 +615,9 @@ export default createStore({
     }, time) {
       commit("PICKUP_TIME", time)
     },
-    GET_CUTLERY_COUNT({commit}, cutlery) {
+    GET_CUTLERY_COUNT({
+      commit
+    }, cutlery) {
       commit("CUTLERY_COUNT", cutlery)
     }
   },
@@ -709,7 +727,7 @@ export default createStore({
             count: item.count,
             price: (item.price[1] / item.count).toString(),
             modification: item.group_modifications ? item.group_modifications.filter(mode => mode.count > 0).map(mode => {
-              return { 
+              return {
                 m: mode.modifications[0].dish_modification_id,
                 a: mode.count,
               }
@@ -819,6 +837,50 @@ export default createStore({
     },
     CUTLERY_COUNT(state) {
       return state.cutlery_count
+    },
+    TELEGRAM_ORDER(state) {
+      function getOrderProducts() {
+        let arr = [];
+
+        for (let item of state.cart) {
+
+          arr.push({
+            product_name: item.product_name,
+            count: item.count,
+            price: (item.price[1].slice(0, -2) / item.count).toString(),
+            modification: item.group_modifications ? item.group_modifications.filter(mode => mode.count > 0).map(mode => {
+              return {
+                m: mode.name,
+                a: `(${mode.count})`,
+              }
+            }) : null
+          });
+        }
+        // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
+        return arr;
+      }
+
+      return (state.telegram_order = {
+        spot_id: 1,
+        first_name: state.order_name ?
+          state.order_name : "Баг! Обратиться к разработчику",
+        phone: state.order_phone ?
+          "+" +
+          state.order_phone.charAt(0).replace("8", "7") +
+          state.order_phone.slice(1, 11) : "Баг! Обратиться к разработчику",
+        client_address: {
+          street: state.selectAddress.address,
+        },
+        client_address2: state.address2,
+        delivery_price: state.delivery_pay,
+        service_mode: state.deliveryType,
+        total_order_price: state.totalPrice.toString().slice(0, -2),
+        products: getOrderProducts(),
+        comment: (state.cutlery_count + ' | ') + (state.discount.promocode_name !== undefined ?
+            state.discount.promocode_name + " | " :
+            "") +
+          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? state.order_comment + ' | ' : ''),
+      });
     }
   },
   modules: {},

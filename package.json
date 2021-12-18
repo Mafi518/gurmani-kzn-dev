@@ -6,6 +6,7 @@
   "scripts": {
     "server": "nodemon ./gurmani-backend/app.js",
     "client": "cd ./gurmani-vue && npm run serve",
+    "bot": "nodemon ./gurmani-backend/bot.js",
     "lint": "cd ./gurmani-vue && npm run lint"
   },
   "keywords": [],

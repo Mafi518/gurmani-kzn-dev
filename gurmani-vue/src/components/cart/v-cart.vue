@@ -248,7 +248,7 @@
         type="text"
         class="cart-info__promocode"
         id="promocode"
-        placeholder="У вас уже есть промокод? Жмите сюда!"
+        placeholder="Есть промокод? Жми сюда!"
         v-model.trim="promocode_input"
         @input="validatePromocode"
         maxlength="10"
@@ -473,6 +473,7 @@ export default {
       "GET_PAYMENT_TYPE",
       "GET_PICKUP_TIME",
       "GET_CUTLERY_COUNT",
+      "SEND_ORDER_TO_TELEGRAM",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -529,9 +530,11 @@ export default {
       if (!this.v$.$error) {
         this.$refs.sendOrderBtn.disabled = true;
         await this.SEND_ORDER(this.ORDER_DATA);
+        await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER)
+        // this.$router.push('/thx')
         this.$refs.sendOrderBtn.disabled = false;
       } else {
-        this.$refs.sendOrderBtn.disabled = true;
+        // this.$refs.sendOrderBtn.disabled = true;
 
         if (this.v$.form.order_phone.$errors.length >= 1) {
           this.v$.form.order_phone.$errors[0].$message == "Value is required"
@@ -590,6 +593,7 @@ export default {
       "WARNING",
       "FORM_ERROR",
       "ORDER_DATA",
+      "TELEGRAM_ORDER",
     ]),
     CHECK_ADDRESS() {
       if (
@@ -669,6 +673,16 @@ export default {
     padding: 24px 10px;
     border: none;
     @include container;
+    &:before {
+      content: 'ddd';
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 44px;
+      height: 44px;
+      background-color: $accent;
+    }
   }
   &__list {
   }
