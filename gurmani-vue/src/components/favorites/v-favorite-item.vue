@@ -11,8 +11,10 @@
             alt=""
           />
         </picture>
-      <v-favorite-btn v-if="!favorite_data.favorites"></v-favorite-btn>
-      <v-favorite-btn-active v-if="favorite_data.favorites == true"></v-favorite-btn-active>
+        <v-favorite-btn v-if="!favorite_data.favorites"></v-favorite-btn>
+        <v-favorite-btn-active
+          v-if="favorite_data.favorites == true"
+        ></v-favorite-btn-active>
       </div>
       <div class="favorite__body">
         <h3 class="favorite__title">{{ favorite_data.product_name }}</h3>
@@ -28,10 +30,12 @@
       </div>
     </slot>
   </article>
-  <v-product-popup></v-product-popup>
+  <transition name="popup" mode="out-in">
+    <v-product-popup></v-product-popup>
+  </transition>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-favorite-item",
   props: {
@@ -61,7 +65,7 @@ export default {
       if (e.target.classList.contains("buy-btn")) {
         await this.GET_PRODUCT_INFO(data);
         await this.ADD_TO_CART(data);
-        this.$store.state.product = {product: 'empty'}
+        this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||
@@ -129,5 +133,14 @@ export default {
   &__price {
     font-weight: 500;
   }
+}
+.popup-enter-from,
+.popup-leave-to {
+  transform: translateX(-100%);
+}
+
+.popup-enter-active,
+.popup-leave-active {
+  transition: transform 0.4s ease-in-out;
 }
 </style>

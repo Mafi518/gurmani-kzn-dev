@@ -1,0 +1,33 @@
+@import "_mixins.scss";
+
+@media (max-width: 1920px) {
+    #app {
+        max-width: 1274px;
+        margin: 0 auto;
+    }
+
+    ::-webkit-scrollbar {
+        width: 20px;
+    }
+    // category
+
+    .category {
+
+        &__list {
+            flex-wrap: wrap;
+            overflow: initial;
+        }
+
+        &__item {
+            margin-top: 20px;
+            min-width: 168px;
+            min-height: 142px;
+        }
+    }
+
+    // category end
+}
+
+@media (max-width: 768px) {
+
+}

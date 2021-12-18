@@ -1,5 +1,7 @@
 <template>
-  <v-product-list></v-product-list>
+  <div class="products">
+    <v-product-list></v-product-list>
+  </div>
 </template>
 
 <script>

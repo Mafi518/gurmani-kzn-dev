@@ -38,6 +38,9 @@ export default {
     min-height: 98px;
     background-color: #ffd1ad;
     margin-right: 20px;
+    img {
+      max-width: 50px;
+    }
     &:nth-child(2) {
       background-color: #ffc6bd;
     }

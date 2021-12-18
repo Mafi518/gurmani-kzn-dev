@@ -760,21 +760,21 @@
   >
     <path
       d="M3.84961 14H24.8496"
-      stroke="#fff"
+      stroke="#000"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M3.84961 7H24.8496"
-      stroke="#fff"
+      stroke="#000"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M3.84961 21H24.8496"
-      stroke="#fff"
+      stroke="#000"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"

@@ -1,5 +1,5 @@
 <template>
-  <div class="banner__item">
+  <div class="banner__item" @click="setPromo">
     <img :src="require(`@/assets/media/img/banners/${banner_data.promo_picture}`)"  alt="" />
   </div>
 </template>
@@ -13,7 +13,13 @@ export default {
         return {}
       }
     }
-  }
+  },
+  methods: {
+    setPromo() {
+      localStorage.setItem("setPromo", this.banner_data.promo_name)
+      this.$router.push('/cart')
+    }
+  },
 };
 </script>
 <style lang="scss">

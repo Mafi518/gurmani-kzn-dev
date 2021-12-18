@@ -1,36 +1,35 @@
 <template>
-  <nav id="navbar" class="navbar">
-    <router-link class="navbar__item" to="/"
-      ><v-icon name="home-icon"></v-icon>
-      <span class="navbar__text">Главная</span>
-    </router-link>
-    <router-link class="navbar__item" to="/menu">
-      <v-icon name="menu-icon" class="burger"></v-icon>
-      <span class="navbar__text">Меню</span></router-link
-    >
-    <router-link class="navbar__item" to="/cart">
-      <v-icon name="cart-icon"></v-icon>
-      <span class="navbar__text">Корзина</span></router-link
-    >
-    <router-link class="navbar__item" to="/favorite">
-      <v-icon name="favorite-icon"></v-icon>
-      <span class="navbar__text">Избранное</span></router-link
-    >
-  </nav>
-  <router-view />
+  <v-header-desktop v-if="clientWidth > 768"></v-header-desktop>
+  <v-header-mobile v-if="clientWidth <= 768"></v-header-mobile>
+
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </template>
 
 <script>
+import vHeaderDesktop from '@/components/v-header-top-desktop'
+import vHeaderMobile from '@/components/v-header-top-mobile'
 import { mapActions } from "vuex";
-
 export default {
-  components: {},
+  components: {vHeaderDesktop, vHeaderMobile},
+  data() {
+    return {
+      clientWidth: 0,
+    };
+  },
   methods: {
     ...mapActions(["SET_SAVED_FAVORITES_TO_STATE", "GET_POPULAR_FROM_API"]),
   },
   mounted() {
     this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
+    this.clientWidth = window.innerWidth
+    console.log(this.clientWidth);
   },
+
+  // Попробуй сделать это через промисы, чтобы перед роутом выполнялась анимация, а только потом он через await дожидался данных, потом уже отображался
 };
 </script>
 
@@ -40,24 +39,8 @@ export default {
   padding-bottom: 60px;
 }
 .navbar {
-  @include container;
-  position: fixed;
-  bottom: 0;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  padding: 7px 0;
-  height: 54px;
-  z-index: 1;
   &__item {
-    display: flex;
-    align-items: center;
-    padding: 6px 10px;
     svg {
-      margin-right: 5px;
       path {
         fill: $black;
       }
@@ -103,5 +86,26 @@ export default {
   path {
     fill: $accent;
   }
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease-out;
+}
+
+.animate-circle {
+  position: fixed;
+  left: -50%;
+  bottom: -50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  transform-origin: bottom left;
+  background-color: $white;
+  z-index: 3;
 }
 </style>

@@ -7,15 +7,22 @@
       </h2></v-back-menu
     >
     <div>
-      <v-cart-item
-        v-for="(item, index) in cart_data"
-        :key="item.product_id"
-        :cart_item_data="item"
-        @increment="increment(index)"
-        @decrement="decrement(index)"
-        @click="check(index)"
+      <transition-group
+        appear
+        @before-enter="beforeEnter"
+        @enter="enter"
       >
-      </v-cart-item>
+        <v-cart-item
+          v-for="(item, index) in cart_data"
+          :key="item.product_id"
+          :cart_item_data="item"
+          @increment="increment(index)"
+          @decrement="decrement(index)"
+          @click="check(index)"
+          :data-index='index'
+        >
+        </v-cart-item>
+      </transition-group>
     </div>
 
     <form v-if="confirm_order == true" action="" class="confirm" id="confirm">
@@ -64,7 +71,6 @@
             v-for="(item, index) in 11"
             :key="item"
             :value="`Приборы ${index}`"
-            
           >
             {{ "Кол-во персон " + index }}
           </option>
@@ -333,6 +339,7 @@ import { mapActions, mapGetters } from "vuex";
 import vCartItem from "@/components/cart/v-cart-item";
 import useValidate from "@vuelidate/core";
 import { required, minLength, maxLength, sameAs } from "@vuelidate/validators";
+import { gsap } from "gsap";
 
 export default {
   name: "v-cart",
@@ -530,7 +537,7 @@ export default {
       if (!this.v$.$error) {
         this.$refs.sendOrderBtn.disabled = true;
         await this.SEND_ORDER(this.ORDER_DATA);
-        await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER)
+        await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER);
         // this.$router.push('/thx')
         this.$refs.sendOrderBtn.disabled = false;
       } else {
@@ -574,7 +581,7 @@ export default {
     },
     sendCutleryCount(e) {
       this.GET_CUTLERY_COUNT(e.target.value);
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -648,8 +655,37 @@ export default {
     this.GET_ADDRESSES();
     setTimeout(() => {
       this.GET_PICKUP_TIME("Сам-з " + this.SORT_PICKUP_TIME[0]);
-      this.GET_CUTLERY_COUNT("Перс " + this.COMPUTED_CUTLERY)
+      this.GET_CUTLERY_COUNT("Перс " + this.COMPUTED_CUTLERY);
     }, 500);
+
+    if (localStorage.getItem("setPromo") !== "") {
+      this.promocode_input = localStorage.getItem("setPromo");
+      this.validatePromocode();
+      localStorage.setItem("setPromo", "");
+    } else {
+      this.validatePromocode();
+    }
+  },
+  setup() {
+    const beforeEnter = (el) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(15px)";
+    };
+    const enter = (el, done) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        delay: el.dataset.index * 0.2,
+        onComplete: done
+      })
+
+    };
+    // const beforeEnter = (el) => {
+
+    // }
+
+    return { beforeEnter, enter };
   },
 };
 </script>
@@ -674,7 +710,7 @@ export default {
     border: none;
     @include container;
     &:before {
-      content: 'ddd';
+      content: "ddd";
       display: block;
       position: absolute;
       top: 0;

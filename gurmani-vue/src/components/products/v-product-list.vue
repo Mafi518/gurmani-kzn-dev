@@ -15,7 +15,9 @@
       ></v-product-item>
     </div>
   </section>
-  <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+  <transition name="popup" mode="out-in">
+    <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+  </transition>
 </template>
 
 <script>
@@ -57,5 +59,14 @@ export default {
     display: flex;
     flex-wrap: wrap;
   }
+}
+.popup-enter-from,
+.popup-leave-to {
+  transform: translateX(-100%);
+}
+
+.popup-enter-active,
+.popup-leave-active {
+  transition: transform 0.4s ease-in-out;
 }
 </style>

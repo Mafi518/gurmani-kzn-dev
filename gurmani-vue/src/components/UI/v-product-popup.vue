@@ -2,8 +2,14 @@
   <article v-if="PRODUCT.photo_origin" class="popup">
     <v-back-menu
       ><v-back-btn @click="clearPopupState"></v-back-btn>
-      <v-favorite-btn @click="addToFavorites" v-if="!PRODUCT.favorites"></v-favorite-btn>
-      <v-favorite-btn-active @click="addToFavorites" v-if="PRODUCT.favorites == true"></v-favorite-btn-active>
+      <v-favorite-btn
+        @click="addToFavorites"
+        v-if="!PRODUCT.favorites"
+      ></v-favorite-btn>
+      <v-favorite-btn-active
+        @click="addToFavorites"
+        v-if="PRODUCT.favorites == true"
+      ></v-favorite-btn-active>
     </v-back-menu>
     <article class="popup__item">
       <div class="popup__head">
@@ -122,7 +128,7 @@
                 ></v-icon>
               </div>
               <div class="additional__head">
-                {{ modification.count }}
+                
                 <picture>
                   <source
                     :srcset="`https://gurmanikzndev.joinposter.com${modification.modifications[0].photo_large}`"
@@ -138,7 +144,7 @@
                   modification.name +
                   " | " +
                   modification.modifications[0].price.toString().slice(0, -2) +
-                  "₽"
+                  " ₽" + " | " + modification.count + ' шт' 
                 }}
               </div>
             </article>
@@ -173,13 +179,9 @@
           ></v-card-small>
         </section>
       </div>
-      <v-add-btn @click="addToCart"
-        >{{
-          // PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
-          PRODUCT.price[1].slice(0, -2)
-        }}
-        ₽</v-add-btn
-      >
+        <v-add-btn @click="addToCart"
+          >{{ PRODUCT.price[1].slice(0, -2) }} ₽</v-add-btn
+        >
     </article>
   </article>
 </template>
@@ -219,12 +221,12 @@ export default {
     },
     async clearPopupState() {
       await this.RESET_PRODUCT();
-      if (window.location.href.includes('products')) {
-        this.$router.push('/products')
-      } else if (window.location.href.includes('favorite')) {
-        this.$router.push('/favorite')
+      if (window.location.href.includes("products")) {
+        this.$router.push("/products");
+      } else if (window.location.href.includes("favorite")) {
+        this.$router.push("/favorite");
       } else {
-        this.$router.push('/')
+        this.$router.push("/");
       }
     },
     incrementItem() {
@@ -235,10 +237,11 @@ export default {
       this.DECREMENT_POPUP_ITEM();
       this.FULL_PRICE(this.PRODUCT);
     },
-    addToCart(data) {
+    async addToCart(data) {
       data = this.PRODUCT;
 
-      this.ADD_TO_CART(data);
+      await this.ADD_TO_CART(data);
+      this.clearPopupState()
     },
     deleteModification(index) {
       if (this.PRODUCT.group_modifications[index].count > 0) {
@@ -464,5 +467,14 @@ export default {
   overflow: auto;
   padding-bottom: 5px;
   padding-top: 5px;
+}
+.to-cart-enter-from,
+.to-cart-leave-to {
+  opacity: 0;
+}
+
+.to-cart-enter-active,
+.to-cart-leave-active {
+  transition: opacity 0.5s ease-out;
 }
 </style>

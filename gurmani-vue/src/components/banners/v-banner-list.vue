@@ -11,20 +11,23 @@
 </template>
 <script>
 import vBannerItem from "@/components/banners/v-banner-item";
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "v-banner-list",
   components: {
     vBannerItem,
   },
   methods: {
-    ...mapActions(["GET_BANNERS"])
+    ...mapActions(["GET_BANNERS"]),
+    test() {
+      console.log(this);
+    }
   },
   computed: {
-    ...mapGetters(["SET_BANNERS"])
+    ...mapGetters(["SET_BANNERS"]),
   },
   mounted() {
-    this.GET_BANNERS()
+    this.GET_BANNERS();
   },
 };
 </script>

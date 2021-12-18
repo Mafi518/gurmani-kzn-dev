@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <v-header></v-header>
     <v-banner-list></v-banner-list>
     <v-category-list>Меню</v-category-list>
     <v-popular-list></v-popular-list>
-    <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+    <transition name="popup" mode="out-in">
+      <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+    </transition>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import vHeader from "@/components/v-header-top";
 import vBannerList from "@/components/banners/v-banner-list";
 import vCategoryList from "@/components/categories/v-category-list";
 import vPopularList from "@/components/populars/v-popular-list";
@@ -18,7 +18,6 @@ import vPopularList from "@/components/populars/v-popular-list";
 export default {
   name: "Home",
   components: {
-    vHeader,
     vBannerList,
     vCategoryList,
     vPopularList,
@@ -34,9 +33,18 @@ export default {
   },
   mounted() {
     this.reset();
-    
   },
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.popup-enter-from,
+.popup-leave-to {
+  transform: translateX(-100%);
+}
+
+.popup-enter-active,
+.popup-leave-active {
+  transition: transform 0.4s ease-in-out;
+}
+</style>
