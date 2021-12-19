@@ -13,16 +13,11 @@
     </v-back-menu>
     <article class="popup__item">
       <div class="popup__head">
-        <picture>
-          <source
-            :srcset="`https://gurmanikzndev.joinposter.com${PRODUCT.photo_origin}`"
-          />
-          <img
-            :src="`https://gurmanikzndev.joinposter.com${PRODUCT.photo_origin}`"
-          />
-        </picture>
+        <img
+          :src="`https://gurmanikzndev.joinposter.com${PRODUCT.photo_origin}`"
+        />
         <div class="popup__wrap">
-          <div class="popup__info">
+          <div class="popup__info popup__media">
             <h2 class="popup__title" style="margin-bottom: 0px">
               {{ PRODUCT.product_name }}
             </h2>
@@ -128,7 +123,6 @@
                 ></v-icon>
               </div>
               <div class="additional__head">
-                
                 <picture>
                   <source
                     :srcset="`https://gurmanikzndev.joinposter.com${modification.modifications[0].photo_large}`"
@@ -144,7 +138,10 @@
                   modification.name +
                   " | " +
                   modification.modifications[0].price.toString().slice(0, -2) +
-                  " ₽" + " | " + modification.count + ' шт' 
+                  " ₽" +
+                  " | " +
+                  modification.count +
+                  " шт"
                 }}
               </div>
             </article>
@@ -152,7 +149,7 @@
         </div>
       </div>
 
-      <div class="popup__info">
+      <div class="popup__info popup__like">
         <h2 class="popup__title">Вам может понравиться</h2>
         <section class="like" v-if="PRODUCT.category_name == 'Популярное'">
           <v-card-small
@@ -179,9 +176,9 @@
           ></v-card-small>
         </section>
       </div>
-        <v-add-btn @click="addToCart"
-          >{{ PRODUCT.price[1].slice(0, -2) }} ₽</v-add-btn
-        >
+      <v-add-btn class="popup-buy-btn" @click="addToCart"
+        >{{ PRODUCT.price[1].slice(0, -2) }} ₽</v-add-btn
+      >
     </article>
   </article>
 </template>
@@ -241,7 +238,7 @@ export default {
       data = this.PRODUCT;
 
       await this.ADD_TO_CART(data);
-      this.clearPopupState()
+      this.clearPopupState();
     },
     deleteModification(index) {
       if (this.PRODUCT.group_modifications[index].count > 0) {
@@ -257,19 +254,31 @@ export default {
       this.TOGGLE_SIZE_OF_PIZZA(index);
       this.FULL_PRICE(this.PRODUCT);
     },
-    // fullPrice() {
-    //   this.FULL_PRICE(this.PRODUCT)
-    // }
   },
   computed: {
     ...mapGetters(["PRODUCT", "POPULAR", "CATEGORY_PRODUCTS"]),
   },
   mounted() {
-    // this.PRODUCT.group_modifications.map(modification => modification.count = 0)
-    // if(document.querySelector('.popup__input')) {
-    //   document.querySelector('.popup__input').checked = true
-    //   console.log(document.querySelector('.popup__input'));
-    // }
+    if (window.innerWidth > 768) {
+      document
+        .querySelector(".popup__body")
+        .insertAdjacentElement(
+          "afterbegin",
+          document.querySelector(".popup__wrap")
+        );
+      document
+        .querySelector(".popup__body")
+        .insertAdjacentElement(
+          "beforeend",
+          document.querySelector(".popup__like")
+        );
+      document
+        .querySelector(".popup__media")
+        .insertAdjacentElement(
+          "beforeend",
+          document.querySelector(".popup-buy-btn")
+        );
+    }
   },
 };
 </script>

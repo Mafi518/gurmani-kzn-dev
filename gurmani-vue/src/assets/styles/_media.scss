@@ -1,6 +1,7 @@
 @import "_mixins.scss";
+@import "_colors.scss";
 
-@media (max-width: 1920px) {
+@media (max-width: 1920px) and (min-width: 768px) {
     #app {
         max-width: 1274px;
         margin: 0 auto;
@@ -9,6 +10,8 @@
     ::-webkit-scrollbar {
         width: 20px;
     }
+
+
     // category
 
     .category {
@@ -26,8 +29,161 @@
     }
 
     // category end
+
+    // popular
+
+    .popular {
+
+        &__list {
+            overflow: initial;
+            flex-wrap: wrap;
+        }
+    }
+
+    // popular end
+
+    // menu
+
+    .menu {
+
+        &__list {
+            display: flex;
+            flex: none !important;
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        &__item {
+            max-width: 500px;
+            width: 100%;
+        }
+
+    }
+
+    // menu end
+
+
+    // cart
+
+    .cart {
+
+        padding-bottom: 0 !important;
+        &__container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        &__list {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            margin-right: 40px;
+        }
+
+        &__item {
+            max-width: 100%;
+            width: 100%;
+
+            &-img {
+                max-width: 162px !important;
+                max-height: 107px !important;
+            }
+
+            &-image {
+                max-width: 162px !important;
+                max-height: 107px !important;
+            }
+        }
+        &__confirm {
+            max-width: 430px;
+        }
+    }
+
+
+    
+    .cart-info {
+        position: static !important;
+        &__promocode {
+            position: static !important;
+            width: 100% !important;
+            margin-bottom: 18px;
+        }
+    }
+
+    // cart end
+
+    // popup
+
+    .popup {
+
+        background-color: $background !important;
+        padding: 20px !important;
+        // position: fixed !important;
+        .back {
+            margin-top: 100px;
+        }
+        &__item {
+            display: flex;
+        }
+        &__head {
+            
+            width: 582px;
+            width: 100%;
+            display: flex;
+            position: relative;
+            img {
+                position: fixed;
+                max-width: 432px !important;
+                width: 100%;
+            }
+        }
+        &__body {
+            overflow: auto;
+        }
+        &__info {
+
+        }
+        &__media {
+            width: 100%;
+        }
+        &__wrap {
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        &-buy-btn {
+            margin-top: 15px;
+            position: static !important;
+            max-width: 70%;
+        }
+    }
+
+    // popup end
+
+    // cards
+
+    .products__list {
+
+        .card {
+            max-width: 227px !important;
+            min-width: 227px !important;
+            &__image {
+
+                img {
+                    max-width: 145px !important;
+                    max-height: 100px !important;
+                }
+            }
+        }
+    }
+
+    // cards end
+
+    // mixins
+
+
+    // mixins end
 }
 
-@media (max-width: 768px) {
-
-}
+@media (max-width: 768px) {}

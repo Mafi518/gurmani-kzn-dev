@@ -1,253 +1,269 @@
 <template>
-  <div>
+  <div class="cart__parent">
     <v-back-menu>
       <v-back-btn :to="`/`"></v-back-btn>
       <h2>
         {{ confirm_order == false ? "Ваш заказ" : "Продолжаем оформление" }}
       </h2></v-back-menu
     >
-    <div>
-      <transition-group
-        appear
-        @before-enter="beforeEnter"
-        @enter="enter"
-      >
-        <v-cart-item
-          v-for="(item, index) in cart_data"
-          :key="item.product_id"
-          :cart_item_data="item"
-          @increment="increment(index)"
-          @decrement="decrement(index)"
-          @click="check(index)"
-          :data-index='index'
-        >
-        </v-cart-item>
-      </transition-group>
-    </div>
-
-    <form v-if="confirm_order == true" action="" class="confirm" id="confirm">
-      <div class="confirm__input-wrapper block-input">
-        <input
-          type="text"
-          name="name"
-          placeholder="Ваше имя"
-          id="name"
-          class="confirm__input"
-          :class="{ invalid: v$.form.order_name.$error }"
-          v-model.trim="form.order_name"
-          @input="orderData"
-        />
-        <span class="form-error" v-if="v$.form.order_name.$error">
-          {{ v$.form.order_name.$errors[0].$message }}
-        </span>
-      </div>
-      <div class="confirm__input-wrapper">
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Номер телефона"
-          id="phone"
-          class="confirm__input"
-          maxlength="16"
-          pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}"
-          :class="{ invalid: v$.form.order_phone.$error }"
-          v-model.trim="form.order_phone"
-          v-phone
-          autocomplete="tel"
-          @input="orderData"
-        />
-        <span class="form-error" v-if="v$.form.order_phone.$error">
-          {{ v$.form.order_phone.$errors[0].$message }}
-        </span>
-      </div>
-      <div class="confirm__input-wrapper">
-        <select
-          name="person"
-          id="person"
-          class="confirm__input confirm__select"
-          @change="sendCutleryCount"
-        >
-          <option
-            v-for="(item, index) in 11"
-            :key="item"
-            :value="`Приборы ${index}`"
+    <div class="cart__container">
+      <div class="cart__list">
+        <transition-group appear @before-enter="beforeEnter" @enter="enter">
+          <v-cart-item
+            v-for="(item, index) in cart_data"
+            :key="item.product_id"
+            :cart_item_data="item"
+            @increment="increment(index)"
+            @decrement="decrement(index)"
+            @click="check(index)"
+            :data-index="index"
           >
-            {{ "Кол-во персон " + index }}
-          </option>
-        </select>
-      </div>
-      <div class="confirm__input-wrapper">
-        <input
-          type="radio"
-          name="delivery_type"
-          id="delivery"
-          class="confirm__radio"
-          value="3"
-          @click="getDeliveryType"
-        />
-
-        <label for="delivery" class="confirm__label confirm__input">
-          <v-icon name="delivery-icon"></v-icon>
-          Доставка по адресу
-        </label>
-      </div>
-      <div class="confirm__input-wrapper">
-        <input
-          type="radio"
-          name="delivery_type"
-          id="pickup"
-          class="confirm__radio"
-          value="2"
-          @click="getDeliveryType"
-          checked
-        />
-
-        <label for="pickup" class="confirm__label confirm__input">
-          <v-icon name="cashless-icon"></v-icon>
-          Самовывоз
-        </label>
+          </v-cart-item>
+        </transition-group>
       </div>
 
-      <div class="confirm__input-wrapper block-input">
-        <select
-          name="pickup-address"
-          id="pickup-address"
-          readonly
-          class="confirm__input confirm__label block-input"
-          v-if="this.$store.state.deliveryType == 2"
-          @change="sendPickupTime"
-        >
-          <option
-            v-for="item in SORT_PICKUP_TIME"
-            :key="item"
-            :value="`Самовывоз ${item}`"
+      <div class="cart__confirm">
+        <transition name="confirm" mode="out-in">
+          <form
+            v-if="confirm_order == true"
+            action=""
+            class="confirm"
+            id="confirm"
           >
-            {{ `Казань, Оренбургский тракт, 8в (${item})` }}
-          </option>
-        </select>
-
-        <div
-          class="confirm__delivery"
-          v-if="this.$store.state.deliveryType == 3"
-        >
-          <div class="confirm__input-wrapper block-input">
-            <input
-              type="text"
-              placeholder="Улица"
-              class="confirm__input block-input"
-              v-model.trim="form.order_address.search_value"
-              @input="searchAddress"
-              :class="{ invalid: v$.form.order_address.search_value.$error }"
-            />
-
-            <span
-              class="form-error"
-              v-if="v$.form.order_address.search_value.$error"
-            >
-              {{ v$.form.order_address.search_value.$errors[0].$message }}
-            </span>
-          </div>
-
-          <div class="confirm__delivery--spot">
-            <input
-              type="text"
-              placeholder="Дом"
-              name="house"
-              v-model.trim="form.order_address.house"
-              @input="sendAddress2('house', this.form.order_address.house)"
-              class="confirm__input"
-              maxlength="5"
-              :class="{ invalid: v$.form.order_address.house.$error }"
-            />
-            <input
-              type="number"
-              placeholder="Квартира"
-              v-model.trim="form.order_address.apartment"
-              @input="
-                sendAddress2('apartment', this.form.order_address.apartment)
-              "
-              class="confirm__input"
-              pattern="[0-9]+"
-              :class="{ invalid: v$.form.order_address.apartment.$error }"
-            />
-            <input
-              type="number"
-              placeholder="Подъезд"
-              v-model.trim="form.order_address.entrance"
-              @input="
-                sendAddress2('entrance', this.form.order_address.entrance)
-              "
-              class="confirm__input"
-              pattern="[0-9]+"
-              :class="{ invalid: v$.form.order_address.entrance.$error }"
-            />
-            <input
-              type="number"
-              placeholder="Этаж"
-              v-model.trim="form.order_address.floor"
-              @input="sendAddress2('floor', this.form.order_address.floor)"
-              class="confirm__input"
-              pattern="[0-9]+"
-              :class="{ invalid: v$.form.order_address.floor.$error }"
-            />
-          </div>
-          <div class="confirm__addresses" v-if="search_flag">
-            <div
-              class="confirm__address confirm__input block-input"
-              v-for="item in CHECK_ADDRESS"
-              :key="item.id"
-              @click="getSelectAddress(item)"
-            >
-              {{ item.address }}
+            <div class="confirm__input-wrapper block-input">
+              <input
+                type="text"
+                name="name"
+                placeholder="Ваше имя"
+                id="name"
+                class="confirm__input"
+                :class="{ invalid: v$.form.order_name.$error }"
+                v-model.trim="form.order_name"
+                @input="orderData"
+              />
+              <span class="form-error" v-if="v$.form.order_name.$error">
+                {{ v$.form.order_name.$errors[0].$message }}
+              </span>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="confirm__input-wrapper">
-        <input
-          type="radio"
-          name="payment_type"
-          id="cashless"
-          class="confirm__radio"
-          value="Безнал"
-          v-model="form.order_payment_type"
-          @click="getPaymentType"
-          checked
-        />
+            <div class="confirm__input-wrapper">
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Номер телефона"
+                id="phone"
+                class="confirm__input"
+                maxlength="16"
+                pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}"
+                :class="{ invalid: v$.form.order_phone.$error }"
+                v-model.trim="form.order_phone"
+                v-phone
+                autocomplete="tel"
+                @input="orderData"
+              />
+              <span class="form-error" v-if="v$.form.order_phone.$error">
+                {{ v$.form.order_phone.$errors[0].$message }}
+              </span>
+            </div>
+            <div class="confirm__input-wrapper">
+              <select
+                name="person"
+                id="person"
+                class="confirm__input confirm__select"
+                @change="sendCutleryCount"
+              >
+                <option
+                  v-for="(item, index) in 11"
+                  :key="item"
+                  :value="`Приборы ${index}`"
+                >
+                  {{ "Кол-во персон " + index }}
+                </option>
+              </select>
+            </div>
+            <div class="confirm__input-wrapper">
+              <input
+                type="radio"
+                name="delivery_type"
+                id="delivery"
+                class="confirm__radio"
+                value="3"
+                @click="getDeliveryType"
+              />
 
-        <label for="cashless" class="confirm__label confirm__input">
-          <v-icon name="credit-card-icon"></v-icon>
-          Безналичными
-        </label>
-      </div>
-      <div class="confirm__input-wrapper">
-        <input
-          type="radio"
-          name="payment_type"
-          id="cash"
-          class="confirm__radio"
-          value="Нал"
-          @click="getPaymentType"
-          v-model="form.order_payment_type"
-        />
+              <label for="delivery" class="confirm__label confirm__input">
+                <v-icon name="delivery-icon"></v-icon>
+                Доставка по адресу
+              </label>
+            </div>
+            <div class="confirm__input-wrapper">
+              <input
+                type="radio"
+                name="delivery_type"
+                id="pickup"
+                class="confirm__radio"
+                value="2"
+                @click="getDeliveryType"
+                checked
+              />
 
-        <label for="cash" class="confirm__label confirm__input">
-          <v-icon name="wallet-icon"></v-icon>
-          Наличными
-        </label>
+              <label for="pickup" class="confirm__label confirm__input">
+                <v-icon name="cashless-icon"></v-icon>
+                Самовывоз
+              </label>
+            </div>
+
+            <div class="confirm__input-wrapper block-input">
+              <select
+                name="pickup-address"
+                id="pickup-address"
+                readonly
+                class="confirm__input confirm__label block-input"
+                v-if="this.$store.state.deliveryType == 2"
+                @change="sendPickupTime"
+              >
+                <option
+                  v-for="item in SORT_PICKUP_TIME"
+                  :key="item"
+                  :value="`Самовывоз ${item}`"
+                >
+                  {{ `Казань, Оренбургский тракт, 8в (${item})` }}
+                </option>
+              </select>
+
+              <div
+                class="confirm__delivery"
+                v-if="this.$store.state.deliveryType == 3"
+              >
+                <div class="confirm__input-wrapper block-input">
+                  <input
+                    type="text"
+                    placeholder="Улица"
+                    class="confirm__input block-input"
+                    v-model.trim="form.order_address.search_value"
+                    @input="searchAddress"
+                    :class="{
+                      invalid: v$.form.order_address.search_value.$error,
+                    }"
+                  />
+
+                  <span
+                    class="form-error"
+                    v-if="v$.form.order_address.search_value.$error"
+                  >
+                    {{ v$.form.order_address.search_value.$errors[0].$message }}
+                  </span>
+                </div>
+
+                <div class="confirm__delivery--spot">
+                  <input
+                    type="text"
+                    placeholder="Дом"
+                    name="house"
+                    v-model.trim="form.order_address.house"
+                    @input="
+                      sendAddress2('house', this.form.order_address.house)
+                    "
+                    class="confirm__input"
+                    maxlength="5"
+                    :class="{ invalid: v$.form.order_address.house.$error }"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Квартира"
+                    v-model.trim="form.order_address.apartment"
+                    @input="
+                      sendAddress2(
+                        'apartment',
+                        this.form.order_address.apartment
+                      )
+                    "
+                    class="confirm__input"
+                    pattern="[0-9]+"
+                    :class="{ invalid: v$.form.order_address.apartment.$error }"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Подъезд"
+                    v-model.trim="form.order_address.entrance"
+                    @input="
+                      sendAddress2('entrance', this.form.order_address.entrance)
+                    "
+                    class="confirm__input"
+                    pattern="[0-9]+"
+                    :class="{ invalid: v$.form.order_address.entrance.$error }"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Этаж"
+                    v-model.trim="form.order_address.floor"
+                    @input="
+                      sendAddress2('floor', this.form.order_address.floor)
+                    "
+                    class="confirm__input"
+                    pattern="[0-9]+"
+                    :class="{ invalid: v$.form.order_address.floor.$error }"
+                  />
+                </div>
+                <div class="confirm__addresses" v-if="search_flag">
+                  <div
+                    class="confirm__address confirm__input block-input"
+                    v-for="item in CHECK_ADDRESS"
+                    :key="item.id"
+                    @click="getSelectAddress(item)"
+                  >
+                    {{ item.address }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="confirm__input-wrapper">
+              <input
+                type="radio"
+                name="payment_type"
+                id="cashless"
+                class="confirm__radio"
+                value="Безнал"
+                v-model="form.order_payment_type"
+                @click="getPaymentType"
+                checked
+              />
+
+              <label for="cashless" class="confirm__label confirm__input">
+                <v-icon name="credit-card-icon"></v-icon>
+                Безналичными
+              </label>
+            </div>
+            <div class="confirm__input-wrapper">
+              <input
+                type="radio"
+                name="payment_type"
+                id="cash"
+                class="confirm__radio"
+                value="Нал"
+                @click="getPaymentType"
+                v-model="form.order_payment_type"
+              />
+
+              <label for="cash" class="confirm__label confirm__input">
+                <v-icon name="wallet-icon"></v-icon>
+                Наличными
+              </label>
+            </div>
+            <div class="confirm__input-wrapper block-input">
+              <input
+                type="text"
+                name="comment"
+                id="comment"
+                v-model="form.order_comment"
+                placeholder="Комментарий к заказу..."
+                class="confirm__input block-input"
+                @input="orderData"
+              />
+            </div>
+          </form>
+        </transition>
       </div>
-      <div class="confirm__input-wrapper block-input">
-        <input
-          type="text"
-          name="comment"
-          id="comment"
-          v-model="form.order_comment"
-          placeholder="Комментарий к заказу..."
-          class="confirm__input block-input"
-          @input="orderData"
-        />
-      </div>
-    </form>
+    </div>
 
     <form action="" class="cart-info" id="cart-info">
       <input
@@ -304,8 +320,12 @@
           </p>
         </div>
       </div>
-      <p class="cart-info__description">
+      <p class="cart-info__description cart-info__dashes">
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - -
       </p>
       <button
@@ -665,6 +685,21 @@ export default {
     } else {
       this.validatePromocode();
     }
+    if (window.innerWidth > 768) {
+      this.confirm_order = true;
+      document
+        .querySelector(".cart__confirm")
+        .insertAdjacentElement(
+          "beforeend",
+          document.querySelector(".cart-info")
+        );
+      document
+        .querySelector(".cart-info")
+        .insertAdjacentElement(
+          "beforebegin",
+          document.querySelector(".cart-info__promocode")
+        );
+    }
   },
   setup() {
     const beforeEnter = (el) => {
@@ -677,9 +712,8 @@ export default {
         y: 0,
         duration: 0.3,
         delay: el.dataset.index * 0.2,
-        onComplete: done
-      })
-
+        onComplete: done,
+      });
     };
     // const beforeEnter = (el) => {
 
@@ -720,7 +754,10 @@ export default {
       background-color: $accent;
     }
   }
-  &__list {
+  &__dashes {
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
   }
   &__item {
     display: flex;
@@ -858,5 +895,14 @@ export default {
     font-size: 18px;
     font-weight: bold;
   }
+}
+.confirm-enter-from,
+.confirm-leave-to {
+  opacity: 0;
+}
+
+.confirm-enter-active,
+.confirm-leave-active {
+  transition: opacity 0.2s ease-out;
 }
 </style>

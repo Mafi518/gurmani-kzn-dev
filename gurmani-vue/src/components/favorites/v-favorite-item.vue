@@ -26,12 +26,12 @@
         <p class="favorite__price">
           {{ favorite_data.price[1].slice(0, -2) }} ₽
         </p>
-        <v-icon name="plus-icon"></v-icon>
+        <v-icon name="plus-icon" class="plus-icon"></v-icon>
       </div>
     </slot>
   </article>
   <transition name="popup" mode="out-in">
-    <v-product-popup></v-product-popup>
+    <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
   </transition>
 </template>
 <script>
