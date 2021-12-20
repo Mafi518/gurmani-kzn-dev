@@ -12,7 +12,7 @@ module.exports.sendMsg = (req, res) => {
 
 
 
-        let telegram_order = `Имя: ${first_name} \nТелефон: ${phone} ${clAddress.street !== undefined ? '\nАдрес доставки: ' + clAddress.street + ' Дом: ' + clAddress2.house + ' Квартира: ' + clAddress2.apartment + ' Подъезд: ' + clAddress2.entrance + ' Этаж: ' + clAddress2.floor : ''} \nБлюда: ${products.map(item => { return `${JSON.parse(item).product_name + '| Кол-во ' + JSON.parse(item).count + ' | Цена: ' + JSON.parse(item).price + '₽ |' + (JSON.parse(item).modification.length ? ' Допки: ' + JSON.parse(item).modification.map(item => {return (` | ${item.m + item.a}`)}) : '')  + '\n'}` })} \nКомментарий: ${comment} \nОбщая сумма: ${total_order_price} ₽`
+        let telegram_order = `Имя: ${first_name} \nТелефон: ${phone} ${clAddress.street !== undefined ? '\nАдрес доставки: ' + clAddress.street + ' Дом: ' + clAddress2.house + ' Квартира: ' + clAddress2.apartment + ' Подъезд: ' + clAddress2.entrance + ' Этаж: ' + clAddress2.floor : ''} \nБлюда: ${products.map(item => { return `${JSON.parse(item).product_name + '| Кол-во ' + JSON.parse(item).count + ' | Цена: ' + JSON.parse(item).price + '₽ |' + (JSON.parse(item).modification ? ' Допки: ' + JSON.parse(item).modification.map(item => {return (` | ${item.m + item.a}`)}) : '')  + '\n'}` })} \nКомментарий: ${comment}  \nОбщая сумма: ${total_order_price} ₽`
         //проходимся по массиву и склеиваем все в одну строку
         telegram_order = encodeURI(telegram_order)
         //делаем запрос

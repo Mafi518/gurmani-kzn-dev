@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
+    "bot": "nodemon bot.js",
     "dev": "./node_modules/.bin/webpack-dev-server",
     "deploy": "node upload"
   },

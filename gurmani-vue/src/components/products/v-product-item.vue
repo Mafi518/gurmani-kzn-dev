@@ -3,9 +3,6 @@
     <slot>
       <div class="card__head">
         <picture class="card__image">
-          <source
-            :srcset="`https://gurmanikzndev.joinposter.com${product_data.photo_origin}`"
-          />
           <img
             :src="`https://gurmanikzndev.joinposter.com${product_data.photo_origin}`"
             alt=""

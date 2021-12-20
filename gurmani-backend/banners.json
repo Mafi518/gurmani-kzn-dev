@@ -3,5 +3,10 @@
     "action": "add",
     "promo_name": "web",
     "promo_picture": "web.png"
+  },
+  {
+    "action": "add",
+    "promo_name": "web2",
+    "promo_picture": "web2.png"
   }
 ]
