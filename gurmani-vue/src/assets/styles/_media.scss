@@ -11,7 +11,6 @@
         width: 20px;
     }
 
-
     // category
 
     .category {
@@ -69,6 +68,7 @@
     .cart {
 
         padding-bottom: 0 !important;
+
         &__container {
             display: flex;
             justify-content: space-between;
@@ -96,15 +96,17 @@
                 max-height: 107px !important;
             }
         }
+
         &__confirm {
             max-width: 430px;
         }
     }
 
 
-    
+
     .cart-info {
         position: static !important;
+
         &__promocode {
             position: static !important;
             width: 100% !important;
@@ -120,38 +122,45 @@
 
         background-color: $background !important;
         padding: 20px !important;
+
         // position: fixed !important;
         .back {
             margin-top: 100px;
         }
+
         &__item {
             display: flex;
         }
+
         &__head {
-            
+
             width: 582px;
             width: 100%;
             display: flex;
             position: relative;
+
             img {
                 position: fixed;
                 max-width: 432px !important;
                 width: 100%;
             }
         }
+
         &__body {
             overflow: auto;
         }
-        &__info {
 
-        }
+        &__info {}
+
         &__media {
             width: 100%;
         }
+
         &__wrap {
             align-items: center;
             margin-bottom: 30px;
         }
+
         &-buy-btn {
             margin-top: 15px;
             position: static !important;
@@ -168,6 +177,7 @@
         .card {
             max-width: 227px !important;
             min-width: 227px !important;
+
             &__image {
 
                 img {
@@ -182,8 +192,56 @@
 
     // mixins
 
+    .popular__item-title,
+    .category__item-title,
+    .menu__item-title,
+    .menu__phone,
+    .cart__item-title {
+        font-size: 18px !important;
+    }
+
+    .cart__item-price {
+        font-size: 16px !important;
+    }
+
+    .cart__item-weight {
+        font-size: 12px !important;
+    }
 
     // mixins end
+
+    // category 
+
+    .category {
+
+        &__item {
+
+            img {
+                max-width: 80px;
+            }
+        }
+    }
+
+    // category end
 }
 
 @media (max-width: 768px) {}
+@media (max-width: 365px) {
+    .header, .category, .popular, .about {
+        padding-left: 10px !important;
+    }
+    .banner__item {
+        margin-left: 0px;
+    }
+    .popular__item {
+        padding: 10px !important;
+        max-width: 296px !important;
+        min-width: 296px !important;
+    }
+    .cart__item-img {
+        width: inherit !important;
+    }
+    .menu__image {
+        height: 120px !important;
+    }
+}

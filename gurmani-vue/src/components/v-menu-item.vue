@@ -2,7 +2,7 @@
   <article class="menu__item">
     <p class="menu__suptitle">Полезная информация</p>
     <h2 class="menu__item-title">
-      Условия доставки способы оплаты время доставки
+      <slot></slot>
     </h2>
     <img src="@/assets/media/img/menu-image.png" alt="" class="menu__image" />
   </article>

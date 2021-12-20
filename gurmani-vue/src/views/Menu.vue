@@ -2,16 +2,16 @@
   <section class="menu">
     <v-back-menu><h2 class="menu__title">Меню</h2></v-back-menu>
     <div class="menu__list">
-      <v-menu-item></v-menu-item>
-      <v-menu-item></v-menu-item>
-      <v-menu-item></v-menu-item>
+      <v-menu-item @click="this.$router.push('/about')" >На связи основатели GURMANI – расскажем немного о нас</v-menu-item>
+      <v-menu-item @click="this.$router.push('/conditions')" >Условия доставки способы оплаты время доставки</v-menu-item>
+      <v-menu-item @click="this.$router.push('/privacy')" >Политика конфиденциальности GURMANI</v-menu-item>
     </div>
     <div class="menu__contacts">
       <div class="menu__social">
-        <a href="#" class="menu__social-link">
+        <a href="https://www.instagram.com/gurmani.kzn/" target="_blank" class="menu__social-link">
           <v-icon name="instagram-icon"></v-icon>
         </a>
-        <a href="#" class="menu__social-link">
+        <a href="https://vk.com/gurmanikzn" target="_blank" class="menu__social-link">
           <v-icon name="vk-icon"></v-icon>
         </a>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header__container">
-      <img src="@/assets/media/img/logo.png" alt="logo" class="header__logo" />
+      <img src="@/assets/media/img/logo.png" @click="this.$router.push('/')" alt="logo" class="header__logo" />
       <h1 class="header__title">
         gurmani <span class="header__info">10:00</span>
       </h1>

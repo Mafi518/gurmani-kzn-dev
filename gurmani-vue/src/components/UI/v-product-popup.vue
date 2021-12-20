@@ -82,11 +82,8 @@
             >
               <div
                 class="ingredient__head"
-                :style="{
-                  'background-color': `${ingredient.ingredient_color}`,
-                }"
               >
-                <v-icon :name="ingredient.ingredient_icon"></v-icon>
+                <img :src="require(`@/assets/media/img/ingredients/${ingredient.ingredient_icon}.png`)" alt="">
               </div>
               <p class="ingredient__body">{{ ingredient.ingredient_name }}</p>
             </div>
@@ -417,6 +414,7 @@ export default {
 
   &__body {
     margin-top: 5px;
+    text-align: center;
   }
 }
 .about {

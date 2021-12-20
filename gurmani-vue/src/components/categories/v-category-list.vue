@@ -49,7 +49,7 @@ export default {
   setup() {
     const beforeEnter = (el) => {
       el.style.opacity = 0;
-      el.style.transform = "translateX(10px)";
+      el.style.transform = "translateX(20px)";
     };
     const enter = (el, done) => {
       gsap.to(el, {

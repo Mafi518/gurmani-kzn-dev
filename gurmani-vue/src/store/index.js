@@ -181,6 +181,9 @@ export default createStore({
         console.log(checked[0].modifications[0].price);
         data.price[1] =
           checked[0].modifications[0].price.toString() * data.count + "";
+      } else if (!state.product.group_modifications) {
+        state.product.price[1] = data.price[1] =
+          data.modified_price * data.count + "";
       } else {
         let array = data.group_modifications.map(
           (mode) => mode.count * mode.modifications.map((modif) => modif.price)
@@ -449,16 +452,119 @@ export default createStore({
       }
       data.ingredients.map((ingredient) => {
         switch (ingredient.ingredient_name) {
-          case "Лосось":
-            ingredient.ingredient_color = "#FFD1B9";
-            ingredient.ingredient_icon = "salmon-icon";
+          case "Рис отварной":
+            ingredient.ingredient_icon = "rice";
             break;
-          case "Cremette":
-            ingredient.ingredient_color = "#FFF8C1";
-            ingredient.ingredient_icon = "cheese-icon";
+          case "Нори":
+            ingredient.ingredient_icon = "nori";
+            break;
+          case "Авокадо":
+            ingredient.ingredient_icon = "avocado";
+            break;
+          case "Ананасы кусочки":
+            ingredient.ingredient_icon = "pineaple";
+            break;
+          case "Бекон":
+            ingredient.ingredient_icon = "bacon";
+            break;
+          case "Вакаме":
+            ingredient.ingredient_icon = "seaweed";
+            break;
+          case "Ветчина":
+            ingredient.ingredient_icon = "ham";
+            break;
+          case "Водоросли Комбо":
+            ingredient.ingredient_icon = "seaweed";
+            break;
+          case "Кинза":
+            ingredient.ingredient_icon = "cilantro";
+            break;
+          case "Кокосовое молоко":
+            ingredient.ingredient_icon = "coconut_milk";
+            break;
+          case "Краб-микс":
+            ingredient.ingredient_icon = "crab";
+            break;
+          case "Креветки":
+            ingredient.ingredient_icon = "shrimp";
+            break;
+          case "Кунжут Белый":
+            ingredient.ingredient_icon = "white_sesame";
+            break;
+          case "Кунжут Черный":
+            ingredient.ingredient_icon = "black_sesame";
+            break;
+          case "Лайм":
+            ingredient.ingredient_icon = "lime";
+            break;
+          case "Лосось свежий":
+            ingredient.ingredient_icon = "salmon";
+            break;
+          case "Лук зелёный":
+            ingredient.ingredient_icon = "green_onion";
+            break;
+          case "Лук красный":
+            ingredient.ingredient_icon = "red_onion";
+            break;
+          case "Лук репчатый":
+            ingredient.ingredient_icon = "onion";
+            break;
+          case "Маслины":
+            ingredient.ingredient_icon = "olives";
+            break;
+          case "Морковь":
+            ingredient.ingredient_icon = "carrot";
+            break;
+          case "Моцарелла":
+            ingredient.ingredient_icon = "mozzarella";
+            break;
+          case "Огурцы":
+            ingredient.ingredient_icon = "cucumber";
+            break;
+          case "Огурчики маринованные":
+            ingredient.ingredient_icon = "pickled_cucumbers";
+            break;
+          case "Орегано":
+            ingredient.ingredient_icon = "oregano";
+            break;
+          case "Пармезан":
+            ingredient.ingredient_icon = "parmesan";
+            break;
+          case "Петрушка":
+            ingredient.ingredient_icon = "parsley";
+            break;
+          case "Помидоры":
+            ingredient.ingredient_icon = "tomatoes";
+            break;
+          case "Рис":
+            ingredient.ingredient_icon = "rice";
+            break;
+          case "Рис Shinaki":
+            ingredient.ingredient_icon = "rice";
+            break;
+          case "Соус Унаги":
+            ingredient.ingredient_icon = "unagi_sauce";
+            break;
+          case "Сливочный сыр":
+            ingredient.ingredient_icon = "cheese_creamy";
+            break;
+          case "Тобико Оранжевая":
+            ingredient.ingredient_icon = "red-cavia";
+            break;
+          case "Тобико Красная":
+            ingredient.ingredient_icon = "red-cavia";
+            break;
+          case "Кунжут жаренный":
+            ingredient.ingredient_icon = "black_sesame";
             break;
           default:
+            ingredient.ingredient_icon = "undefined"
             break;
+        }
+
+        if (ingredient.ingredient_name.includes('Соусничка')) {
+          console.log(data.ingredients.indexOf(ingredient));
+          data.ingredients.splice(data.ingredients.indexOf(ingredient), 1)
         }
       });
       commit("SET_PRODUCT_TO_STATE", data);
@@ -753,10 +859,10 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: (state.cutlery_count + ' | ') + (state.discount.promocode_name !== undefined ?
+        comment: (state.cutlery_count + ' | ') + ((state.discount.promocode_name !== undefined && state.error == '') ?
             state.discount.promocode_name + " | " :
             "") +
-          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? state.order_comment + ' | ' : ''),
+          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
       });
     },
     ADDRESSES(state) {
@@ -876,12 +982,12 @@ export default createStore({
         service_mode: state.deliveryType,
         total_order_price: state.totalPrice.toString().slice(0, -2),
         products: getOrderProducts(),
-        comment: (state.cutlery_count + ' | ') + (state.discount.promocode_name !== undefined ?
+        comment: (state.cutlery_count + ' | ') + ((state.discount.promocode_name !== undefined && state.error == '') ?
             state.discount.promocode_name + " | " :
             "") +
-          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? state.order_comment + ' | ' : ''),
+          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
       });
-    }
+    },
   },
   modules: {},
 });

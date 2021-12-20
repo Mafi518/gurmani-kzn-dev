@@ -17,53 +17,67 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
+    path: "/conditions",
+    name: "Conditions",
+    meta: {requiresUnAuth: true},
+    component: () =>
+      import(/* webpackChunkName: "conditions" */ "../views/Conditions.vue"),
+  },
+  {
+    path: "/privacy",
+    name: "Privacy",
+    meta: {requiresUnAuth: true},
+    component: () =>
+      import(/* webpackChunkName: "conditions" */ "../views/Privacy.vue"),
+  },
+  {
     path: "/cart",
     name: "Cart",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Cart.vue"),
+      import(/* webpackChunkName: "cart" */ "../views/Cart.vue"),
   },
   {
     path: "/favorite",
     name: "Favorite",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Favorite.vue"),
+      import(/* webpackChunkName: "favorite" */ "../views/Favorite.vue"),
   },
   {
     path: "/menu",
     name: "Menu",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Menu.vue"),
+      import(/* webpackChunkName: "menu" */ "../views/Menu.vue"),
   },
   {
     path: "/products",
     name: "Products",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Products.vue"),
+      import(/* webpackChunkName: "products" */ "../views/Products.vue"),
   },
   {
     path: "/thx",
     name: "Thx",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Thx.vue"),
+      import(/* webpackChunkName: "thx" */ "../views/Thx.vue"),
   },
   {
     path: "/auth",
     name: "Auth",
     meta: {requiresUnAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth.vue"),
+      import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
   },
   {
     path: "/admin-dashboard",
     name: "Admin-dashboard",
     meta: {requiresAuth: true},
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Admin-dashboard.vue"),
+      import(/* webpackChunkName: "admin-dashboard" */ "../views/Admin-dashboard.vue"),
   },
 ];
 

@@ -47,6 +47,19 @@ export default {
     &:nth-child(3) {
       background-color: #ffdeb4;
     }
+    &:nth-child(4) {
+      background-color: #FFC5AF;
+    }
+    &:nth-child(5) {
+      background-color: #FFAFB5;
+    }
+    &:nth-child(6) {
+      background-color: #FFAFA5;
+    }
+    &:nth-child(7) {
+      background-color: #FFA68A;
+    }
+
   }
   &__item-title {
     @include h3;
