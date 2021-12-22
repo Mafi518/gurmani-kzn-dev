@@ -1,13 +1,13 @@
-var bodyParser = require('body-parser');
-var express = require('express');
-var http = require('http');
-var routes = require('./routes/index');
-var PORT = process.env.PORT || 3000 
-var cors = require('cors');
+const bodyParser = require('body-parser');
+const express = require('express');
+const http = require('http');
+const routes = require('./routes/index');
+const PORT = process.env.PORT || 3000 
+const cors = require('cors');
 const fs = require('fs')
 
 
-var app = express();
+const app = express();
 
 /** Express **/
 

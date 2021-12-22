@@ -386,7 +386,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: "http://localhost:3000/categories",
+        url: "http://185.185.68.196:3000/categories",
       }).then((categories) => {
         commit(
           "SET_CATEGORIES_TO_STATE",
@@ -402,7 +402,7 @@ export default createStore({
     }, categoryID) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
+        url: `http://185.185.68.196:3000/getProductsFromCategory${categoryID}`,
         body: categoryID,
       }).then((products) => {
         // products.data.count = 1
@@ -415,7 +415,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/populars`,
+        url: `http://185.185.68.196:3000/populars`,
       }).then((populars) => {
         commit(
           "SET_POPULAR_TO_STATE",
@@ -431,7 +431,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/promocodes`,
+        url: `http://185.185.68.196:3000/promocodes`,
       }).then((promocodes) => {
         commit("SET_PROMOCODES", promocodes.data);
       });
@@ -616,7 +616,7 @@ export default createStore({
       console.log(product);
       return axios({
         method: "GET",
-        url: `http://localhost:3000/getDiscountProduct${product}`,
+        url: `http://185.185.68.196:3000/getDiscountProduct${product}`,
         body: product,
       }).then((discount_product) => {
         commit("DISCOUNT_PRODUCT", discount_product.data);
@@ -642,7 +642,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/getAddresses`,
+        url: `http://185.185.68.196:3000/getAddresses`,
       }).then((addresses) => {
         commit("ADDRESSES", addresses.data);
       });
@@ -662,7 +662,7 @@ export default createStore({
     }, order_data) {
       return axios({
         method: "POST",
-        url: `http://localhost:3000/order`,
+        url: `http://185.185.68.196:3000/order`,
         params: order_data,
       }).then((order_data) => {
         commit("SEND_ORDER_DATA", order_data);
@@ -673,7 +673,7 @@ export default createStore({
     }, order_data) {
       return axios({
         method: "POST",
-        url: `http://localhost:3000/telegram`,
+        url: `http://185.185.68.196:3000/telegram`,
         params: order_data,
       }).then((order_data) => {
         commit("SEND_ORDER_DATA", order_data);
@@ -700,7 +700,7 @@ export default createStore({
     }, data) {
       return axios({
         method: "POST",
-        url: `http://localhost:3000/promoD`,
+        url: `http://185.185.68.196:3000/promoD`,
         params: data,
       }).then((data) => {
         commit("GET_BANNER", data);
@@ -711,7 +711,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/banners`,
+        url: `http://185.185.68.196:3000/banners`,
       }).then((banners) => {
         commit("SET_BANNERS", banners.data);
       });
