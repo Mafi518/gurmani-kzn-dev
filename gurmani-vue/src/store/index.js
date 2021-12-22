@@ -53,7 +53,7 @@ export default createStore({
       state.product = product;
     },
     INCREMENT: (state, index) => {
-      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196/') {
+      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196/cart') {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
           state.cart[index].price[1] =
