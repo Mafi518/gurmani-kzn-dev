@@ -53,7 +53,7 @@ export default createStore({
       state.product = product;
     },
     INCREMENT: (state, index) => {
-      if (window.location.href == "http://localhost:8080/cart") {
+      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196/') {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
           state.cart[index].price[1] =
@@ -83,7 +83,7 @@ export default createStore({
     DECREMENT: (state, index) => {
       if (
         state.product.count > 1 &&
-        window.location.href !== "http://localhost:8080/cart"
+        window.location.href !== "http://localhost:8080/cart" || window.location.href !== "http://185.185.68.196/cart"
       ) {
         state.product.count--;
       } else if (state.cart[index].count <= 1) {
@@ -151,7 +151,7 @@ export default createStore({
         state.product.group_modifications.map((mode) => (mode.checked = false));
         state.product.group_modifications[index].checked = true;
       }
-      if (state.cart.length && location.href == "http://localhost:8080/cart") {
+      if (state.cart.length && location.href == "http://localhost:8080/cart" || location.href == "http://185.185.68.196/cart") {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
           let switchArray = new Array(state.cart[cartItem].group_modifications);
