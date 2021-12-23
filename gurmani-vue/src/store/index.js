@@ -36,6 +36,7 @@ export default createStore({
     favorites: [],
     banner: {},
     banners: [],
+    gurmani_closed: {},
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -53,7 +54,7 @@ export default createStore({
       state.product = product;
     },
     INCREMENT: (state, index) => {
-      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196/cart') {
+      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196:8080/cart') {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
           state.cart[index].price[1] =
@@ -83,7 +84,7 @@ export default createStore({
     DECREMENT: (state, index) => {
       if (
         state.product.count > 1 &&
-        window.location.href !== "http://localhost:8080/cart" || window.location.href !== "http://185.185.68.196/cart"
+        window.location.href !== "http://localhost:8080/cart" && window.location.href !== "http://185.185.68.196:8080/cart"
       ) {
         state.product.count--;
       } else if (state.cart[index].count <= 1) {
@@ -151,7 +152,7 @@ export default createStore({
         state.product.group_modifications.map((mode) => (mode.checked = false));
         state.product.group_modifications[index].checked = true;
       }
-      if (state.cart.length && location.href == "http://localhost:8080/cart" || location.href == "http://185.185.68.196/cart") {
+      if (state.cart.length && location.href == "http://localhost:8080/cart" || location.href == "http://185.185.68.196:8080/cart") {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
           let switchArray = new Array(state.cart[cartItem].group_modifications);
@@ -557,15 +558,38 @@ export default createStore({
           case "Кунжут жаренный":
             ingredient.ingredient_icon = "black_sesame";
             break;
+          case "Чили перец":
+            ingredient.ingredient_icon = "chilli";
+            break;
+          case "Шампиньоны":
+            ingredient.ingredient_icon = "champignon";
+            break;
+          case "Тесто ":
+            ingredient.ingredient_icon = "dough";
+            break;
           default:
-            ingredient.ingredient_icon = "undefined"
+            ingredient.ingredient_icon = "logo"
             break;
         }
 
-        if (ingredient.ingredient_name.includes('Соусничка')) {
-          console.log(data.ingredients.indexOf(ingredient));
-          data.ingredients.splice(data.ingredients.indexOf(ingredient), 1)
-        }
+        // let toDeleteIngredients = data.ingredients.filter(ingredient => ingredient.ingredient_icon == 'undefined')
+        // console.log(toDeleteIngredients);
+
+        // setTimeout(() => {
+        //   for (const item of toDeleteIngredients) {
+        //     data.ingredients.map(() => {
+        //       data.ingredients.splice(data.ingredients.indexOf(item), 1)
+        //     })
+        //   }
+        // }, 4000);
+
+        data.ingredients.map(ingr => {
+          if (ingr.ingredient_name.includes('Соусничка') || ingr.ingredient_name.includes('Бокс') || ingr.ingredient_name.includes('Пакет') || ingr.ingredient_name.includes('Короб') || ingr.ingredient_name.includes('палочки') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('Бумага') || ingr.ingredient_name.includes('Супница') || ingr.ingredient_name.includes('Крышка') || ingr.ingredient_name.includes('Ложка')) {
+            data.ingredients.splice(data.ingredients.indexOf(ingr), 1)
+          }
+        })
+
+
       });
       commit("SET_PRODUCT_TO_STATE", data);
     },
@@ -706,6 +730,23 @@ export default createStore({
         commit("GET_BANNER", data);
       });
     },
+    ADD_BANNER_PHOTO(file) {
+      console.log(file);
+      let xhr = new XMLHttpRequest()
+      xhr.open('POST', 'http://localhost:3000/uploadBanner' + file.name, true)
+      xhr.setRequestHeader('Content-Type', 'application/octate-stream')
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // this.callBackFunction(this.responseText)
+            console.log('success');
+          } else {
+            console.log('errrrrror');
+          }
+        }
+      }
+      xhr.send(file)
+    },
     GET_BANNERS({
       commit
     }) {
@@ -725,7 +766,8 @@ export default createStore({
       commit
     }, cutlery) {
       commit("CUTLERY_COUNT", cutlery)
-    }
+    },
+
   },
   getters: {
     CATEGORIES(state) {
@@ -788,8 +830,8 @@ export default createStore({
 
       if (
         state.subtotalPrice >= state.discount.condition &&
-        state.current_time < state.discount.period_end &&
-        state.current_time > state.discount.period_start
+        state.current_time < state.discount.period_end.slice(0, -3) &&
+        state.current_time > state.discount.period_start.slice(0, -3)
       ) {
         if (state.discount.promocode_type == 2) {
           state.discount.total_discount = state.discount.promocode_discount;
@@ -902,7 +944,6 @@ export default createStore({
       let currentHour = dateWithoutSecond
         .toLocaleTimeString(navigator.language, {
           hour: "2-digit",
-          minute: "2-digit",
         })
       // .replace(":", "");
       return (state.current_time = currentHour);
@@ -988,6 +1029,21 @@ export default createStore({
           state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
       });
     },
+    TIME_WARNING(state) {
+      let work_time = ["10:00", "22:00"]
+      let toggle = JSON.parse(localStorage.getItem("warning_was_displayed"))
+
+      if (state.current_time > work_time[1] || state.current_time < work_time[0]) {
+        if (toggle !== true) {
+          localStorage.setItem("warning_was_displayed", true)
+          console.log('warn was displayed');
+          return state.gurmani_closed.closed = true
+        }
+      } else {
+        localStorage.setItem("warning_was_displayed", false)
+        return state.gurmani_closed.closed = false
+      }
+    }
   },
   modules: {},
 });

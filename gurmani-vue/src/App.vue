@@ -1,6 +1,7 @@
 <template>
   <v-header-desktop v-if="clientWidth > 768"></v-header-desktop>
   <v-header-mobile v-if="clientWidth <= 768"></v-header-mobile>
+  <v-gurmani-closed></v-gurmani-closed>
 
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
@@ -12,9 +13,10 @@
 <script>
 import vHeaderDesktop from '@/components/v-header-top-desktop'
 import vHeaderMobile from '@/components/v-header-top-mobile'
+import vGurmaniClosed from '@/components/v-gurmani-closed'
 import { mapActions } from "vuex";
 export default {
-  components: {vHeaderDesktop, vHeaderMobile},
+  components: {vHeaderDesktop, vHeaderMobile, vGurmaniClosed},
   data() {
     return {
       clientWidth: 0,

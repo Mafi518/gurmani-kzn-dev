@@ -284,8 +284,9 @@ export default {
 .popup {
   background-color: $white;
   width: 100vw;
-  min-height: 100vh;
-  position: absolute;
+  height: 100vh;
+  overflow: auto;
+  position: fixed;
   top: 0;
   left: 0;
   padding: 40px 0px 135px 20px;
@@ -410,6 +411,10 @@ export default {
     justify-content: center;
     padding: 5px;
     // background-color: #ffd1b9;
+    img {
+      width: inherit;
+      height: inherit;
+    }
   }
 
   &__body {

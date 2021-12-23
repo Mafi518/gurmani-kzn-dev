@@ -17,9 +17,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-
 /** Подключаем роуты **/
 app.use(routes);
+app.use(express.static(__dirname + '/uploads'));
 
 http.createServer(app).listen(PORT, function () {
     console.log(`server has been started on http://localhost:${PORT}/`);

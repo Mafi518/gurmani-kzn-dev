@@ -1,6 +1,6 @@
 <template>
   <div class="banner__item" @click="setPromo">
-    <img :src="require(`@/assets/media/img/banners/${banner_data.promo_picture}`)"  alt="" />
+    <img :src="`http://185.185.68.196:3000/uploads/${banner_data.promo_picture}`"  alt="" />
   </div>
 </template>
 <script>

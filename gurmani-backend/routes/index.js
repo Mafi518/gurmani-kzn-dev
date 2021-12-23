@@ -138,4 +138,46 @@ router.post("/promoD", async (req, res) => {
 router.post('/telegram', ctrlTelegram.sendMsg);
 
 
+router.post('/uploadBanner', async (req, res) => {
+    if (req.url === '/') {
+        sendRes('index.html', 'text/html', res)
+    } else if (/\/uploads\/[^\/]+$/.test(req.url) && req.method === 'POST') {
+
+    } else {
+        sendRes(req.url, getContentType(req.url), res)
+    }
+})
+
+function sendRes(url, contentType, res) {
+    let file = path.join(__dirname+'/static/', url)
+    fs.readFile(file, (err, content) => {
+        if (err) {
+            res.writeHead(404)
+            res.write('file no found')
+            res.end()
+            console.log(`error 404 ${file}`);
+        } else {
+            res.writeHead(200, {'Content-Type': contentType})
+            res.write(content)
+            res.end()
+            console.log(`res 200 ${file}`);
+        }
+    })
+}
+
+function getContentType(url) {
+    switch (path.extname(url)) {
+        case ".html":
+            return "text/html"
+        case ".css":
+            return "text/css"
+        case ".js":
+            return "text/javascript"
+        case ".json":
+            return "application/json"
+        default:
+            return "application/octate-stream"
+    }
+}
+
 module.exports = router;

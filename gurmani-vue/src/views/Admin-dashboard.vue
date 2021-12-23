@@ -7,6 +7,7 @@
 
     <form action="" class="promotion form">
       <h2 class="form__title">Добавить баннер</h2>
+      <input type="file" name="promotion_file" @change="uploadFile">
       <input
         type="text"
         placeholder="Название акции (промокод)"
@@ -55,7 +56,7 @@ export default {
     return { user, signOutUser };
   },
   methods: {
-    ...mapActions(["ADD_BANNER"]),
+    ...mapActions(["ADD_BANNER", "ADD_BANNER_PHOTO"]),
     async changeBanners(e) {
       const data = await {
         action: e.target.getAttribute("title"),
@@ -64,6 +65,30 @@ export default {
       }
       this.ADD_BANNER(data)
 
+    },
+    uploadFile(e) {
+      let target = e.target || e.srcElement || e.currentTarget
+      let file = target.files[0]
+      let xhr = new XMLHttpRequest()
+      xhr.open('POST', 'http://localhost:3000/'+file.name, true)
+      xhr.setRequestHeader('Content-Type', 'application/octate-stream')
+      xhr.onreadystatechange = function() {
+        e = null
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // this.callBackFunction(this.responseText)
+            console.log('success');
+            console.log(xhr.responseText);
+          } else {
+            console.log('errrrrror');
+          }
+        }
+      }
+      xhr.send(file)
+      e.target.value = ''
+    },
+    callBackFunction(data) {
+      console.log(data);
     }
   },
   mounted() {},

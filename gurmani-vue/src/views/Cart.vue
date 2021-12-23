@@ -3,7 +3,7 @@
     <v-cart v-if="CART.length" :cart_data="CART"></v-cart>
     <div class="cart__empty" v-if="!CART.length">
       <img src="@/assets/media/img/logo.png" alt="" />
-      Корзина пуста, но это пока :)
+      Корзина пуста
     </div>
   </section>
 </template>
