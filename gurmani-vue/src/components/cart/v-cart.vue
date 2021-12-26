@@ -241,7 +241,7 @@
       </transition>
     </div>
 
-    <div class="cart__container" v-if="confirm_order == false">
+    <div class="cart__container">
       <div class="cart__list">
         <transition-group appear @before-enter="beforeEnter" @enter="enter">
           <v-cart-item
@@ -324,6 +324,9 @@
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         - - - - - - - - - - - - - - - - - - - - - - - -
       </p>
+      <router-link class="cart-info__policy" to="/privacy"
+        >Политика конфиденциальности</router-link
+      >
       <button
         class="send-form-btn"
         v-if="confirm_order == false"
@@ -375,6 +378,7 @@ export default {
         order_comment: "",
         order_payment_type: "",
       },
+      active_element: "",
       promocode_input: "",
       choosen_cutlery_count: 0,
       product_id: "",
@@ -697,6 +701,19 @@ export default {
           "beforebegin",
           document.querySelector(".cart-info__promocode")
         );
+
+      let cart_parent = document.querySelector(".cart__parent");
+      let cart_container = document.querySelector(".cart__container");
+      let cart_confirm = document.querySelector(".cart__confirm");
+
+      cart_parent.insertAdjacentHTML(
+        "afterend",
+        `<div class="cart__desktop"></div>`
+      );
+      let cart_desktop = document.querySelector(".cart__desktop");
+
+      cart_desktop.insertAdjacentElement("afterbegin", cart_confirm);
+      cart_desktop.insertAdjacentElement("afterbegin", cart_container);
     }
   },
   setup() {
@@ -734,12 +751,18 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  &__policy {
+    text-align: center;
+    text-decoration: underline;
+  }
   &__promocode {
     top: -75px;
+    left: 50%;
+    transform: translateX(-50%);
     position: absolute;
-
+    width: 85%;
     &-inp {
-      width: 90vw;
+      width: 100%;
       padding: 24px 10px;
       border: none;
       @include container;

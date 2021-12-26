@@ -29,7 +29,7 @@
                 }}
                 ₽</span
               >
-              – (220 г)
+              – ({{ PRODUCT.out.toString().slice(0, -3) }} г)
             </p>
           </div>
           <div class="popup__controls">
@@ -72,6 +72,11 @@
       </div>
 
       <div class="popup__body">
+        <div class="popup__info" v-if="client_width > 768">
+          <div class="about">
+            {{ PRODUCT.product_production_description }}
+          </div>
+        </div>
         <div class="popup__info">
           <h2 class="popup__title">Ингредиенты</h2>
           <section class="ingredients">
@@ -80,24 +85,27 @@
               v-for="ingredient in PRODUCT.ingredients"
               :key="ingredient.ingredient_id"
             >
-              <div
-                class="ingredient__head"
-              >
-                <img :src="require(`@/assets/media/img/ingredients/${ingredient.ingredient_icon}.png`)" alt="">
+              <div class="ingredient__head">
+                <img
+                  :src="
+                    require(`@/assets/media/img/ingredients/${ingredient.ingredient_icon}.png`)
+                  "
+                  alt=""
+                />
               </div>
               <p class="ingredient__body">{{ ingredient.ingredient_name }}</p>
             </div>
           </section>
         </div>
 
-        <div class="popup__info">
+        <div class="popup__info" v-if="client_width < 768">
           <h2 class="popup__title">О блюде</h2>
           <div class="about">
             {{ PRODUCT.product_production_description }}
           </div>
         </div>
 
-        <div class="popup__info">
+        <div class="popup__info" v-if="PRODUCT.group_modifications">
           <section
             class="additional"
             v-if="!PRODUCT.product_name.includes('Пицца')"
@@ -185,7 +193,9 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "v-product-popup",
   data() {
-    return {};
+    return {
+      client_width: window.innerWidth,
+    };
   },
   props: {
     popup_data: {
@@ -290,6 +300,10 @@ export default {
   top: 0;
   left: 0;
   padding: 40px 0px 135px 20px;
+  &-buy-btn {
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .back {
     margin-right: 20px;
     .btn {
@@ -379,6 +393,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    justify-content: center;
     padding-left: 15px;
     max-width: 150px;
     width: 100%;

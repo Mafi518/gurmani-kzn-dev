@@ -217,8 +217,8 @@ export default createStore({
         state.discount.promocode_type = validPromo.params.result_type;
         state.discount.condition = validPromo.params.conditions[0].pcs;
         state.discount.period_start =
-          validPromo.params.periods[0].start
-        state.discount.period_end = validPromo.params.periods[0].end
+          validPromo.params.periods[0].start.slice(0, -3)
+        state.discount.period_end = validPromo.params.periods[0].end.slice(0, -3)
         state.discount.error = "";
         // state.discount.time = validPromo.params.
         if (state.discount.promocode_type == 1) {
@@ -379,6 +379,10 @@ export default createStore({
     },
     CUTLERY_COUNT: (state, cutlery) => {
       state.cutlery_count = cutlery
+    },
+    CURRENT_TIME: (state) => {
+      let dateWithoutSecond = new Date();
+      state.current_time = dateWithoutSecond.getHours().toString()
     }
   },
   actions: {
@@ -767,6 +771,9 @@ export default createStore({
     }, cutlery) {
       commit("CUTLERY_COUNT", cutlery)
     },
+    GET_TIME({commit}) {
+      commit("CURRENT_TIME")
+    }
 
   },
   getters: {
@@ -830,8 +837,8 @@ export default createStore({
 
       if (
         state.subtotalPrice >= state.discount.condition &&
-        state.current_time < state.discount.period_end.slice(0, -3) &&
-        state.current_time > state.discount.period_start.slice(0, -3)
+        state.current_time < state.discount.period_end &&
+        state.current_time > state.discount.period_start
       ) {
         if (state.discount.promocode_type == 2) {
           state.discount.total_discount = state.discount.promocode_discount;
@@ -928,9 +935,9 @@ export default createStore({
         state.current_time < state.discount.period_start
       ) {
         return (state.error = `Промокод работает с ${
-          state.discount.period_start
+          state.discount.period_start + ':00'
         }  до ${
-          state.discount.period_end
+          state.discount.period_end + ':00'
         }`);
       } else {
         return (state.error = ``);
@@ -940,13 +947,14 @@ export default createStore({
       return state.form_validation_error;
     },
     CURRENT_TIME(state) {
-      var dateWithoutSecond = new Date();
-      let currentHour = dateWithoutSecond
-        .toLocaleTimeString(navigator.language, {
-          hour: "2-digit",
-        })
+      let dateWithoutSecond = new Date();
+      // let currentHour = dateWithoutSecond
+      //   .toLocaleTimeString(navigator.language, {
+      //     hour: "2-digit"
+      //   })
       // .replace(":", "");
-      return (state.current_time = currentHour);
+      console.log('CURRENT_TIME', dateWithoutSecond.getHours().toString());
+      return state.current_time = dateWithoutSecond.getHours().toString()
     },
     WARNING(state) {
       return state.warning;

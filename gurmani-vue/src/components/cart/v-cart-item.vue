@@ -30,9 +30,9 @@
           class="cart__item-controls"
           v-if="!cart_item_data.product_name.includes('Пицца')"
         >
-          <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
+          <v-icon name="controls-minus-icon" class="cart__item-control" @click="decrementItem"></v-icon>
           <p class="cart__item-count">{{ cart_item_data.count }}</p>
-          <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
+          <v-icon name="controls-plus-icon" class="cart__item-control" @click="incrementItem"></v-icon>
         </div>
       </div>
 

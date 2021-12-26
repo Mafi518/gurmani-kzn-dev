@@ -1,9 +1,17 @@
 <template>
   <div class="home">
     <header class="header" v-if="clientWidth <= 768">
-      <img src="@/assets/media/img/logo.png" @click="this.$router.push('/')" alt="logo" class="header__logo" />
-      <h1 class="header__title">gurmani</h1>
-      <span class="header__info">10:00</span>
+      <p class="header__info">
+        <a href="tel:+88432390012">88432390012</a>
+        <span>10:00 - 22:00</span>
+      </p>
+      <h1 class="header__title"><span>gurmani</span> <span>море вкуса для тебя</span> </h1>
+      <img
+        src="@/assets/media/img/logo.png"
+        @click="this.$router.push('/')"
+        alt="logo"
+        class="header__logo"
+      />
     </header>
     <v-banner-list></v-banner-list>
     <v-category-list>Меню</v-category-list>
@@ -64,17 +72,28 @@ export default {
   justify-content: space-between;
   padding: 0px 20px 20px 20px;
   &__logo {
-    width: 42px;
+    width: 60px;
   }
   &__title {
     @include h1;
     text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
-    display: inline;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-transform: uppercase;
+    span:last-child {
+      font-size: 14px;
+      text-transform: lowercase;
+    }
   }
   &__info {
     font-weight: bold;
     text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    a {
+      font-size: 16px;
+    }
   }
 }
 </style>

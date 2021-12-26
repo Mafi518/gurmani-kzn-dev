@@ -23,12 +23,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["SET_SAVED_FAVORITES_TO_STATE", "GET_POPULAR_FROM_API"]),
+    ...mapActions(["SET_SAVED_FAVORITES_TO_STATE", "GET_POPULAR_FROM_API", "GET_TIME"]),
   },
   mounted() {
     this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
     this.clientWidth = window.innerWidth
-    console.log(this.clientWidth);
+    this.GET_TIME()
   },
 
   // Попробуй сделать это через промисы, чтобы перед роутом выполнялась анимация, а только потом он через await дожидался данных, потом уже отображался

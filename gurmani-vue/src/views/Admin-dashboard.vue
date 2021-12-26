@@ -7,7 +7,7 @@
 
     <form action="" class="promotion form">
       <h2 class="form__title">Добавить баннер</h2>
-      <input type="file" name="promotion_file" @change="uploadFile">
+      <!-- <input type="file" name="promotion_file" @change="uploadFile"> -->
       <input
         type="text"
         placeholder="Название акции (промокод)"
@@ -20,16 +20,29 @@
         class="form__input form__input-block"
         v-model.trim="promo_picture"
       />
-      <button class="form__button form__add" title="add" @click.prevent="changeBanners">Добавить</button>
-      <button class="form__button form__delete" title="delete" @click.prevent="changeBanners">Удалить</button>
+      <button
+        class="form__button form__add"
+        title="add"
+        @click.prevent="changeBanners"
+      >
+        Добавить
+      </button>
+      <button
+        class="form__button form__delete"
+        title="delete"
+        @click.prevent="changeBanners"
+      >
+        Удалить
+      </button>
     </form>
+    {{ this.response }}
   </section>
 </template>
 <script>
 import { getAuth, signOut } from "firebase/auth";
 import { useAuthState } from "@/firebase";
 import { useRouter } from "vue-router";
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -37,6 +50,7 @@ export default {
       image: "",
       promo_name: "",
       promo_picture: "",
+      response: "",
     };
   },
   setup() {
@@ -61,35 +75,43 @@ export default {
       const data = await {
         action: e.target.getAttribute("title"),
         promo_name: this.promo_name,
-        promo_picture: this.promo_picture
+        promo_picture: this.promo_picture,
+      };
+      this.ADD_BANNER(data);
+      if (e.target.getAttribute("title") == "add") {
+        this.response = "Баннер успешно добавлен";
+      } else {
+        this.response = "Баннер успешно удалён";
       }
-      this.ADD_BANNER(data)
 
+      setTimeout(() => {
+        this.response = "";
+      }, 1000);
     },
     uploadFile(e) {
-      let target = e.target || e.srcElement || e.currentTarget
-      let file = target.files[0]
-      let xhr = new XMLHttpRequest()
-      xhr.open('POST', 'http://localhost:3000/'+file.name, true)
-      xhr.setRequestHeader('Content-Type', 'application/octate-stream')
-      xhr.onreadystatechange = function() {
-        e = null
+      let target = e.target || e.srcElement || e.currentTarget;
+      let file = target.files[0];
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/" + file.name, true);
+      xhr.setRequestHeader("Content-Type", "application/octate-stream");
+      xhr.onreadystatechange = function () {
+        e = null;
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             // this.callBackFunction(this.responseText)
-            console.log('success');
+            console.log("success");
             console.log(xhr.responseText);
           } else {
-            console.log('errrrrror');
+            console.log("errrrrror");
           }
         }
-      }
-      xhr.send(file)
-      e.target.value = ''
+      };
+      xhr.send(file);
+      e.target.value = "";
     },
     callBackFunction(data) {
       console.log(data);
-    }
+    },
   },
   mounted() {},
 };
