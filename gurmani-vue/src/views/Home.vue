@@ -2,10 +2,10 @@
   <div class="home">
     <header class="header" v-if="clientWidth <= 768">
       <p class="header__info">
-        <a href="tel:+88432390012">88432390012</a>
+        <a href="tel:+88432390012">8 (843) 239-00-12</a>
         <span>10:00 - 22:00</span>
       </p>
-      <h1 class="header__title"><span>gurmani</span> <span>море вкуса для тебя</span> </h1>
+      <h1 class="header__title"><img src="@/assets/media/img/gurmani.png" alt=""> <span>море вкуса для тебя</span> </h1>
       <img
         src="@/assets/media/img/logo.png"
         @click="this.$router.push('/')"
@@ -68,7 +68,7 @@ export default {
 }
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   padding: 0px 20px 20px 20px;
   &__logo {
@@ -80,10 +80,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-transform: uppercase;
-    span:last-child {
+    img {
+      height: 30px;
+    }
+    span {
       font-size: 14px;
-      text-transform: lowercase;
+      margin-top: 3px;
     }
   }
   &__info {
@@ -93,6 +95,10 @@ export default {
     flex-direction: column;
     a {
       font-size: 16px;
+    }
+    span {
+      margin-top: 6px;
+      font-size: 12px;
     }
   }
 }

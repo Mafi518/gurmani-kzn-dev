@@ -110,7 +110,7 @@
                 :key="item"
                 :value="`Самовывоз ${item}`"
               >
-                {{ `Казань, Оренбургский тракт, 8в (${item})` }}
+                {{ item }}
               </option>
             </select>
 
@@ -504,9 +504,11 @@ export default {
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
+      console.log('incr');
     },
     decrement(index) {
       this.DECREMENT_POPUP_ITEM(index);
+      console.log('decr');
     },
     check(index) {
       localStorage.setItem("cartItem", index);

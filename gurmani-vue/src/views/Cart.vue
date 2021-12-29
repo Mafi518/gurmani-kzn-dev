@@ -37,9 +37,6 @@ export default {
     },
     getCurrentEl(e) {
       this.active_element = e.target;
-
-      // if (e.target.className)
-      console.log(this.active_element.tagName);
     },
   },
   computed: {
@@ -54,7 +51,8 @@ export default {
     active_element: {
       handler() {
         if (
-          this.active_element.tagName == "INPUT" && window.innerWidth <= 768
+          this.active_element.tagName == "INPUT" &&
+          window.innerWidth <= 768
           // this.active_element.className.includes("confirm") ||
           // this.active_element.className.includes("cart-info__promocode-inp")
         ) {
@@ -72,10 +70,12 @@ export default {
             });
           }
         } else {
-          gsap.to(".cart-info", {
-            transform: "translateY(0%)",
-            duration: 0.6,
-          });
+          if (document.querySelector(".cart-info")) {
+            gsap.to(".cart-info", {
+              transform: "translateY(0%)",
+              duration: 0.6,
+            });
+          }
         }
 
         // if (

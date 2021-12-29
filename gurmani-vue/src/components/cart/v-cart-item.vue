@@ -37,7 +37,7 @@
       </div>
 
       <div class="cart__item-container">
-        <p class="cart__item-weight">{{ cart_item_data.out }} г</p>
+        <!-- <p class="cart__item-weight">{{ cart_item_data.out }} г</p> -->
         <div
           class="cart__item-size"
           v-if="cart_item_data.product_name.includes('Пицца')"

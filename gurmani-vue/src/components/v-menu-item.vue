@@ -27,7 +27,7 @@ export default {
     &-title {
       @include h2;
       margin-bottom: 0;
-      max-width: 225px;
+      padding-right: 30%;
     }
   }
   &__suptitle {

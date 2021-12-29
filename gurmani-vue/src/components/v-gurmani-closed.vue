@@ -1,7 +1,7 @@
 <template>
   <div
     class="closed-popup"
-    v-if="show_popup_from_vuex == true && close_popup == false"
+    v-if="TIME_WARNING == true && close_popup == false && show_popup_from_vuex !== true"
   >
     <div class="closed-popup__info">
       <img src="@/assets/media/img/logo.png" alt="" />
@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "v-gurmani-closed",
   data() {
@@ -30,6 +30,12 @@ export default {
   },
   computed: {
     ...mapGetters(["TIME_WARNING"]),
+  },
+  methods: {
+    ...mapActions(["WARNING_POPUP"])
+  },
+  mounted() {
+    this.WARNING_POPUP()
   },
 };
 </script>

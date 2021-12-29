@@ -36,7 +36,7 @@ export default createStore({
     favorites: [],
     banner: {},
     banners: [],
-    gurmani_closed: {},
+    gurmani_closed: false,
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -54,6 +54,7 @@ export default createStore({
       state.product = product;
     },
     INCREMENT: (state, index) => {
+      console.log('INCREMENT');
       if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.68.196:8080/cart') {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
@@ -82,6 +83,7 @@ export default createStore({
       }
     },
     DECREMENT: (state, index) => {
+      console.log('DECREMENT');
       if (
         state.product.count > 1 &&
         window.location.href !== "http://localhost:8080/cart" && window.location.href !== "http://185.185.68.196:8080/cart"
@@ -383,7 +385,23 @@ export default createStore({
     CURRENT_TIME: (state) => {
       let dateWithoutSecond = new Date();
       state.current_time = dateWithoutSecond.getHours().toString()
-    }
+    },
+    TIME_WARNING: (state) => {
+      state
+      let work_time = ["10", "22"]
+      // let toggle = JSON.parse(localStorage.getItem("warning_was_displayed"))
+
+      if (state.current_time > work_time[1] || state.current_time < work_time[0]) {
+          localStorage.setItem("warning_was_displayed", true)
+          console.log('warn was displayed');
+          state.gurmani_closed = true
+          return state.gurmani_closed
+      } else {
+        localStorage.setItem("warning_was_displayed", false)
+        state.gurmani_closed = false
+        return state.gurmani_closed
+      }
+    },
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -771,9 +789,16 @@ export default createStore({
     }, cutlery) {
       commit("CUTLERY_COUNT", cutlery)
     },
-    GET_TIME({commit}) {
+    GET_TIME({
+      commit
+    }) {
       commit("CURRENT_TIME")
-    }
+    },
+    WARNING_POPUP({
+      commit
+    }) {
+      commit("TIME_WARNING")
+    },
 
   },
   getters: {
@@ -1038,19 +1063,7 @@ export default createStore({
       });
     },
     TIME_WARNING(state) {
-      let work_time = ["10:00", "22:00"]
-      let toggle = JSON.parse(localStorage.getItem("warning_was_displayed"))
-
-      if (state.current_time > work_time[1] || state.current_time < work_time[0]) {
-        if (toggle !== true) {
-          localStorage.setItem("warning_was_displayed", true)
-          console.log('warn was displayed');
-          return state.gurmani_closed.closed = true
-        }
-      } else {
-        localStorage.setItem("warning_was_displayed", false)
-        return state.gurmani_closed.closed = false
-      }
+      return state.gurmani_closed
     }
   },
   modules: {},

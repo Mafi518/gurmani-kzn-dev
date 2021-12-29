@@ -29,7 +29,7 @@
                 }}
                 ₽</span
               >
-              – ({{ PRODUCT.out.toString().slice(0, -3) }} г)
+              <!-- – ({{ PRODUCT.out.toString().slice(0, -3) }} г) -->
             </p>
           </div>
           <div class="popup__controls">
