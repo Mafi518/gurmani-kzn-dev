@@ -1,6 +1,6 @@
 <template>
   <div class="banner__item" @click="setPromo">
-    <img :src="`http://185.185.68.196:3000/${banner_data.promo_picture}`"  alt="" />
+    <img :src="`http://185.185.70.214:3000/${banner_data.promo_picture}`"  alt="" />
   </div>
 </template>
 <script>

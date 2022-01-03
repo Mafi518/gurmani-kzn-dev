@@ -504,11 +504,11 @@ export default {
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
-      console.log('incr');
+      console.log("incr");
     },
     decrement(index) {
       this.DECREMENT_POPUP_ITEM(index);
-      console.log('decr');
+      console.log("decr");
     },
     check(index) {
       localStorage.setItem("cartItem", index);
@@ -668,6 +668,16 @@ export default {
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
     this.DECREMENT_POPUP_ITEM(0);
+    if (
+      document
+        .querySelector(".cart__item-container")
+        .textContent.includes("Пицца")
+    ) {
+      let checkedInp = document.querySelector(".cart__item-input");
+      if (checkedInp.checked !== true) {
+        checkedInp.parentNode.nextElementSibling.click();
+      } 
+    }
     this.orderData();
     document
       .querySelectorAll('input[name="delivery_type"]:checked')

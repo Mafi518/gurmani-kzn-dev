@@ -44,7 +44,7 @@
         >
           <label
             class="cart__item-label"
-            v-for="(modification, index) in cart_item_data.group_modifications"
+            v-for="(modification, index) in cart_item_data.group_modifications[0].modifications"
             :key="modification.dish_modification_group_id"
             @click="toggleSize(index)"
           >
@@ -52,7 +52,7 @@
               type="radio"
               ref="radio"
               :checked="
-                cart_item_data.group_modifications[index].checked == true
+                cart_item_data.group_modifications[0].modifications[index].checked == true
               "
               :name="cart_item_data.photo_origin"
               class="cart__item-input"

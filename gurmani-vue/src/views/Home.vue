@@ -2,7 +2,7 @@
   <div class="home">
     <header class="header" v-if="clientWidth <= 768">
       <p class="header__info">
-        <a href="tel:+88432390012">8 (843) 239-00-12</a>
+        <a href="tel:+78432390012">+7 (843) 239-00-12</a>
         <span>10:00 - 22:00</span>
       </p>
       <h1 class="header__title"><img src="@/assets/media/img/gurmani.png" alt=""> <span>море вкуса для тебя</span> </h1>

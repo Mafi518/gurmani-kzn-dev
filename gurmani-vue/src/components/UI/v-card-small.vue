@@ -15,7 +15,7 @@
       </p>
     </div>
     <div class="card__footer">
-      <p class="card__price">{{ like_data.spots[0].price.slice(0, -2) }} ₽</p>
+      <p class="card__price">{{ like_data.price[1].slice(0, -2) }} ₽</p>
       <v-icon name="plus-icon"></v-icon>
     </div>
   </article>

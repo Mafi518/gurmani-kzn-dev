@@ -50,17 +50,17 @@
             </div>
             <div
               class="popup__size"
-              v-if="PRODUCT.product_name.includes('Пицца')"
+              v-if="PRODUCT.category_name.includes('Пиццы')"
             >
               <label
                 class="popup__label"
-                v-for="(modification, index) in PRODUCT.group_modifications"
+                v-for="(modification, index) in PRODUCT.group_modifications[0].modifications"
                 :key="modification.dish_modification_group_id"
                 @click="toggleSize(index)"
               >
                 <input
                   type="radio"
-                  :checked="PRODUCT.group_modifications[index].checked == true"
+                  :checked="PRODUCT.group_modifications[0].modifications[index].checked == true"
                   name="size"
                   class="popup__input"
                 />
@@ -106,9 +106,12 @@
         </div>
 
         <div class="popup__info" v-if="PRODUCT.group_modifications">
-          <section
+          <!-- <section
             class="additional"
-            v-if="!PRODUCT.product_name.includes('Пицца')"
+            v-if="
+              !PRODUCT.product_name.includes('Пицца') &&
+              !PRODUCT.group_modifications[0].name.includes('Лапша на выбор')
+            "
           >
             <article
               class="additional__card"
@@ -142,7 +145,8 @@
                 {{
                   modification.name +
                   " | " +
-                  modification.modifications[0].price.toString().slice(0, -2) +
+                  modification.modifications[0].price.toString().slice(0, -2) *
+                    modification.count +
                   " ₽" +
                   " | " +
                   modification.count +
@@ -150,6 +154,56 @@
                 }}
               </div>
             </article>
+          </section> -->
+          <section class="additional">
+            <div
+              class="additional__container"
+              v-for="modification_group in PRODUCT.group_modifications"
+              :key="modification_group.dish_modification_group_id"
+            >
+              {{ modification_group.name }}
+              <article
+                class="additional__card"
+                v-for="modification in modification_group.modifications"
+                :key="modification.dish_modification_id"
+              >
+                <div
+                  class="additional__delete"
+                  @click="deleteModification(modification, modification_group)"
+                >
+                  <v-icon name="controls-minus-icon"></v-icon>
+                </div>
+                <div
+                  class="additional__add"
+                  @click="addModification(modification, modification_group)"
+                >
+                  <v-icon name="plus-icon"></v-icon>
+                </div>
+                <div class="additional__head">
+                  <picture>
+                    <source
+                      :srcset="`https://gurmanikzndev.joinposter.com${modification.photo_large}`"
+                    />
+                    <img
+                      :src="`https://gurmanikzndev.joinposter.com${modification.photo_large}`"
+                      alt=""
+                    />
+                  </picture>
+                </div>
+                <div class="additional__body">
+                  {{
+                    modification.name +
+                    " | " +
+                    modification.price.toString().slice(0, -2) *
+                      modification.count +
+                    " ₽" +
+                    " | " +
+                    modification.count +
+                    " шт"
+                  }}
+                </div>
+              </article>
+            </div>
           </section>
         </div>
       </div>
@@ -247,14 +301,22 @@ export default {
       await this.ADD_TO_CART(data);
       this.clearPopupState();
     },
-    deleteModification(index) {
-      if (this.PRODUCT.group_modifications[index].count > 0) {
-        this.$store.state.product.group_modifications[index].count--;
-        this.FULL_PRICE(this.PRODUCT);
+    deleteModification(modification, modification_group) {
+      console.log(modification_group);
+      if (modification.count > 0) {
+        modification.count--;
       }
+      this.FULL_PRICE(this.PRODUCT);
     },
-    addModification(index) {
-      this.$store.state.product.group_modifications[index].count++;
+    addModification(modification, modification_group) {
+      console.log(modification_group);
+      if (modification_group.name == "Лапша на выбор") {
+        modification_group.modifications.map((item) => (item.count = 0));
+        modification.count++;
+      } else {
+        modification.count++;
+        console.log(modification);
+      }
       this.FULL_PRICE(this.PRODUCT);
     },
     toggleSize(index) {

@@ -9,7 +9,7 @@
       <!-- <h2 class="menu__title">Наша миссия</h2> -->
 
       <v-menu-item @click="this.$router.push('/about')"
-        ></v-menu-item
+        >О нас</v-menu-item
       >
       <v-menu-item @click="this.$router.push('/conditions')"
         >Условия доставки способы оплаты время доставки</v-menu-item
@@ -33,7 +33,7 @@
         </a>
       </div>
       <div class="menu__info">
-        <a href="tel:+88432390012" class="menu__phone">8 (843) 239-00-12</a>
+        <a href="tel:+78432390012" class="menu__phone">+7 (843) 239-00-12</a>
         <h3 class="menu__info-title">10:00 – 22:00</h3>
         <h3 class="menu__info-title">г. Казань</h3>
       </div>
