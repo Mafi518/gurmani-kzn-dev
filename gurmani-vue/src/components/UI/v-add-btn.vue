@@ -19,8 +19,14 @@ export default {
   border-radius: 10px;
   background-color: $accent;
   color: $white;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
   justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
   height: 76px;
   padding: 15px;

@@ -40,7 +40,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["CART", "OLD_CART", "PROMOCODES", "TOTAL_PRICE"]),
+    ...mapGetters(["CART", "OLD_CART", "PROMOCODES"]),
   },
   mounted() {
     this.reset();
@@ -53,8 +53,6 @@ export default {
         if (
           this.active_element.tagName == "INPUT" &&
           window.innerWidth <= 768
-          // this.active_element.className.includes("confirm") ||
-          // this.active_element.className.includes("cart-info__promocode-inp")
         ) {
           if (
             this.active_element.className.includes("cart-info__promocode-inp")
@@ -107,9 +105,18 @@ export default {
   min-height: 100vh;
 }
 .cart__empty {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
   height: 80vh;
   img {

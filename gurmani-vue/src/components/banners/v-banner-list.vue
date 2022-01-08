@@ -21,7 +21,7 @@ export default {
     ...mapActions(["GET_BANNERS"]),
     test() {
       console.log(this);
-    }
+    },
   },
   computed: {
     ...mapGetters(["SET_BANNERS"]),
@@ -35,8 +35,18 @@ export default {
 .banner {
   margin: 0 auto;
   &__list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     overflow: auto;
+  }
+}
+@media (max-width: 1920px) and (min-width: 1025px) {
+  .banner {
+    &__list {
+      padding: 0 10px;
+      padding-bottom: 10px;
+    }
   }
 }
 </style>

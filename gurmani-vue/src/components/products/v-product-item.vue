@@ -95,22 +95,35 @@ export default {
   width: 100%;
   padding: 12px 9px;
   min-height: 208px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
   margin-right: 20px;
   margin-bottom: 20px;
   &__head {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
     align-items: flex-start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
     margin-bottom: 10px;
   }
   &__image * {
     max-width: 120px;
-    max-height: 78px;
+    max-height: 100%;
     min-height: 78px;
   }
   &__body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
     flex: 1 1 auto;
   }
   &__title {
@@ -122,15 +135,38 @@ export default {
     font-size: 12px;
     overflow: hidden;
     white-space: nowrap;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
   }
   &__footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
   }
   &__price {
     font-weight: 500;
+  }
+}
+@media (max-width: 416px) {
+  .card {
+    min-width: initial;
+    max-width: 47%;
+    margin-right: 0;
+    position: relative;
+    &__image *{
+      max-height: 100%;
+    }
+    .favorite-btn {
+      position: absolute;
+      top: 12px;
+      right: 9px;
+    }
   }
 }
 </style>

@@ -11,12 +11,18 @@ export default {
 <style lang="scss" scoped>
 .btn {
   @include shadow;
-  width: 38px;
+  min-width: 38px;
   height: 38px;
   background-color: $white;
   border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 </style>

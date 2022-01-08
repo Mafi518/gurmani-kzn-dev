@@ -383,6 +383,7 @@
       9.4. Действующая Политика конфиденциальности размещена на странице по
       адресу gurmanikzn.ru/privacy
     </p>
+    <v-footer></v-footer>
   </section>
 </template>
 <script>
@@ -402,5 +403,9 @@ export default {
     line-height: 140%;
   }
 }
+.cart__back-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
+}
 </style>
-

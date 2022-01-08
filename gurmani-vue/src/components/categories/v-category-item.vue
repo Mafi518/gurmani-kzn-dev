@@ -29,9 +29,18 @@ export default {
 .category {
   &__item {
     @include container;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     min-width: 124px;
     padding: 5px;
@@ -48,23 +57,35 @@ export default {
       background-color: #ffdeb4;
     }
     &:nth-child(4) {
-      background-color: #FFC5AF;
+      background-color: #ffc5af;
     }
     &:nth-child(5) {
-      background-color: #FFAFB5;
+      background-color: #ffafb5;
     }
     &:nth-child(6) {
-      background-color: #FFAFA5;
+      background-color: #ffafa5;
     }
     &:nth-child(7) {
-      background-color: #FFA68A;
+      background-color: #ffa68a;
     }
-
   }
   &__item-title {
     @include h3;
     margin-top: 7px;
     text-align: center;
+  }
+}
+
+@media (max-width: 1920px) and (min-width: 1025px) {
+  .category {
+    &__item {
+      min-width: 160px;
+      min-height: 138px;
+      img {
+        max-width: 80px;
+      }
+    }
+
   }
 }
 </style>

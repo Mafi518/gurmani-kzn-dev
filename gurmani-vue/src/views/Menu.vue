@@ -3,41 +3,24 @@
     <v-back-menu>
       <v-back-btn :to="`/`"></v-back-btn>
       <h2 class="menu__title">Меню</h2>
-      </v-back-menu>
-    <v-category-list style="padding-left: 0px;"></v-category-list>
+    </v-back-menu>
+    <v-category-list style="padding-left: 0px"></v-category-list>
     <div class="menu__list">
       <!-- <h2 class="menu__title">Наша миссия</h2> -->
 
-      <v-menu-item @click="this.$router.push('/about')"
-        >О нас</v-menu-item
-      >
+      <v-menu-item @click="this.$router.push('/about')">О нас</v-menu-item>
       <v-menu-item @click="this.$router.push('/conditions')"
         >Условия доставки способы оплаты время доставки</v-menu-item
       >
     </div>
-    <div class="menu__contacts">
-      <div class="menu__social">
-        <a
-          href="https://www.instagram.com/gurmani.kzn/"
-          target="_blank"
-          class="menu__social-link"
-        >
-          <v-icon name="instagram-icon"></v-icon>
-        </a>
-        <a
-          href="https://vk.com/gurmanikzn"
-          target="_blank"
-          class="menu__social-link"
-        >
-          <v-icon name="vk-icon"></v-icon>
-        </a>
+    <v-footer>
+      <div class="footer__business">
+        <p>{{ this.current_year }} GURMANI</p>
+        <p>ИП КОРНИЛОВ А. А.</p>
+        <p>ИНН: 503614560405</p>
+        <p>ОГРН: 321169000049507</p>
       </div>
-      <div class="menu__info">
-        <a href="tel:+78432390012" class="menu__phone">+7 (843) 239-00-12</a>
-        <h3 class="menu__info-title">10:00 – 22:00</h3>
-        <h3 class="menu__info-title">г. Казань</h3>
-      </div>
-    </div>
+    </v-footer>
   </section>
 </template>
 
@@ -51,6 +34,11 @@ export default {
     vMenuItem,
     vCategoryList,
   },
+  data() {
+    return {
+      current_year: new Date().getFullYear(),
+    };
+  },
 };
 </script>
 
@@ -58,23 +46,43 @@ export default {
 .menu {
   padding: 0px 20px 20px 20px;
   min-height: 90vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
   &__title {
     @include h2;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
   }
   &__list {
     margin-bottom: 18px;
   }
   &__contacts {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
   }
   &__social {
     width: 84px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
   }
   &__info {

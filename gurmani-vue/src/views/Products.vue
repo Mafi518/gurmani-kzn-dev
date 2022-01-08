@@ -1,6 +1,7 @@
 <template>
   <div class="products">
     <v-product-list></v-product-list>
+    <v-footer></v-footer>
   </div>
 </template>
 

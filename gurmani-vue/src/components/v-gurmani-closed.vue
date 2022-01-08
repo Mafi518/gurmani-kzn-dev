@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="closed-popup"
-    v-if="TIME_WARNING == true && close_popup == false && show_popup_from_vuex !== true"
-  >
+  <div class="closed-popup">
     <div class="closed-popup__info">
       <img src="@/assets/media/img/logo.png" alt="" />
       <p class="closed-popup__description">
@@ -17,26 +14,8 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
 export default {
   name: "v-gurmani-closed",
-  data() {
-    return {
-      close_popup: false,
-      show_popup_from_vuex: JSON.parse(
-        localStorage.getItem("warning_was_displayed")
-      ),
-    };
-  },
-  computed: {
-    ...mapGetters(["TIME_WARNING"]),
-  },
-  methods: {
-    ...mapActions(["WARNING_POPUP"])
-  },
-  mounted() {
-    this.WARNING_POPUP()
-  },
 };
 </script>
 <style lang="scss" scoped>
@@ -49,11 +28,20 @@ export default {
     top: 50%;
     left: 50%;
     width: 250px;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     @include container;
     padding: 20px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     z-index: 11;
   }
@@ -61,8 +49,14 @@ export default {
     border-radius: 10px;
     background-color: #ff6800;
     color: #fff;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     padding: 15px;
     width: 100%;

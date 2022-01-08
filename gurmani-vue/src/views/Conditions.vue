@@ -29,6 +29,7 @@
       Среднее время доставки 80 минут. Время доставки может быть увеличено в зависимости от погодных условий и ситуации на дороге и иных обстоятельств.
     </p>
 
+  <v-footer></v-footer>
   </section>
 </template>
 <script>
@@ -38,7 +39,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .conditions {
-
   padding: 20px;
   &__title {
     @include h2;
@@ -49,11 +49,16 @@ export default {
     line-height: 140%;
   }
   &__list {
-      list-style: none;
+    list-style: none;
   }
   &__item {
-      color: $accent;
+    color: $accent;
   }
+}
+.cart__back-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
 }
 </style>
 

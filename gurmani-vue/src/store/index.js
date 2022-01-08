@@ -37,6 +37,13 @@ export default createStore({
     banner: {},
     banners: [],
     gurmani_closed: false,
+
+    admin_addresses: [],
+    set_address: {},
+    delete_address: {},
+
+    admin_set_popular: '',
+    admin_delete_popular: ''
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -45,21 +52,17 @@ export default createStore({
     SET_CATEGORY_PRODUCTS_TO_STATE: (state, products) => {
       products.map((item) => {
         item.count = 1
-        // if (item.group_modifications) {
-        //   item.group_modifications.map((modification) => {
-        //     modification.modifications[0].price = (modification.modifications[0].price + '00') - 0
-        //   })
-        // }
+
       });
       state.categoryProducts = products;
     },
     SET_POPULAR_TO_STATE: (state, populars) => {
       populars.map((item) => {
         item.count = 1
-        if (item.group_modifications) {
-          item.group_modifications.map((modification) => {
-            modification.modifications[0].price = (modification.modifications[0].price + '00') - 0
-          })
+        item.sub_category = 'Популярное'
+        if (item.category_name.includes('Пиццы') && item.group_modifications) {
+          item.group_modifications[0].modifications.map(item => item.price = (item.price + '00') - 0)
+          item.price[1] = (item.group_modifications[0].modifications[0].price).toString()
         }
       });
 
@@ -69,25 +72,24 @@ export default createStore({
       state.product = product;
     },
     INCREMENT: (state, index) => {
-      console.log('INCREMENT');
       if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.70.214/cart') {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
+          let checked = state.cart[index].group_modifications[0].modifications.filter(mode => mode.checked == true)
+          checked[0].count = state.cart[index].count
           state.cart[index].price[1] =
-            state.cart[index].spots[0].actualPrice * state.cart[index].count +
-            "";
+            checked[0].price * state.cart[index].count + "";
         } else if (state.cart[index].group_modifications) {
-          let array = state.cart[index].group_modifications.map(
-            (mode) =>
-            mode.count * mode.modifications.map((modif) => modif.price)
-          );
+          let array = state.cart[index].group_modifications.map(group_modifications => group_modifications.modifications.map(modification => modification.price * modification.count))
+
           let reducer = (previousValue, currentValue) =>
-            previousValue + currentValue;
+            +previousValue + +currentValue;
           let result = array.reduce(reducer) + "";
           state.cart[index].price[1] =
             state.cart[index].spots[0].price * state.cart[index].count +
             +result +
             "";
+
         } else {
           state.cart[index].price[1] =
             state.cart[index].spots[0].price * state.cart[index].count +
@@ -95,40 +97,58 @@ export default createStore({
         }
       } else {
         state.product.count++;
+        console.log('555555');
+
+        if (state.product.category_name.includes('Пиццы')) {
+          let checked = state.product.group_modifications[0].modifications.filter(mode => mode.checked == true)
+          checked[0].count = state.product.count
+
+        }
+
       }
     },
     DECREMENT: (state, index) => {
-      console.log('DECREMENT');
       if (
         state.product.count > 1 &&
         window.location.href !== "http://localhost:8080/cart" && window.location.href !== "http://185.185.70.214/cart"
       ) {
         state.product.count--;
+
+        if (state.product.category_name.includes('Пиццы')) {
+          let checked = state.product.group_modifications[0].modifications.filter(mode => mode.checked == true)
+          checked[0].count = state.product.count
+        }
+
       } else if (state.cart[index].count <= 1) {
         state.cart.splice(index, 1);
         console.log('deleted');
       } else if (state.cart[index].product_name.includes("Пицца")) {
+
         state.cart[index].count--;
+        let checked = state.cart[index].group_modifications[0].modifications.filter(mode => mode.checked == true)
+        checked[0].count = state.cart[index].count
         state.cart[index].price[1] =
-          state.cart[index].spots[0].actualPrice * state.cart[index].count + "";
+          checked[0].price * state.cart[index].count + "";
       } else if ((state.cart[index].group_modifications)) {
         state.cart[index].count--;
-        let array = state.cart[index].group_modifications.map(
-          (mode) => mode.count * mode.modifications.map((modif) => modif.price)
-        );
+
+        let array = state.cart[index].group_modifications.map(group_modifications => group_modifications.modifications.map(modification => modification.price * modification.count))
+
         let reducer = (previousValue, currentValue) =>
-          previousValue + currentValue;
+          +previousValue + +currentValue;
         let result = array.reduce(reducer) + "";
-        // state.cart[index].modificationsPrice = result
         state.cart[index].price[1] =
           state.cart[index].spots[0].price * state.cart[index].count +
           +result +
           "";
+        console.log('14124124124');
+
       } else {
         state.cart[index].count--;
         state.cart[index].price[1] =
           state.cart[index].spots[0].price * state.cart[index].count +
           "";
+
       }
     },
     SET_CART: (state, data) => {
@@ -159,7 +179,7 @@ export default createStore({
         }
       } else {
         console.log('latest');
-        console.log(data);
+        console.log(data.price[1]);
         state.cart.push(data);
       }
       localStorage.setItem(
@@ -169,16 +189,24 @@ export default createStore({
     },
     TOGGLE_SIZE: (state, index) => {
       if (state.product.product !== "empty") {
-        state.product.group_modifications[0].modifications.map((mode) => (mode.checked = false));
+        state.product.group_modifications[0].modifications.map((mode) => {
+          mode.checked = false
+          mode.count = 0
+        });
         state.product.group_modifications[0].modifications[index].checked = true;
+        state.product.group_modifications[0].modifications[index].count = state.product.count
       }
       if (state.cart.length && location.href == "http://localhost:8080/cart" || location.href == "http://185.185.70.214/cart") {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
           let switchArray = state.cart[cartItem].group_modifications[0].modifications
           console.log(switchArray);
-          switchArray.map((mode) => (mode.checked = false));
+          switchArray.map((mode) => {
+            mode.checked = false
+            mode.count = 0
+          });
           state.cart[cartItem].group_modifications[0].modifications[index].checked = true;
+          state.cart[cartItem].group_modifications[0].modifications[index].count = state.cart[cartItem].count
           let checkedPrice = state.cart[cartItem].group_modifications[0].modifications.filter(
             (mode) => mode.checked == true
           )[0].price;
@@ -197,11 +225,8 @@ export default createStore({
     },
     FULL_PRICE: (state, data) => {
       if (state.product.product_name.includes("Пицца")) {
-        // let checked = data.group_modifications.filter(
-        //   (mode) => mode.checked == true
-        // );
+
         let checked = data.group_modifications[0].modifications.filter(mode => mode.checked == true)
-        // console.log(checked[0].modifications[0].modifications[0].price);
         data.price[1] = checked[0].price.toString() * data.count + "";
       } else if (!state.product.group_modifications) {
         state.product.price[1] = data.price[1] =
@@ -214,16 +239,20 @@ export default createStore({
         let sum = function () {
           let result = array.reduce(reducer);
           if (result.length > 1) {
+            console.log(result);
             return result.reduce(reducer);
           } else {
+            console.log(result);
             return result
           }
         }
 
 
         state.product.modificationsPrice = sum() + "";
-        state.product.price[1] = data.price[1] =
-          data.modified_price * data.count + +sum() + "";
+        // state.product.price[1] = data.price[1] =
+        //   data.modified_price * data.count + +sum() + "";
+        state.product.price[1] = data.modified_price * data.count + sum() + ''
+        console.log(state.product.price[1]);
       }
     },
     SET_OLD_CART: (state, data) => {
@@ -413,22 +442,29 @@ export default createStore({
       let dateWithoutSecond = new Date();
       state.current_time = dateWithoutSecond.getHours().toString()
     },
-    TIME_WARNING: (state) => {
-      state
-      let work_time = ["10", "22"]
-      // let toggle = JSON.parse(localStorage.getItem("warning_was_displayed"))
-
-      if (state.current_time > work_time[1] || state.current_time < work_time[0]) {
-        localStorage.setItem("warning_was_displayed", true)
-        console.log('warn was displayed');
-        state.gurmani_closed = true
-        return state.gurmani_closed
-      } else {
-        localStorage.setItem("warning_was_displayed", false)
-        state.gurmani_closed = false
-        return state.gurmani_closed
+    RENDER_ADMIN_ADRESSES: (state) => {
+      state.admin_addresses = state.selectAdresses
+    },
+    SET_ADDRESSES: (state, address) => {
+      state.set_address = {
+        address: address.address,
+        delivery_zone: address.delivery_zone,
+        street_index: address.street_index
       }
     },
+    DELETE_ADDRESS: (state, id) => {
+      state.delete_address = id
+    },
+    SET_POPULARS: (state, popular) => {
+      state.admin_set_popular = {
+        name: popular
+      }
+    },
+    DELETE_POPULARS: (state, popular) => {
+      state.admin_delete_popular = {
+        name: popular
+      }
+    }
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -441,7 +477,9 @@ export default createStore({
         commit(
           "SET_CATEGORIES_TO_STATE",
           categories.data.filter(
-            (category) => category.category_name !== "Популярное"
+            (category) => {
+              return category.category_name !== "Популярное" && !category.category_name.includes('КУХНЯ')
+            }
           )
         );
         return categories;
@@ -468,7 +506,6 @@ export default createStore({
         }
         if (products.data[0].category_name.includes('Пицц')) {
           products.data.map(product => {
-            // product.group_modifications[0].modifications.map(mode => (mode.price = mode.price + '00') - 0)
             product.price[1] = (product.group_modifications[0].modifications[0].price).toString()
           })
         }
@@ -483,12 +520,8 @@ export default createStore({
         url: `http://185.185.70.214:3000/populars`,
       }).then((populars) => {
         commit(
-          "SET_POPULAR_TO_STATE",
-          populars.data.filter(
-            (popular) => popular.category_name == "Популярное"
-          )
+          "SET_POPULAR_TO_STATE", populars.data
         );
-        return populars;
       });
     },
     GET_PROMOCODES({
@@ -508,17 +541,6 @@ export default createStore({
       data.modified_price = data.spots[0].price;
       data.spots[0].actualPrice = data.spots[0].price;
       data.modificationsPrice = "";
-      // if (data.group_modifications) {
-      //   data.group_modifications.map((modification) => {
-      //     // modification.modifications[0].price = (modification.modifications[0].price + '00') - 0
-      //     modification.modifications.map(mode => mode.price = (mode.price + '00') - 0)
-      //   })
-      // }
-
-      // let checked = data.group_modifications[0].modifications.filter(mode => mode.checked == true)
-      // if (data.group_modifications[0].name == "Размер пиццы") {
-      //   data.price = checked[0].price
-      // }
 
       if (data.group_modifications) {
         data.group_modifications.map(mode => {
@@ -527,7 +549,15 @@ export default createStore({
             modification.count = 0;
           })
         })
-        data.group_modifications[0].modifications[0].checked = true;
+
+        if (data.group_modifications[0].modifications[0]) {
+          data.group_modifications[0].modifications[0].checked = true;
+        }
+
+        if (data.category_name.includes('Пиццы')) {
+          data.group_modifications[0].modifications[0].count = 1
+          console.log(data.group_modifications[0].modifications[0]);
+        }
       }
       data.ingredients.map((ingredient) => {
         switch (ingredient.ingredient_name) {
@@ -645,24 +675,28 @@ export default createStore({
           case "Тесто ":
             ingredient.ingredient_icon = "dough";
             break;
+          case "Черная тобико":
+            ingredient.ingredient_icon = "black-tobiko";
+            break;
+          case "Маменори":
+            ingredient.ingredient_icon = "mamenori";
+            break;
+          case "Маринованные огурцы":
+            ingredient.ingredient_icon = "marinade-cucumber";
+            break;
+          case "Сырная шапочка":
+            ingredient.ingredient_icon = "cheese_cap";
+            break;
+          case "Халапеньо":
+            ingredient.ingredient_icon = "jalapeno";
+            break;
           default:
             ingredient.ingredient_icon = "logo"
             break;
         }
 
-        // let toDeleteIngredients = data.ingredients.filter(ingredient => ingredient.ingredient_icon == 'undefined')
-        // console.log(toDeleteIngredients);
-
-        // setTimeout(() => {
-        //   for (const item of toDeleteIngredients) {
-        //     data.ingredients.map(() => {
-        //       data.ingredients.splice(data.ingredients.indexOf(item), 1)
-        //     })
-        //   }
-        // }, 4000);
-
         data.ingredients.map(ingr => {
-          if (ingr.ingredient_name.includes('Соусничка') || ingr.ingredient_name.includes('Бокс') || ingr.ingredient_name.includes('Пакет') || ingr.ingredient_name.includes('Короб') || ingr.ingredient_name.includes('палочки') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('Бумага') || ingr.ingredient_name.includes('Супница') || ingr.ingredient_name.includes('Крышка') || ingr.ingredient_name.includes('Ложка')) {
+          if (ingr.ingredient_name.includes('Соусничка') || ingr.ingredient_name.includes('Боксы фольгированые') || ingr.ingredient_name.includes('Пепперони') || ingr.ingredient_name.includes('Газовый') || ingr.ingredient_name.includes('Мука темпурная') || ingr.ingredient_name.includes('Масло фритюрное') || ingr.ingredient_name.includes('Сухари панировачные') || ingr.ingredient_name.includes('Соевый соус в ассортименте') || ingr.ingredient_name.includes('Соевый соус порционный') || ingr.ingredient_name.includes('Имбирь') || ingr.ingredient_name.includes('Васаби') || ingr.ingredient_name.includes('Бокс') || ingr.ingredient_name.includes('Пакет') || ingr.ingredient_name.includes('Короб') || ingr.ingredient_name.includes('палочки') || ingr.ingredient_name.includes('Наклейка') || ingr.ingredient_name.includes('Упаковка') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейки') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('Бумага') || ingr.ingredient_name.includes('Супница') || ingr.ingredient_name.includes('Крышка') || ingr.ingredient_name.includes('Картонные') || ingr.ingredient_name.includes('Мука') || ingr.ingredient_name.includes('Масло') || ingr.ingredient_name.includes('Вилка') || ingr.ingredient_name.includes('Тарелка') || ingr.ingredient_name.includes('Ложка')) {
             data.ingredients.splice(data.ingredients.indexOf(ingr), 1)
           }
         })
@@ -808,23 +842,6 @@ export default createStore({
         commit("GET_BANNER", data);
       });
     },
-    ADD_BANNER_PHOTO(file) {
-      console.log(file);
-      let xhr = new XMLHttpRequest()
-      xhr.open('POST', 'http://185.185.70.214:3000/uploadBanner' + file.name, true)
-      xhr.setRequestHeader('Content-Type', 'application/octate-stream')
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            // this.callBackFunction(this.responseText)
-            console.log('success');
-          } else {
-            console.log('errrrrror');
-          }
-        }
-      }
-      xhr.send(file)
-    },
     GET_BANNERS({
       commit
     }) {
@@ -850,12 +867,58 @@ export default createStore({
     }) {
       commit("CURRENT_TIME")
     },
-    WARNING_POPUP({
+    GET_ADMIN_ADDRESSES({
       commit
     }) {
-      commit("TIME_WARNING")
+      commit("RENDER_ADMIN_ADRESSES");
     },
-
+    SET_ADMIN_ADDRESSES({
+      commit
+    }, address) {
+      return axios({
+        method: "POST",
+        url: `http://185.185.70.214:3000/setNewAddress`,
+        params: address
+      }).then((address) => {
+        commit("SET_ADDRESSES", address);
+      });
+    },
+    DELETE_ADMIN_ADDRESS({
+      commit
+    }, id) {
+      console.log(id);
+      return axios({
+        method: "POST",
+        url: `http://185.185.70.214:3000/deleteAddress`,
+        params: {
+          id: id
+        },
+      }).then((id) => {
+        commit("DELETE_ADDRESS", id);
+      });
+    },
+    SET_ADMIN_POPULARS({
+      commit
+    }, popular) {
+      return axios({
+        method: "POST",
+        url: `http://185.185.70.214:3000/setNewPopular`,
+        params: popular
+      }).then((popular) => {
+        commit("SET_POPULARS", popular)
+      });
+    },
+    DELETE_ADMIN_POPULARS({
+      commit
+    }, popular) {
+      return axios({
+        method: "POST",
+        url: `http://185.185.70.214:3000/deletePopular`,
+        params: popular
+      }).then((popular) => {
+        commit("DELETE_POPULARS", popular)
+      });
+    }
   },
   getters: {
     CATEGORIES(state) {
@@ -958,19 +1021,61 @@ export default createStore({
 
         for (let item of state.cart) {
 
+          let filteredModifications = function () {
+            // if (item.group_modifications && item.category_name.includes('Пиццы')) {
+
+            // }
+
+
+            if (item.group_modifications) {
+              if (item.category_name.includes('Пиццы')) {
+                let test = item.group_modifications ? item.group_modifications.map(modification_group => {
+                  return modification_group.modifications.filter(mode => {
+                    return mode.count > 0
+                  }).map(modif => {
+                    return {
+                      m: modif.dish_modification_id,
+                      a: 1
+                    }
+
+                  })
+                }) : null
+
+                let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
+
+                return q
+              } else {
+                let test = item.group_modifications ? item.group_modifications.map(modification_group => {
+                  return modification_group.modifications.filter(mode => {
+                    return mode.count > 0
+                  }).map(modif => {
+                    return {
+                      m: modif.dish_modification_id,
+                      a: modif.count
+                    }
+
+                  })
+                }) : null
+
+                let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
+
+                return q
+              }
+
+            } else {
+              return null
+            }
+          }
+
           arr.push({
             product_id: item.product_id,
             count: item.count,
-            price: (item.price[1] / item.count).toString(),
-            modification: item.group_modifications ? item.group_modifications.filter(mode => mode.count > 0).map(mode => {
-              return {
-                m: mode.modifications[0].dish_modification_id,
-                a: mode.count,
-              }
-            }) : null
+            // price: item.category_name.includes('Пиццы') ? "000" : (item.price[1] / item.count).toString(),
+            price: item.category_name.includes('Пиццы') ? null : (item.price[1] / item.count).toString(),
+            modification: filteredModifications()
+
           });
         }
-        // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
         return arr;
       }
 
@@ -1080,16 +1185,35 @@ export default createStore({
 
         for (let item of state.cart) {
 
+          let filteredModifications = function () {
+
+            if (item.group_modifications) {
+              let test = item.group_modifications ? item.group_modifications.map(modification_group => {
+                return modification_group.modifications.filter(mode => {
+                  return mode.count > 0
+                }).map(modif => {
+                  return {
+                    m: modif.name,
+                    a: ` (${modif.count})`
+                  }
+
+                })
+              }) : null
+
+              let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
+
+              return q
+            } else {
+              return null
+            }
+          }
+
+
           arr.push({
             product_name: item.product_name,
             count: item.count,
             price: (item.price[1].slice(0, -2) / item.count).toString(),
-            modification: item.group_modifications ? item.group_modifications.filter(mode => mode.count > 0).map(mode => {
-              return {
-                m: mode.name,
-                a: `(${mode.count})`,
-              }
-            }) : null
+            modification: filteredModifications()
           });
         }
         // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
@@ -1115,12 +1239,16 @@ export default createStore({
         comment: (state.cutlery_count + ' | ') + ((state.discount.promocode_name !== undefined && state.error == '') ?
             state.discount.promocode_name + " | " :
             "") +
-          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
+          state.payment_type + (' | ' + state.pickup_time == "Сам-з undefined" ? 'Тип заказа предзаказ (стоит уточнить у клиента)' : state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
       });
     },
-    TIME_WARNING(state) {
-      return state.gurmani_closed
-    }
+    RENDER_ADMIN_ADRESSES(state) {
+      return state.admin_addresses
+    },
+    DELETE_ADDRESS(state) {
+      return state.delete_address
+    },
+
   },
   modules: {},
 });

@@ -18,6 +18,7 @@
       Наша главная цель - радовать вас, доставляя вкусную еду, приносить
       удовольствие и впечатления.
     </p>
+    <v-footer></v-footer>
   </section>
 </template>
 <script>
@@ -37,5 +38,9 @@ export default {
     line-height: 140%;
   }
 }
+.cart__back-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0;
+}
 </style>
-

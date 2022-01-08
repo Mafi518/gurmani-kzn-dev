@@ -26,7 +26,7 @@ export default {
     ...mapActions(["GET_POPULAR_FROM_API"]),
   },
   mounted() {
-    this.GET_POPULAR_FROM_API();
+    // this.GET_POPULAR_FROM_API();
   },
   components: {
     vPopularItem,
@@ -40,8 +40,17 @@ export default {
     @include h2;
   }
   &__list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     overflow: auto;
+  }
+}
+@media (max-width: 1920px) and (min-width: 1025px) {
+  .popular {
+    &__list {
+      padding-bottom: 10px;
+    }
   }
 }
 </style>

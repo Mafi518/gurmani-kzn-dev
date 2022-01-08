@@ -17,9 +17,7 @@
         class="auth__input"
         placeholder="password"
       />
-      <button type="submit" class="auth__button">
-        Войти
-      </button>
+      <button type="submit" class="auth__button">Войти</button>
     </form>
 
     <!-- <button @click.prevent="logout">Выйти</button> -->
@@ -42,7 +40,7 @@ export default {
     const router = useRouter();
 
     const handleSubmit = async (e) => {
-      const { email, password } = e.target.elements
+      const { email, password } = e.target.elements;
       try {
         await signInWithEmailAndPassword(auth, email.value, password.value);
         router.push("/admin-dashboard");
@@ -54,7 +52,6 @@ export default {
     return { handleSubmit };
   },
   methods: {
-
     logout() {},
     // async logout() {
     //   await this.$store.dispatch('logout')
@@ -67,11 +64,22 @@ export default {
   height: 100vh;
   width: 100vw;
   padding: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
   &__form {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     width: 100%;
   }

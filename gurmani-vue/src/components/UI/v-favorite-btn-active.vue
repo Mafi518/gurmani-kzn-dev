@@ -18,8 +18,14 @@ export default {
 .favorite-btn {
   border-radius: 10px;
   background-color: $accent;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
   width: 32px;
   height: 32px;

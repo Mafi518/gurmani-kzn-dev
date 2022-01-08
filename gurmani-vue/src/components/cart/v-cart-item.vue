@@ -11,14 +11,6 @@
     <div class="cart__item-info">
       <div class="cart__item-container">
         <h3 class="cart__item-title">{{ cart_item_data.product_name }}</h3>
-        <div
-          class="cart__item-controls"
-          v-if="cart_item_data.product_name.includes('Пицца')"
-        >
-          <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
-          <p class="cart__item-count">{{ cart_item_data.count }}</p>
-          <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
-        </div>
       </div>
 
       <div class="cart__item-container">
@@ -28,37 +20,55 @@
         </p>
         <div
           class="cart__item-controls"
+          v-if="cart_item_data.product_name.includes('Пицца')"
+        >
+          <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
+          <p class="cart__item-count">{{ cart_item_data.count }}</p>
+          <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
+        </div>
+        <div
+          class="cart__item-controls"
           v-if="!cart_item_data.product_name.includes('Пицца')"
         >
-          <v-icon name="controls-minus-icon" class="cart__item-control" @click="decrementItem"></v-icon>
+          <v-icon
+            name="controls-minus-icon"
+            class="cart__item-control"
+            @click="decrementItem"
+          ></v-icon>
           <p class="cart__item-count">{{ cart_item_data.count }}</p>
-          <v-icon name="controls-plus-icon" class="cart__item-control" @click="incrementItem"></v-icon>
+          <v-icon
+            name="controls-plus-icon"
+            class="cart__item-control"
+            @click="incrementItem"
+          ></v-icon>
         </div>
       </div>
 
       <div class="cart__item-container">
-        <!-- <p class="cart__item-weight">{{ cart_item_data.out }} г</p> -->
         <div
           class="cart__item-size"
           v-if="cart_item_data.product_name.includes('Пицца')"
         >
-          <label
-            class="cart__item-label"
-            v-for="(modification, index) in cart_item_data.group_modifications[0].modifications"
+          <div
+            class="cart__item-radio"
+            v-for="(modification, index) in cart_item_data
+              .group_modifications[0].modifications"
             :key="modification.dish_modification_group_id"
-            @click="toggleSize(index)"
           >
             <input
               type="radio"
               ref="radio"
               :checked="
-                cart_item_data.group_modifications[0].modifications[index].checked == true
+                cart_item_data.group_modifications[0].modifications[index]
+                  .checked == true
               "
               :name="cart_item_data.photo_origin"
               class="cart__item-input"
             />
-            {{ modification.name }}
-          </label>
+            <label class="cart__item-label" @click="toggleSize(index)">
+              {{ modification.name }}
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -108,45 +118,63 @@ export default {
 .cart {
   &__item {
     @include container;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     padding: 14px 10px;
     margin-top: 30px;
     &-img {
       max-width: 109px;
-      max-height: 72px;
       width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     &-image {
-      max-width: 109px;
-      max-height: 72px;
+      width: calc(100% - 10%);
+      height: calc(100% - 10%);
     }
     &-info {
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
       flex-direction: column;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
       justify-content: space-between;
       width: 100%;
-      min-height: 80px;
+      height: 100%;
       margin-left: 13px;
     }
     &-title {
       @include h3;
     }
     &-container {
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
       justify-content: space-between;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
       align-items: center;
     }
     &-price {
       @include h3;
     }
     &-controls {
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
       align-items: center;
       svg {
         width: 28px;
@@ -161,38 +189,54 @@ export default {
       font-size: 10px;
     }
     &-size {
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
       align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
       justify-content: space-between;
-      max-width: 136px;
+      max-width: 150px;
       width: 100%;
     }
-    &-label {
-      position: relative;
+    &-radio {
       display: flex;
       align-items: center;
+      cursor: pointer;
+    }
+    &-label {
+      white-space: nowrap;
     }
     &-input {
+      position: absolute;
+      z-index: -1;
+      opacity: 0;
       appearance: none;
-      margin-right: 6px;
-      &:checked::after {
-        content: "";
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: $accent;
-        position: absolute;
-        top: 4px;
-        left: 4px;
-      }
-      &::before {
-        content: "";
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 1px solid $accent;
-        display: flex;
-      }
+      -webkit-appearance: none;
+    }
+    &-input + label {
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    &-input + label::before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      flex-grow: 0;
+      border: 1px solid $accent;
+      border-radius: 50%;
+      margin-right: 10px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 60% 60%;
+    }
+    &-input:checked + label::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='18' height='18' rx='9' fill='%23FF6800'/%3E%3C/svg%3E%0A");
     }
   }
 }

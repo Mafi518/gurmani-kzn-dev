@@ -6,22 +6,24 @@
         alt=""
         class="popular__image"
       />
-      <h2 class="popular__item-title">{{ popular_data.product_name }}</h2>
+      <h3 class="popular__item-title">{{ popular_data.product_name }}</h3>
     </div>
     <p class="popular__description">
       {{ popular_data.product_production_description }}
     </p>
     <div class="popular__info-wrap">
       <div class="popular__calories">
-        <v-icon name="calories-icon"></v-icon> 299 Ккал
+        <v-icon name="calories-icon"></v-icon> {{ popular_data.barcode }} Ккал
       </div>
       <div class="popular__weight">
-        <v-icon name="scales-icon"></v-icon> {{ popular_data.out }} г
+        <v-icon name="scales-icon"></v-icon> {{ (popular_data.cooking_time / 60) }} г
       </div>
       <v-favorite-btn v-if="!popular_data.favorites"></v-favorite-btn>
-      <v-favorite-btn-active v-if="popular_data.favorites == true"></v-favorite-btn-active>
+      <v-favorite-btn-active
+        v-if="popular_data.favorites == true"
+      ></v-favorite-btn-active>
     </div>
-    <v-add-btn>{{ popular_data.spots[0].price.slice(0, -2) }} ₽</v-add-btn>
+    <v-add-btn>{{ popular_data.price[1].slice(0, -2) }} ₽</v-add-btn>
   </article>
 </template>
 <script>
@@ -43,7 +45,7 @@ export default {
       if (e.target.classList.contains("buy-btn")) {
         await this.GET_PRODUCT_INFO(this.popular_data);
         await this.ADD_TO_CART(this.popular_data);
-        this.$store.state.product = {product: 'empty'}
+        this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||
@@ -71,22 +73,35 @@ export default {
     padding: 20px;
     @include container;
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
     margin-right: 20px;
   }
   &__head {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
     align-items: flex-end;
   }
   &__image {
-    max-width: 136px;
-    max-height: 93px;
+    max-width: 160px;
+    max-height: 120px;
+    -webkit-box-ordinal-group: 2;
+    -ms-flex-order: 1;
     order: 1;
   }
   &__item-title {
-    @include h2;
+    @include h3;
     margin-bottom: 0;
     font-size: 18px;
     max-width: 167px;
@@ -96,19 +111,30 @@ export default {
     color: $second-black;
     font-weight: 400;
     line-height: 130%;
-    max-height: 90px;
+    max-height: 75px;
     height: 100%;
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
   }
   &__info-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
   }
   &__calories,
   &__weight {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     font-weight: bold;
     svg {
@@ -125,15 +151,28 @@ export default {
     border-radius: 10px;
     background-color: $accent;
     color: $white;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     height: 76px;
     padding: 15px;
   }
   &__cart-left {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
     align-items: flex-start;
     font-family: roboto, sans-serif;
     p:nth-child(1) {

@@ -34,15 +34,18 @@ export default {
     ...mapGetters(["CATEGORY_PRODUCTS", "PRODUCT"]),
   },
   methods: {
-    ...mapActions(["GET_CATEGORY_PRODUCTS_FROM_API"]),
+    ...mapActions([
+      "GET_CATEGORY_PRODUCTS_FROM_API",
+      "GET_CATEGORIES_FROM_API",
+    ]),
     async reRenderCards() {
       await this.GET_CATEGORY_PRODUCTS_FROM_API(
         localStorage.getItem("categoryID")
       );
-      setTimeout(() => {}, 1000);
     },
   },
   mounted() {
+    this.GET_CATEGORIES_FROM_API();
     this.reRenderCards();
   },
 };
@@ -56,17 +59,39 @@ export default {
 .products {
   margin-left: 20px;
   &__list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+  }
+  &__title {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
   }
 }
 .popup-enter-from,
 .popup-leave-to {
+  -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
   transform: translateX(-100%);
 }
 
 .popup-enter-active,
 .popup-leave-active {
+  -webkit-transition: -webkit-transform 0.4s ease-in-out;
+  transition: -webkit-transform 0.4s ease-in-out;
+  -o-transition: transform 0.4s ease-in-out;
   transition: transform 0.4s ease-in-out;
+  transition: transform 0.4s ease-in-out, -webkit-transform 0.4s ease-in-out;
+}
+@media (max-width: 416px) {
+  .products__list {
+    padding-right: 20px;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+  }
 }
 </style>

@@ -1,38 +1,43 @@
 <template>
   <div class="banner__item" @click="setPromo">
-    <img :src="`http://185.185.70.214:3000/${banner_data.promo_picture}`"  alt="" />
+    <img
+      :src="`http://185.185.70.214:3000/${banner_data.promo_picture}`"
+      alt=""
+    />
   </div>
 </template>
 <script>
 export default {
-  name: 'v-banner-item',
+  name: "v-banner-item",
   props: {
     banner_data: {
       type: Object,
       default() {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
   methods: {
     setPromo() {
-      localStorage.setItem("setPromo", this.banner_data.promo_name)
-      this.$router.push('/cart')
-    }
+      localStorage.setItem("setPromo", this.banner_data.promo_name);
+      this.$router.push("/cart");
+    },
   },
 };
 </script>
 <style lang="scss">
 .banner__item {
-  margin: 0 20px;
+  margin-right: 20px;
   margin-right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
 
-  img {
-    max-width: 374px;
-    max-height: 154px;
-  }
 }
 </style>

@@ -48,20 +48,35 @@ export default {
   width: 100%;
   padding: 12px 9px;
   min-height: 208px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
   justify-content: space-between;
   margin-right: 20px;
 
   &__list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     overflow: auto;
     padding-bottom: 5px;
     padding-top: 5px;
   }
   &__head {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
     align-items: flex-start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
   }
   &__image {
@@ -79,10 +94,15 @@ export default {
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
   }
   &__footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
   }
   &__price {

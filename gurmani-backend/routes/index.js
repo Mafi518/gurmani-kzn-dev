@@ -4,6 +4,7 @@ const PosterApi = require('../api/poster');
 const ctrlTelegram = require('../api/telegram');
 const addresses = require('../addresses.json')
 const banners = require('../banners.json')
+const popular_names = require('../popular_names.json')
 const fs = require('fs')
 
 
@@ -30,9 +31,20 @@ router.get('/populars', async (req, res) => {
         token: config.token
     });
 
-    const categories = await posterApi.makePosterRequest('menu.getProducts')
+    const populars = await posterApi.makePosterRequest('menu.getProducts')
 
-    res.send(categories)
+    const names = popular_names
+
+    let filtered = []
+
+    for (const item of names) {
+        test2 = populars.filter(popular => {
+            return popular.product_name == item
+        })
+        filtered.push(test2[0])
+    }
+    
+    res.send(filtered.filter(item => item));
 })
 
 router.get('/categories', async (req, res) => {
@@ -84,8 +96,6 @@ router.post('/order', async (req, res) => {
     const order_data = req.query;
     const order_data_address1 = JSON.parse(order_data.client_address)
     const order_data_address2 = JSON.parse(order_data.client_address2)
-    // const order_products = JSON.parse(order_data.products);
-    // console.log(order_products);
 
     const order = await posterApi.makePosterRequest('incomingOrders.createIncomingOrder', 'post', {
         body: {
@@ -126,7 +136,9 @@ router.post("/promoD", async (req, res) => {
     }
 
     if (data.action === 'delete') {
-        let fullData = JSON.stringify(banners.filter(function(f) { return f.promo_name !== data.promo_name }), null, 2)
+        let fullData = JSON.stringify(banners.filter(function (f) {
+            return f.promo_name !== data.promo_name
+        }), null, 2)
         fs.writeFile('gurmani-backend/banners.json', fullData, (err) => {
             if (err) console.log(err)
         })
@@ -137,47 +149,53 @@ router.post("/promoD", async (req, res) => {
 
 router.post('/telegram', ctrlTelegram.sendMsg);
 
+router.post('/setNewAddress', async (req, res) => {
+    const data = await req.query
 
-router.post('/uploadBanner', async (req, res) => {
-    if (req.url === '/') {
-        sendRes('index.html', 'text/html', res)
-    } else if (/\/uploads\/[^\/]+$/.test(req.url) && req.method === 'POST') {
+    data.id = (addresses.length).toString()
 
-    } else {
-        sendRes(req.url, getContentType(req.url), res)
-    }
+    await addresses.push(data)
+    let fullData = JSON.stringify(addresses, null, 2)
+    fs.writeFile('gurmani-backend/addresses.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+    res.end()
+
 })
 
-function sendRes(url, contentType, res) {
-    let file = path.join(__dirname+'/static/', url)
-    fs.readFile(file, (err, content) => {
-        if (err) {
-            res.writeHead(404)
-            res.write('file no found')
-            res.end()
-            console.log(`error 404 ${file}`);
-        } else {
-            res.writeHead(200, {'Content-Type': contentType})
-            res.write(content)
-            res.end()
-            console.log(`res 200 ${file}`);
-        }
-    })
-}
+router.post('/deleteAddress', async (req, res) => {
+    const data = await req.query
 
-function getContentType(url) {
-    switch (path.extname(url)) {
-        case ".html":
-            return "text/html"
-        case ".css":
-            return "text/css"
-        case ".js":
-            return "text/javascript"
-        case ".json":
-            return "application/json"
-        default:
-            return "application/octate-stream"
-    }
-}
+    addresses.splice(data.id, 1)
+    let fullData = JSON.stringify(addresses, null, 2)
+    fs.writeFile('gurmani-backend/addresses.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+    res.end()
+})
+
+router.post('/setNewPopular', async (req, res) => {
+    const data = await req.query
+
+    await popular_names.push(data[0])
+    let fullData = JSON.stringify(popular_names, null, 2)
+    fs.writeFile('gurmani-backend/popular_names.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+
+    res.end()
+})
+
+router.post('/deletePopular', async (req, res) => {
+    const data = await req.query
+
+    let filtered = await popular_names.filter(name => name !== data[0])
+    let fullData = JSON.stringify(filtered, null, 2)
+    fs.writeFile('gurmani-backend/popular_names.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+
+    res.end()
+})
 
 module.exports = router;

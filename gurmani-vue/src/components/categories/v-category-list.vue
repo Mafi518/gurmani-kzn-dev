@@ -41,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    this.GET_CATEGORIES_FROM_API();
+    // this.GET_CATEGORIES_FROM_API();
   },
   components: {
     vCategoryItem,
@@ -67,13 +67,23 @@ export default {
 </script>
 <style lang="scss">
 .category {
-  padding: 20px 0px 20px 20px;
+  padding: 0 20px;
+  padding-bottom: 10px;
   &__title {
     @include h2;
   }
   &__list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     overflow: auto;
+  }
+}
+@media (max-width: 1920px) and (min-width: 1025px) {
+  .category {
+    &__list {
+      padding-bottom: 10px;
+    }
   }
 }
 </style>

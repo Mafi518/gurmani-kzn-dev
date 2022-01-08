@@ -23,13 +23,8 @@
             </h2>
             <p class="popup__subtitle">
               <span class="popup__price"
-                >{{
-                  // PRODUCT.price[1].slice(0, -2) * PRODUCT.count + modificationPrice
-                  PRODUCT.price[1].slice(0, -2)
-                }}
-                ₽</span
+                >{{ PRODUCT.price[1].slice(0, -2) }} ₽</span
               >
-              <!-- – ({{ PRODUCT.out.toString().slice(0, -3) }} г) -->
             </p>
           </div>
           <div class="popup__controls">
@@ -52,20 +47,26 @@
               class="popup__size"
               v-if="PRODUCT.category_name.includes('Пиццы')"
             >
-              <label
-                class="popup__label"
-                v-for="(modification, index) in PRODUCT.group_modifications[0].modifications"
+              <div
+                class="popup__radio"
+                v-for="(modification, index) in PRODUCT.group_modifications[0]
+                  .modifications"
                 :key="modification.dish_modification_group_id"
-                @click="toggleSize(index)"
               >
                 <input
                   type="radio"
-                  :checked="PRODUCT.group_modifications[0].modifications[index].checked == true"
+                  :checked="
+                    PRODUCT.group_modifications[0].modifications[index]
+                      .checked == true
+                  "
                   name="size"
                   class="popup__input"
                 />
-                {{ modification.name }}
-              </label>
+
+                <label class="popup__label" @click="toggleSize(index)">
+                  {{ modification.name }}
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +79,7 @@
           </div>
         </div>
         <div class="popup__info">
-          <h2 class="popup__title">Ингредиенты</h2>
+          <h3 class="popup__title popup__title--small">Ингредиенты</h3>
           <section class="ingredients">
             <div
               class="ingredient"
@@ -106,62 +107,12 @@
         </div>
 
         <div class="popup__info" v-if="PRODUCT.group_modifications">
-          <!-- <section
-            class="additional"
-            v-if="
-              !PRODUCT.product_name.includes('Пицца') &&
-              !PRODUCT.group_modifications[0].name.includes('Лапша на выбор')
-            "
-          >
-            <article
-              class="additional__card"
-              v-for="(modification, index) in PRODUCT.group_modifications"
-              :key="modification.dish_modification_group_id"
-            >
-              <div class="additional__delete">
-                <v-icon
-                  name="controls-minus-icon"
-                  @click="deleteModification(index)"
-                ></v-icon>
-              </div>
-              <div class="additional__add">
-                <v-icon
-                  name="plus-icon"
-                  @click="addModification(index)"
-                ></v-icon>
-              </div>
-              <div class="additional__head">
-                <picture>
-                  <source
-                    :srcset="`https://gurmanikzndev.joinposter.com${modification.modifications[0].photo_large}`"
-                  />
-                  <img
-                    :src="`https://gurmanikzndev.joinposter.com${modification.modifications[0].photo_large}`"
-                    alt=""
-                  />
-                </picture>
-              </div>
-              <div class="additional__body">
-                {{
-                  modification.name +
-                  " | " +
-                  modification.modifications[0].price.toString().slice(0, -2) *
-                    modification.count +
-                  " ₽" +
-                  " | " +
-                  modification.count +
-                  " шт"
-                }}
-              </div>
-            </article>
-          </section> -->
-          <section class="additional">
+          <section class="additional" v-if="PRODUCT.category_name !== 'Пиццы'">
             <div
               class="additional__container"
               v-for="modification_group in PRODUCT.group_modifications"
               :key="modification_group.dish_modification_group_id"
             >
-              {{ modification_group.name }}
               <article
                 class="additional__card"
                 v-for="modification in modification_group.modifications"
@@ -209,8 +160,8 @@
       </div>
 
       <div class="popup__info popup__like">
-        <h2 class="popup__title">Вам может понравиться</h2>
-        <section class="like" v-if="PRODUCT.category_name == 'Популярное'">
+        <h3 class="popup__title popup__title--small">Вам может понравиться</h3>
+        <section class="like" v-if="PRODUCT.sub_category == 'Популярное'">
           <v-card-small
             v-for="like in POPULAR"
             :key="like.id"
@@ -309,7 +260,6 @@ export default {
       this.FULL_PRICE(this.PRODUCT);
     },
     addModification(modification, modification_group) {
-      console.log(modification_group);
       if (modification_group.name == "Лапша на выбор") {
         modification_group.modifications.map((item) => (item.count = 0));
         modification.count++;
@@ -362,6 +312,8 @@ export default {
   top: 0;
   left: 0;
   padding: 40px 0px 135px 20px;
+  z-index: 2;
+
   &-buy-btn {
     left: 50%;
     transform: translateX(-50%);
@@ -380,38 +332,51 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 140px;
+    max-width: 150px;
     width: 100%;
     margin-top: 8px;
   }
-  &__label {
-    position: relative;
+  &__radio {
     display: flex;
     align-items: center;
+    margin-right: 10px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &__label {
+    white-space: nowrap;
+    cursor: pointer;
   }
   &__input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
     appearance: none;
-    margin-right: 6px;
-    &:checked::after {
-      content: "";
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: $accent;
-      position: absolute;
-      top: 4px;
-      left: 4px;
-    }
-    &::before {
-      content: "";
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid $accent;
-      display: flex;
-    }
+    -webkit-appearance: none;
   }
-
+  &__input + label {
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+  }
+  &__input + label::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border: 1px solid $accent;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 60% 60%;
+  }
+  &__input:checked + label::before {
+    background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='18' height='18' rx='9' fill='%23FF6800'/%3E%3C/svg%3E%0A");
+  }
   &__head {
     padding-right: 20px;
     display: flex;
@@ -457,8 +422,6 @@ export default {
     align-items: flex-end;
     justify-content: center;
     padding-left: 15px;
-    max-width: 150px;
-    width: 100%;
   }
   &__counter {
     display: flex;
@@ -489,8 +452,7 @@ export default {
     padding: 5px;
     // background-color: #ffd1b9;
     img {
-      width: inherit;
-      height: inherit;
+      max-width: 100%;
     }
   }
 
@@ -506,11 +468,14 @@ export default {
 .additional {
   display: flex;
   overflow: auto;
+  &__container {
+    display: flex;
+  }
   &__card {
     min-width: 115px;
     height: 115px;
     margin-right: 20px;
-    padding: 0 4px 12px 4px;
+    padding: 0 8px 12px 8px;
     @include container;
     display: flex;
     align-items: center;
@@ -549,7 +514,11 @@ export default {
   &__body {
     font-size: 12px;
     margin-top: 5px;
+    white-space: nowrap;
   }
+}
+.popup__title--small {
+  font-size: 24px;
 }
 .like {
   display: flex;
@@ -565,5 +534,52 @@ export default {
 .to-cart-enter-active,
 .to-cart-leave-active {
   transition: opacity 0.5s ease-out;
+}
+
+@media (max-width: 1920px) and (min-width: 1025px) {
+  .popup {
+    &::-webkit-scrollbar {
+      width: 0;
+      display: none;
+    }
+    .back,
+    &__item {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-right: 20px;
+    }
+    &__item {
+      display: flex;
+      justify-content: space-between;
+    }
+    &__head {
+      width: 100%;
+      height: 100%;
+      position: sticky;
+      top: 0;
+      img {
+        max-width: 70%;
+
+      }
+    }
+    &__subtitle {
+      display: none;
+    }
+    &__body {
+      width: 570px;
+    }
+    &-buy-btn {
+      position: static;
+      transform: translate(0);
+      left: 0;
+      margin: 20px 0;
+    }
+    &__media {
+      width: 100%;
+    }
+  }
+  .ingredients, .like {
+    padding-bottom: 10px;
+  }
 }
 </style>

@@ -1,25 +1,34 @@
 <template>
-  <div class="home">
-    <header class="header" v-if="clientWidth <= 768">
+  <section class="home">
+    <!-- <header class="header" v-if="clientWidth <= 1024">
       <p class="header__info">
         <a href="tel:+78432390012">+7 (843) 239-00-12</a>
         <span>10:00 - 22:00</span>
       </p>
-      <h1 class="header__title"><img src="@/assets/media/img/gurmani.png" alt=""> <span>море вкуса для тебя</span> </h1>
+      <h1 class="header__title">
+        <img src="@/assets/media/img/gurmani.svg" alt="" />
+        <span>море вкуса для тебя</span>
+      </h1>
       <img
         src="@/assets/media/img/logo.png"
         @click="this.$router.push('/')"
         alt="logo"
         class="header__logo"
+        ref="logo"
       />
-    </header>
+    </header> -->
+    <v-preloader
+      v-if="preloader == true"
+      :preloader_props="preloader_props"
+    ></v-preloader>
     <v-banner-list></v-banner-list>
     <v-category-list>Меню</v-category-list>
     <v-popular-list></v-popular-list>
     <transition name="popup" mode="out-in">
       <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
     </transition>
-  </div>
+    <v-footer></v-footer>
+  </section>
 </template>
 
 <script>
@@ -33,6 +42,14 @@ export default {
   data() {
     return {
       clientWidth: 0,
+      preloader: false,
+      preloader_props: {
+        bgColor: "#fff",
+        subtitle: "Загружаю страницу",
+        subtitleColor: "#000",
+        circleColor: "#FF6800",
+        homePage: true,
+      },
     };
   },
   components: {
@@ -41,65 +58,76 @@ export default {
     vPopularList,
   },
   methods: {
-    ...mapActions(["RESET_PRODUCT"]),
+    ...mapActions([
+      "RESET_PRODUCT",
+      "GET_CATEGORIES_FROM_API",
+      "GET_POPULAR_FROM_API",
+    ]),
     reset() {
       this.RESET_PRODUCT();
     },
+    getLogoPosition() {
+      let el = document.querySelector(".header__logo").getBoundingClientRect();
+      return {
+        left: el.left + window.scrollX,
+        top: el.top + window.scrollY,
+        width: el.width,
+        height: el.height,
+      };
+    },
+    async animateLogoPosition() {
+      this.preloader = true;
+      await this.GET_CATEGORIES_FROM_API();
+      console.log("await popular");
+      await this.GET_POPULAR_FROM_API();
+      console.log("loaded");
+      this.preloader_props.loaded = true;
+      this.preloader_props.logoPosition = {
+        left: this.getLogoPosition().left,
+        top: this.getLogoPosition().top,
+        width: this.getLogoPosition().width,
+        height: this.getLogoPosition().width,
+      };
+    },
   },
   computed: {
-    ...mapGetters(["PRODUCT"]),
+    ...mapGetters(["PRODUCT", "CATEGORIES", "POPULAR"]),
   },
   mounted() {
     this.reset();
     this.clientWidth = window.innerWidth;
+    this.animateLogoPosition(this.$refs.logo);
+    // this.GET_CATEGORIES_FROM_API()
+    // this.GET_POPULAR_FROM_API();
   },
 };
 </script>
 
 <style lang="scss">
+.test {
+  background-color: $accent;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: fixed;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  z-index: 1;
+}
 .popup-enter-from,
 .popup-leave-to {
+  -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
   transform: translateX(-100%);
 }
 
 .popup-enter-active,
 .popup-leave-active {
+  -webkit-transition: -webkit-transform 0.4s ease-in-out;
+  transition: -webkit-transform 0.4s ease-in-out;
+  -o-transition: transform 0.4s ease-in-out;
   transition: transform 0.4s ease-in-out;
-}
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0px 20px 20px 20px;
-  &__logo {
-    width: 60px;
-  }
-  &__title {
-    @include h1;
-    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    img {
-      height: 30px;
-    }
-    span {
-      font-size: 14px;
-      margin-top: 3px;
-    }
-  }
-  &__info {
-    font-weight: bold;
-    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    a {
-      font-size: 16px;
-    }
-    span {
-      margin-top: 6px;
-      font-size: 12px;
-    }
-  }
+  transition: transform 0.4s ease-in-out, -webkit-transform 0.4s ease-in-out;
 }
 </style>
