@@ -17,23 +17,43 @@
         ref="logo"
       />
     </header> -->
-    <v-preloader
+    <!-- <v-preloader
       v-if="preloader == true"
       :preloader_props="preloader_props"
-    ></v-preloader>
+    ></v-preloader> -->
     <v-banner-list></v-banner-list>
     <v-category-list>Меню</v-category-list>
+    <v-column-banner-list></v-column-banner-list>
     <v-popular-list></v-popular-list>
     <transition name="popup" mode="out-in">
       <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
     </transition>
-    <v-footer></v-footer>
+    <v-footer>
+      <div class="footer__payments">
+        <img
+          class="footer__payment"
+          src="@/assets/media/img/mastercard.png"
+          alt=""
+        />
+        <img
+          class="footer__payment"
+          src="@/assets/media/img/sber.png"
+          alt=""
+        />
+        <img
+          class="footer__payment"
+          src="@/assets/media/img/visa.png"
+          alt=""
+        />
+      </div>
+    </v-footer>
   </section>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import vBannerList from "@/components/banners/v-banner-list";
+import vColumnBannerList from "@/components/column_banners/v-banner-list";
 import vCategoryList from "@/components/categories/v-category-list";
 import vPopularList from "@/components/populars/v-popular-list";
 
@@ -45,7 +65,7 @@ export default {
       preloader: false,
       preloader_props: {
         bgColor: "#fff",
-        subtitle: "Загружаю страницу",
+        subtitle: "Море вкуса для тебя",
         subtitleColor: "#000",
         circleColor: "#FF6800",
         homePage: true,
@@ -56,6 +76,7 @@ export default {
     vBannerList,
     vCategoryList,
     vPopularList,
+    vColumnBannerList,
   },
   methods: {
     ...mapActions([
@@ -76,18 +97,22 @@ export default {
       };
     },
     async animateLogoPosition() {
-      this.preloader = true;
-      await this.GET_CATEGORIES_FROM_API();
-      console.log("await popular");
-      await this.GET_POPULAR_FROM_API();
-      console.log("loaded");
-      this.preloader_props.loaded = true;
-      this.preloader_props.logoPosition = {
-        left: this.getLogoPosition().left,
-        top: this.getLogoPosition().top,
-        width: this.getLogoPosition().width,
-        height: this.getLogoPosition().width,
-      };
+      if (this.CATEGORIES.length && this.POPULAR.length) {
+        this.preloader = false;
+      } else {
+        this.preloader = true;
+        await this.GET_CATEGORIES_FROM_API();
+        console.log("await popular");
+        await this.GET_POPULAR_FROM_API();
+        console.log("loaded");
+        this.preloader_props.loaded = true;
+        this.preloader_props.logoPosition = {
+          left: this.getLogoPosition().left,
+          top: this.getLogoPosition().top,
+          width: this.getLogoPosition().width,
+          height: this.getLogoPosition().width,
+        };
+      }
     },
   },
   computed: {

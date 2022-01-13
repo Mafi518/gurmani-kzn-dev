@@ -1,6 +1,13 @@
 <template>
-  <div class="banner__item" @click="setPromo">
-    <img :src="`http://localhost:3000/${banner_data.promo_picture}`" alt="" />
+  <div
+    class="banner__item column__banner-item"
+    ref="column_banner"
+    @click="setPromo"
+  >
+    <img
+      :src="`http://localhost:3000/column-banners/${banner_data.promo_picture}`"
+      alt=""
+    />
   </div>
 </template>
 <script>
@@ -20,9 +27,10 @@ export default {
       this.$router.push("/cart");
     },
   },
+  mounted() {},
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .banner__item {
   margin-right: 20px;
   margin-right: 0;
@@ -35,31 +43,8 @@ export default {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  // img {
-  //   max-width: 384px;
-  //   border-radius: 10px;
-  // }
   img {
-    max-width: 374px;
-    border-radius: 10px;
-    margin-left: 20px;
+    margin-left: 15px;
   }
 }
-
-// @media (max-width: 1025px) and (min-width: 1px) {
-//   .banner__item {
-//     img {
-//       // max-width: 320px;
-//     }
-//   }
-// }
-@media (max-width: 768px) {
-  .banner__item {
-    img {
-      max-width: 340px;
-    }
-  }
-}
-
-
 </style>

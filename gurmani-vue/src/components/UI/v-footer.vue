@@ -104,6 +104,18 @@ export default {
     width: 100%;
     text-align: center;
     color: $accent;
+    margin-bottom: 10px;
+  }
+  &__payments {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    img {
+      max-height: 30px;
+      margin-bottom: 10px;
+    }
   }
 }
 </style>

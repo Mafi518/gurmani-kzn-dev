@@ -47,6 +47,7 @@ export default {
     min-height: 98px;
     background-color: #ffd1ad;
     margin-right: 20px;
+    cursor: pointer;
     img {
       max-width: 50px;
     }
@@ -71,7 +72,6 @@ export default {
   }
   &__item-title {
     @include h3;
-    margin-top: 7px;
     text-align: center;
   }
 }
@@ -86,6 +86,13 @@ export default {
       }
     }
 
+  }
+}
+@media (max-width: 1024px) and (min-width: 1px) {
+  .category {
+    padding-right: 0px !important;
+    padding-top: 10px !important;
+    padding-bottom: 0px !important;
   }
 }
 </style>

@@ -2,11 +2,37 @@
   {
     "action": "add",
     "promo_name": "web",
+    "location": "header",
     "promo_picture": "web.png"
   },
   {
     "action": "add",
-    "promo_name": "web2",
-    "promo_picture": "web2.png"
+    "promo_name": "16pm",
+    "location": "header",
+    "promo_picture": "16pm.png"
+  },
+  {
+    "action": "add",
+    "location": "body",
+    "promo_name": "sake",
+    "promo_picture": "sake.png"
+  },
+  {
+    "action": "add",
+    "promo_name": "1",
+    "promo_picture": "1.png",
+    "location": "body"
+  },
+  {
+    "action": "add",
+    "promo_name": "2",
+    "promo_picture": "2.png",
+    "location": "body"
+  },
+  {
+    "action": "add",
+    "promo_name": "3",
+    "promo_picture": "3.png",
+    "location": "header"
   }
 ]

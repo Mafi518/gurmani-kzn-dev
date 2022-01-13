@@ -22,6 +22,8 @@ router.get('/getProductsFromCategory:id', async (req, res) => {
             category_id: req.params.id
         }
     })
+    let sortId = 0
+    products.map(item => item.sort_id = sortId++)
     res.send(products);
 });
 
@@ -144,7 +146,7 @@ router.post("/promoD", async (req, res) => {
         })
     }
 
-
+    res.end()
 })
 
 router.post('/telegram', ctrlTelegram.sendMsg);
@@ -192,6 +194,21 @@ router.post('/deletePopular', async (req, res) => {
     let filtered = await popular_names.filter(name => name !== data[0])
     let fullData = JSON.stringify(filtered, null, 2)
     fs.writeFile('gurmani-backend/popular_names.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+
+    res.end()
+})
+
+router.post('/saveProductPositions', async (req, res) => {
+    const data = await req.body
+
+    let obj = {
+        category_name: data[0].category_name,
+        filtered_products: data
+    }
+    let fullData = JSON.stringify(obj, null, 2)
+    fs.writeFile('gurmani-backend/filtered_category_products.json', fullData, (err) => {
         if (err) console.log(err)
     })
 

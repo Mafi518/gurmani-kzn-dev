@@ -7,7 +7,6 @@
 
     <form action="" class="promotion form">
       <h2 class="form__title">Добавить баннер</h2>
-      <!-- <input type="file" name="promotion_file" @change="uploadFile"> -->
       <input
         type="text"
         placeholder="Название акции (промокод)"
@@ -20,6 +19,26 @@
         class="form__input form__input-block"
         v-model.trim="promo_picture"
       />
+      <h3 class="panel__title location__title">Где будет находиться баннер?</h3>
+      <label for="location1" class="form__input"
+        >В шапке
+        <input
+          type="radio"
+          name="location"
+          id="location1"
+          value="header"
+          v-model="promo_location"
+      /></label>
+      <label for="location2" class="form__input"
+        >Между меню и популярным
+        <input
+          type="radio"
+          name="location"
+          id="location2"
+          value="body"
+          v-model="promo_location"
+      /></label>
+
       <button
         class="form__button form__add"
         title="add"
@@ -157,6 +176,60 @@
         </article>
       </div>
     </form>
+
+    <section class="config">
+      <h2 class="config__title">Редактировать отображение продуктов</h2>
+      <div class="config__list">
+        <div
+          class="config__item"
+          v-for="category in CATEGORIES"
+          :key="category.category_id"
+          @click="adminCategoryProductsList(category.category_id)"
+        >
+          <img
+            :src="`https://gurmanikzndev.joinposter.com${category.category_photo}`"
+            alt=""
+            class="config__image"
+          />
+          {{ category.category_name }}
+        </div>
+      </div>
+    </section>
+
+    <div class="change-popup">
+      <h2 class="change-popup__title">Редактировать позицию продуктов</h2>
+      <div class="change-popup__list">
+        <div
+          class="change-popup__item"
+          v-for="product in CATEGORY_PRODUCTS"
+          :key="product.product_id"
+          @click="support(product)"
+        >
+          <img
+            :src="`https://gurmanikzndev.joinposter.com${product.photo}`"
+            alt=""
+            class="change-popup__image"
+          />
+          {{ product.product_name }}
+          <div class="change-popup__controls">
+            <button
+              class="change-popup__control"
+              @click.prevent="changeProductPosition(product, 'prev')"
+            >
+              Влево
+            </button>
+            <button
+              class="change-popup__control"
+              @click.prevent="changeProductPosition(product, 'next')"
+            >
+              Вправо
+            </button>
+          </div>
+          {{ product.sort_id }}
+        </div>
+      </div>
+      <button class="change-popup__save" @click.prevent="saveProductPositions">Сохранить</button>
+    </div>
   </section>
 </template>
 <script>
@@ -171,6 +244,7 @@ export default {
       image: "",
       promo_name: "",
       promo_picture: "",
+      promo_location: "",
       banner_response: "",
 
       search_address: "",
@@ -184,6 +258,8 @@ export default {
 
       add_popular: false,
       add_popular_field: "",
+
+      change_popup_toggle: false,
     };
   },
   setup() {
@@ -213,12 +289,17 @@ export default {
       "GET_POPULAR_FROM_API",
       "SET_ADMIN_POPULARS",
       "DELETE_ADMIN_POPULARS",
+      "GET_CATEGORIES_FROM_API",
+      "GET_CATEGORY_PRODUCTS_FROM_API",
+      "SET_ADMIN_PRODUCTS_POSITION",
+      "SAVE_ADMIN_PRODUCTS_POSITION",
     ]),
     async changeBanners(e) {
       const data = await {
         action: e.target.getAttribute("title"),
         promo_name: this.promo_name,
         promo_picture: this.promo_picture,
+        location: this.promo_location,
       };
       this.ADD_BANNER(data);
       if (e.target.getAttribute("title") == "add") {
@@ -253,9 +334,38 @@ export default {
     async adminDeletePopular(popular) {
       await this.DELETE_ADMIN_POPULARS(popular);
     },
+    async adminCategoryProductsList(id) {
+      await this.GET_CATEGORY_PRODUCTS_FROM_API(id);
+      this.change_popup_toggle = true;
+    },
+    async changeProductPosition(product, action) {
+      // Что если сделать функционал кастомной сортировки продуктов полностью через vuex,
+      // Сохранить при этом реактивность объектов, 
+      // а потом при запросе на сервер, подтягивать конфиг и делать вычисления на клиенте, идея неплохая
+
+      let settings = {
+        product: product,
+        action: action
+      }
+      this.SET_ADMIN_PRODUCTS_POSITION(settings)
+
+    },
+    async saveProductPositions() {
+      this.SAVE_ADMIN_PRODUCTS_POSITION(this.CATEGORY_PRODUCTS)
+      console.log(this.CATEGORY_PRODUCTS);
+    },
+    support(prod) {
+      console.log("support id", prod.sort_id);
+      prod;
+    },
   },
   computed: {
-    ...mapGetters(["RENDER_ADMIN_ADRESSES", "POPULAR"]),
+    ...mapGetters([
+      "RENDER_ADMIN_ADRESSES",
+      "POPULAR",
+      "CATEGORIES",
+      "CATEGORY_PRODUCTS",
+    ]),
     FIND_ADDRESS() {
       console.log(this.RENDER_ADMIN_ADRESSES.length);
       if (
@@ -274,6 +384,8 @@ export default {
   mounted() {
     this.adminAdresses();
     this.GET_POPULAR_FROM_API();
+    this.GET_CATEGORIES_FROM_API();
+    this.adminCategoryProductsList(4);
   },
 };
 </script>
@@ -350,6 +462,14 @@ export default {
   }
   &__delete {
     background-color: tomato;
+  }
+  .location__title {
+    margin-bottom: 20px;
+  }
+  label {
+    input {
+      margin-left: 10px;
+    }
   }
 }
 .addresses {
@@ -456,6 +576,74 @@ export default {
     width: 100%;
     background-color: $background;
     margin: 5px;
+  }
+}
+.config {
+  &__title {
+    @include h2;
+  }
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &__item {
+    max-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    @include container;
+    padding-bottom: 10px;
+    margin: 10px;
+    cursor: pointer;
+  }
+  &__image {
+    max-width: 120px;
+  }
+}
+.change-popup {
+  &__title {
+    @include h2;
+    margin-bottom: 20px;
+  }
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &__item {
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+    align-items: center;
+    @include container;
+    padding: 10px;
+  }
+  &__image {
+    max-width: 180px;
+    margin-bottom: 5px;
+  }
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px 0;
+  }
+  &__control {
+    padding: 7px;
+    background-color: $accent;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #fff;
+  }
+  &__save {
+    background-color: turquoise;
+    padding: 10px;
+    margin: 15px 0;
+    margin-left: 10px;
+    width: 100%;
+    color: $white;
+    border-radius: 10px;
+    cursor: pointer;
   }
 }
 </style>

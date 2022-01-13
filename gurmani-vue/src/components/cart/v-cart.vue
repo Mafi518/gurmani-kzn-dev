@@ -1018,7 +1018,6 @@ export default {
     form: {
       handler() {
         if (!this.v$.$error) {
-          console.log();
           this.$refs.sendOrderBtn.disabled = false;
         }
       },
@@ -1054,12 +1053,12 @@ export default {
     setTimeout(() => {
       if (localStorage.getItem("setPromo") !== "") {
         this.promocode_input = localStorage.getItem("setPromo");
-        this.validatePromocode();
+        this.validatePromocode(this.promocode_input);
         localStorage.setItem("setPromo", "");
       } else {
-        this.validatePromocode();
+        this.validatePromocode(this.promocode_input);
       }
-    }, 300);
+    }, 600);
   },
   setup() {
     const beforeEnter = (el) => {
@@ -1365,77 +1364,74 @@ export default {
 }
 
 @media (max-width: 1920px) and (min-width: 1025px) {
-    .cart {
+  .cart {
+    padding-bottom: 0 !important;
 
-        padding-bottom: 0 !important;
-
-        &__desktop {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-        }
-
-        &__container {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-            -ms-flex-wrap: wrap;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        &__list {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            -webkit-box-flex: 1;
-            -ms-flex-positive: 1;
-            flex-grow: 1;
-            margin-right: 30px;
-        }
-
-        &__item {
-            max-width: 100%;
-            width: 100%;
-
-            &-img {
-                max-width: 162px ;
-                max-height: 107px ;
-            }
-
-            &-image {
-                max-width: 162px ;
-                max-height: 107px ;
-            }
-        }
-
-        &__confirm {
-            max-width: 430px;
-        }
+    &__desktop {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
     }
 
-
-
-    .cart-info {
-        position: static ;
-
-        &__promocode {
-            position: relative ;
-            width: 100% ;
-            margin-bottom: 18px;
-            top: initial ;
-        }
-
-        &__promocode-inp {
-            width: 100% ;
-        }
+    &__container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      width: 100%;
     }
+
+    &__list {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+      flex-grow: 1;
+      margin-right: 30px;
+    }
+
+    &__item {
+      max-width: 100%;
+      width: 100%;
+
+      &-img {
+        max-width: 162px;
+        max-height: 107px;
+      }
+
+      &-image {
+        max-width: 162px;
+        max-height: 107px;
+      }
+    }
+
+    &__confirm {
+      max-width: 430px;
+    }
+  }
+
+  .cart-info {
+    position: static;
+
+    &__promocode {
+      position: relative;
+      width: 100%;
+      margin-bottom: 18px;
+      top: initial;
+    }
+
+    &__promocode-inp {
+      width: 100%;
+    }
+  }
 }
 </style>

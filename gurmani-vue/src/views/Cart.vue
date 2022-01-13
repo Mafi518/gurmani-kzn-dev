@@ -38,6 +38,14 @@ export default {
     getCurrentEl(e) {
       this.active_element = e.target;
     },
+    showBarOnScroll() {
+      if (document.querySelector(".cart-info")) {
+        gsap.to(".cart-info", {
+          transform: "translateY(0%)",
+          duration: 0.6,
+        });
+      }
+    },
   },
   computed: {
     ...mapGetters(["CART", "OLD_CART", "PROMOCODES"]),
@@ -46,6 +54,7 @@ export default {
     this.reset();
     this.getOldCart();
     this.getPromocodes();
+    window.addEventListener("scroll", this.showBarOnScroll);
   },
   watch: {
     active_element: {

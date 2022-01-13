@@ -86,6 +86,11 @@ export default {
   transition: transform 0.4s ease-in-out;
   transition: transform 0.4s ease-in-out, -webkit-transform 0.4s ease-in-out;
 }
+@media (max-width: 1025px) {
+  .products__list {
+    margin-top: 20px;
+  }
+}
 @media (max-width: 416px) {
   .products__list {
     padding-right: 20px;

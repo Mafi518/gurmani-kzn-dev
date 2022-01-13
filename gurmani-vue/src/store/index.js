@@ -43,7 +43,8 @@ export default createStore({
     delete_address: {},
 
     admin_set_popular: '',
-    admin_delete_popular: ''
+    admin_delete_popular: '',
+
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -464,6 +465,37 @@ export default createStore({
       state.admin_delete_popular = {
         name: popular
       }
+    },
+    CHANGE_PRODUCTS_POSITION: (state, settings) => {
+      let prevNextProduct = state.categoryProducts.filter(
+        (el) => {
+          if (settings.action == "prev") {
+            return el.sort_id == settings.product.sort_id - 1;
+          } else {
+            return el.sort_id == settings.product.sort_id + 1;
+          }
+        }
+      );
+      if (settings.action == "prev" && settings.product.sort_id !== 0) {
+        console.log("prev");
+        settings.product.sort_id = prevNextProduct[0].sort_id;
+        prevNextProduct[0].sort_id = settings.product.sort_id + 1;
+      } else if (
+        settings.action == "next" &&
+        settings.product.sort_id !== state.categoryProducts.length - 1
+      ) {
+        console.log("next");
+        prevNextProduct[0].sort_id = settings.product.sort_id;
+        settings.product.sort_id = prevNextProduct[0].sort_id + 1;
+      }
+
+      state.categoryProducts.sort((item1, item2) => {
+        return item1.sort_id - item2.sort_id;
+      });
+    },
+    SAVE_PRODUCT_POSITIONS: (state, config) => {
+      state
+      config
     }
   },
   actions: {
@@ -490,7 +522,7 @@ export default createStore({
     }, categoryID) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/getProductsFromCategory${categoryID}`,
+        url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
         body: categoryID,
       }).then((products) => {
         if (products.data.map(item => item.group_modifications)) {
@@ -836,7 +868,7 @@ export default createStore({
     }, data) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/promoD`,
+        url: `http://localhost:3000/promoD`,
         params: data,
       }).then((data) => {
         commit("GET_BANNER", data);
@@ -847,7 +879,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/banners`,
+        url: `http://localhost:3000/banners`,
       }).then((banners) => {
         commit("SET_BANNERS", banners.data);
       });
@@ -917,6 +949,22 @@ export default createStore({
         params: popular
       }).then((popular) => {
         commit("DELETE_POPULARS", popular)
+      });
+    },
+    SET_ADMIN_PRODUCTS_POSITION({
+      commit
+    }, settings) {
+      commit("CHANGE_PRODUCTS_POSITION", settings)
+    },
+    SAVE_ADMIN_PRODUCTS_POSITION({
+      commit
+    }, config) {
+      return axios({
+        method: "POST",
+        url: `http://localhost:3000/saveProductPositions`,
+        data: config
+      }).then((config) => {
+        commit("SAVE_PRODUCT_POSITIONS", config);
       });
     }
   },
