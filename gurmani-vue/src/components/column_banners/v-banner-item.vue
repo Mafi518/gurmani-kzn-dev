@@ -5,7 +5,7 @@
     @click="setPromo"
   >
     <img
-      :src="`http://localhost:3000/column-banners/${banner_data.promo_picture}`"
+      :src="`http://185.185.70.214:3000/column-banners/${banner_data.promo_picture}`"
       alt=""
     />
   </div>

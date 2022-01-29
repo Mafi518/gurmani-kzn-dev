@@ -26,15 +26,15 @@ export default {
   computed: {
     ...mapGetters(["SET_BANNERS"]),
     FILTER_BANNERS() {
-      return this.SET_BANNERS.filter(el => el.location == 'header')
-    }
+      return this.SET_BANNERS.filter((el) => el.location == "header");
+    },
   },
   mounted() {
     this.GET_BANNERS();
   },
 };
 </script>
-<style lang="scss" scoped >
+<style lang="scss" scoped>
 .banner {
   margin: 0 auto;
   &__list {

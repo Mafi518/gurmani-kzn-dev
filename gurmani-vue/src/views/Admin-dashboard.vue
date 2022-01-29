@@ -196,7 +196,7 @@
       </div>
     </section>
 
-    <div class="change-popup">
+    <div class="change-popup" v-if="this.CATEGORY_PRODUCTS.length">
       <h2 class="change-popup__title">Редактировать позицию продуктов</h2>
       <div class="change-popup__list">
         <div
@@ -228,7 +228,9 @@
           {{ product.sort_id }}
         </div>
       </div>
-      <button class="change-popup__save" @click.prevent="saveProductPositions">Сохранить</button>
+      <button class="change-popup__save" @click.prevent="saveProductPositions">
+        Сохранить
+      </button>
     </div>
   </section>
 </template>
@@ -340,19 +342,17 @@ export default {
     },
     async changeProductPosition(product, action) {
       // Что если сделать функционал кастомной сортировки продуктов полностью через vuex,
-      // Сохранить при этом реактивность объектов, 
+      // Сохранить при этом реактивность объектов,
       // а потом при запросе на сервер, подтягивать конфиг и делать вычисления на клиенте, идея неплохая
 
       let settings = {
         product: product,
-        action: action
-      }
-      this.SET_ADMIN_PRODUCTS_POSITION(settings)
-
+        action: action,
+      };
+      this.SET_ADMIN_PRODUCTS_POSITION(settings);
     },
     async saveProductPositions() {
-      this.SAVE_ADMIN_PRODUCTS_POSITION(this.CATEGORY_PRODUCTS)
-      console.log(this.CATEGORY_PRODUCTS);
+      this.SAVE_ADMIN_PRODUCTS_POSITION(this.CATEGORY_PRODUCTS);
     },
     support(prod) {
       console.log("support id", prod.sort_id);
@@ -385,7 +385,6 @@ export default {
     this.adminAdresses();
     this.GET_POPULAR_FROM_API();
     this.GET_CATEGORIES_FROM_API();
-    this.adminCategoryProductsList(4);
   },
 };
 </script>
@@ -619,7 +618,7 @@ export default {
     padding: 10px;
   }
   &__image {
-    max-width: 180px;
+    max-width: 120px;
     margin-bottom: 5px;
   }
   &__controls {

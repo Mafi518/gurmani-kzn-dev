@@ -67,8 +67,8 @@ export default {
 </script>
 <style lang="scss">
 .category {
-  padding: 0 20px;
   padding-bottom: 10px;
+  padding: 0 20px;
   &__title {
     @include h2;
   }

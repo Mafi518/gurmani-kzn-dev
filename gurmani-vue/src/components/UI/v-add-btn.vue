@@ -32,7 +32,7 @@ export default {
   padding: 15px;
   font-family: roboto, sans-serif;
   width: 90%;
-  bottom: 64px;
+  bottom: 20px;
   position: fixed;
   p {
     text-align: left;

@@ -21,7 +21,7 @@
 </template>
 <script>
 import gsap from "gsap";
-import { TimelineMax } from "gsap";
+import { TimelineMax, Power2 } from "gsap";
 
 export default {
   name: "v-preloader",
@@ -53,36 +53,48 @@ export default {
     let dots = document.querySelectorAll(".preloader__dot");
     gsap;
     let props = this.preloader_props;
-    console.log(props);
 
     let interval = setInterval(() => {
       if (props.homePage == true && props.loaded == true) {
         setTimeout(() => {
-          gsap.to(".preloader__animate", 1.5, {
-            scale: 10,
-            zIndex: 3,
-          });
-
-          gsap.to(".preloader__animate", 1.5, {
-            delay: 1.5,
-            scale: 0,
-          });
-
-          gsap.to(".preloader__subtitle", 0, {
-            delay: 1.5,
-            display: "none",
-          });
-
-          gsap.to(".preloader", 1.5, {
-            delay: 1.5,
-            display: "none",
-            backgroundColor: "transparent",
-          });
-
-          gsap.to(".preloader__logo-img", 1.5, {
-            delay: 1.5,
-            opacity: 0,
-          });
+          gsap
+            .to(".preloader__animate", 2.2, {
+              scale: 10,
+              zIndex: 3,
+            })
+            .then(() => {
+              gsap.to(".preloader__animate", 1.2, {
+                scale: 0,
+                left: this.preload.logoPosition.left,
+                top: this.preload.logoPosition.top,
+                width: this.preload.logoPosition.width,
+                height: this.preload.logoPosition.height,
+                transform: "translate(0)",
+                ease: Power2.easeInOut,
+              });
+              gsap
+                .to(".preloader__logo-img", 1.2, {
+                  left: this.preload.logoPosition.left,
+                  top: this.preload.logoPosition.top,
+                  width: this.preload.logoPosition.width,
+                  height: this.preload.logoPosition.height,
+                  transform: "translate(0)",
+                  ease: Power2.easeInOut,
+                })
+                .then(() => {
+                  gsap.to(".preloader", 0.4, {
+                    opacity: 0,
+                    zIndex: -1,
+                    display: 'none'
+                  });
+                  gsap.from('.home', 0.4, {
+                    opacity: 0,
+                  })
+                });
+              gsap.set(".preloader__subtitle", {
+                display: "none",
+              });
+            });
 
           clearInterval(interval);
         }, 200);
@@ -93,6 +105,7 @@ export default {
       .to(dots, 0.5, { opacity: 0, stagger: 0.1 })
       .to(dots, 0.5, { opacity: 1, stagger: 0.1 });
     tl.play();
+    console.log(this.preload);
   },
   // setup() {
   //   const beforeEnter = (el) => {
@@ -133,8 +146,8 @@ export default {
   }
   &__animate {
     content: "";
-    width: 160px;
-    height: 160px;
+    width: 120px;
+    height: 120px;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -70,7 +70,7 @@ export default {
     ...mapGetters(["CURRENT_TIME"]),
     SCREEN_WIDTH() {
       console.log(window.innerWidth);
-      return window.innerWidth
+      return window.innerWidth;
     },
   },
 

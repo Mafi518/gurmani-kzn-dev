@@ -107,7 +107,7 @@
         </div>
 
         <div class="popup__info" v-if="PRODUCT.group_modifications">
-          <section class="additional" v-if="PRODUCT.category_name !== 'Пиццы'">
+          <section class="additional" v-if="PRODUCT.category_name !== 'Пиццы new'">
             <div
               class="additional__container"
               v-for="modification_group in PRODUCT.group_modifications"
@@ -311,7 +311,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 40px 0px 135px 20px;
+  padding: 40px 0px 100px 20px;
   z-index: 2;
 
   &-buy-btn {
@@ -559,7 +559,6 @@ export default {
       top: 0;
       img {
         max-width: 70%;
-
       }
     }
     &__subtitle {
@@ -578,7 +577,8 @@ export default {
       width: 100%;
     }
   }
-  .ingredients, .like {
+  .ingredients,
+  .like {
     padding-bottom: 10px;
   }
 }

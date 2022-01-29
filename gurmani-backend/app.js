@@ -12,9 +12,9 @@ const app = express();
 /** Express **/
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
 }));
 
 /** Подключаем роуты **/

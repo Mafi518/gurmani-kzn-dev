@@ -30,7 +30,7 @@ export default createStore({
     current_time: "",
     promocode_total: 0,
     form_validation_error: "",
-    pickup_time: '',
+    pickup_time: "",
     cutlery_count: 0,
 
     favorites: [],
@@ -42,9 +42,8 @@ export default createStore({
     set_address: {},
     delete_address: {},
 
-    admin_set_popular: '',
-    admin_delete_popular: '',
-
+    admin_set_popular: "",
+    admin_delete_popular: "",
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -52,36 +51,310 @@ export default createStore({
     },
     SET_CATEGORY_PRODUCTS_TO_STATE: (state, products) => {
       products.map((item) => {
-        item.count = 1
-
+        item.count = 1;
       });
       state.categoryProducts = products;
     },
     SET_POPULAR_TO_STATE: (state, populars) => {
       populars.map((item) => {
-        item.count = 1
-        item.sub_category = 'Популярное'
-        if (item.category_name.includes('Пиццы') && item.group_modifications) {
-          item.group_modifications[0].modifications.map(item => item.price = (item.price + '00') - 0)
-          item.price[1] = (item.group_modifications[0].modifications[0].price).toString()
+        item.count = 1;
+        item.sub_category = "Популярное";
+        if (item.category_name.includes("Пиццы") && item.group_modifications) {
+          item.group_modifications[0].modifications.map(
+            (item) => (item.price = item.price + "00" - 0)
+          );
+          item.price[1] =
+            item.group_modifications[0].modifications[0].price.toString();
         }
       });
 
       state.popular = populars;
     },
     SET_PRODUCT_TO_STATE: (state, product) => {
+      for (const ingredient of product.ingredients) {
+        switch (ingredient.ingredient_name) {
+          case "Тобико оранжевая":
+            ingredient.ingredient_icon = "tobiko_orange";
+            break;
+          case "Рис отварной":
+            ingredient.ingredient_icon = "rice";
+            break;
+          case "Нори":
+            ingredient.ingredient_icon = "nori";
+            break;
+          case "Авокадо":
+            ingredient.ingredient_icon = "avocado";
+            break;
+          case "Ананасы кусочки":
+            ingredient.ingredient_icon = "pineaple";
+            break;
+          case "Бекон":
+            ingredient.ingredient_icon = "bacon";
+            break;
+          case "Вакаме":
+            ingredient.ingredient_icon = "seaweed";
+            break;
+          case "Ветчина":
+            ingredient.ingredient_icon = "ham";
+            break;
+          case "Водоросли Комбо":
+            ingredient.ingredient_icon = "seaweed";
+            break;
+          case "Кинза":
+            ingredient.ingredient_icon = "cilantro";
+            break;
+          case "Кокосовое молоко":
+            ingredient.ingredient_icon = "coconut_milk";
+            break;
+          case "Краб-микс":
+            ingredient.ingredient_icon = "crab";
+            break;
+          case "Креветки":
+            ingredient.ingredient_icon = "shrimp";
+            break;
+          case "Кунжут Белый":
+            ingredient.ingredient_icon = "white_sesame";
+            break;
+          case "Кунжут Черный":
+            ingredient.ingredient_icon = "black_sesame";
+            break;
+          case "Лайм":
+            ingredient.ingredient_icon = "lime";
+            break;
+          case "Лосось свежий":
+            ingredient.ingredient_icon = "salmon";
+            break;
+          case "Лук красный":
+            ingredient.ingredient_icon = "red_onion";
+            break;
+          case "Лук репчатый":
+            ingredient.ingredient_icon = "onion";
+            break;
+          case "Маслины":
+            ingredient.ingredient_icon = "olives";
+            break;
+          case "Морковь":
+            ingredient.ingredient_icon = "carrot";
+            break;
+          case "Моцарелла":
+            ingredient.ingredient_icon = "mozzarella";
+            break;
+          case "Огурцы":
+            ingredient.ingredient_icon = "cucumber";
+            break;
+          case "Огурчики маринованные":
+            ingredient.ingredient_icon = "pickled_cucumbers";
+            break;
+          case "Орегано":
+            ingredient.ingredient_icon = "oregano";
+            break;
+          case "Пармезан":
+            ingredient.ingredient_icon = "parmesan";
+            break;
+          case "Петрушка":
+            ingredient.ingredient_icon = "parsley";
+            break;
+          case "Помидоры":
+            ingredient.ingredient_icon = "tomatoes";
+            break;
+          case "Рис":
+            ingredient.ingredient_icon = "rice";
+            break;
+          case "Рис Shinaki":
+            ingredient.ingredient_icon = "rice";
+            break;
+          case "Соус Унаги":
+            ingredient.ingredient_icon = "unagi_sauce";
+            break;
+          case "Сливочный сыр":
+            ingredient.ingredient_icon = "cheese_creamy";
+            break;
+          case "Чили перец":
+            ingredient.ingredient_icon = "chilli";
+            break;
+          case "Шампиньоны":
+            ingredient.ingredient_icon = "champignon";
+            break;
+          case "Тесто ":
+            ingredient.ingredient_icon = "dough";
+            break;
+          case "Черная тобико":
+            ingredient.ingredient_icon = "black-tobiko";
+            break;
+          case "Маменори":
+            ingredient.ingredient_icon = "mamenori";
+            break;
+          case "Маринованные огурцы":
+            ingredient.ingredient_icon = "marinade-cucumber";
+            break;
+          case "Сырная шапочка":
+            ingredient.ingredient_icon = "cheese_cap";
+            break;
+          case "Халапеньо":
+            ingredient.ingredient_icon = "jalapeno";
+            break;
+          case "Кунжут жаренный":
+            ingredient.ingredient_icon = "fried_sesame";
+            break;
+          case "Сыр с плесенью":
+            ingredient.ingredient_icon = "blue_cheese";
+            break;
+          case "Чеддер":
+            ingredient.ingredient_icon = "cheddar";
+            break;
+          case "Соус Цезарь":
+            ingredient.ingredient_icon = "caesar_sauce";
+            break;
+          case "Черри":
+            ingredient.ingredient_icon = "cherry";
+            break;
+          case "Укроп":
+            ingredient.ingredient_icon = "dill";
+            break;
+          case "Лимон":
+            ingredient.ingredient_icon = "lemon";
+            break;
+          case "Томатный соус":
+            ingredient.ingredient_icon = "tomato_sauce";
+            break;
+          case "Говяжий фарш":
+            ingredient.ingredient_icon = "ground_beef";
+            break;
+          case "Карамельный Топинг":
+            ingredient.ingredient_icon = "caramel_topping";
+            break;
+          case "Майонез":
+            ingredient.ingredient_icon = "mayonnaise";
+            break;
+          case "Креветки отварные":
+            ingredient.ingredient_icon = "boiled_shrimp";
+            break;
+          case "Соус для запекания":
+            ingredient.ingredient_icon = "sauce_for_baking";
+            break;
+          case "Соус спайс":
+            ingredient.ingredient_icon = "spice_sauce";
+            break;
+          case "тайский соус":
+            ingredient.ingredient_icon = "thai-sauce";
+            break;
+          case "Болгарский перец":
+            ingredient.ingredient_icon = "bell_pepper";
+            break;
+          case "Красный лук":
+            ingredient.ingredient_icon = "red_onion";
+            break;
+          case "Жаренный лосось":
+            ingredient.ingredient_icon = "fried_salmon";
+            break;
+          case "Лук зелёный":
+            ingredient.ingredient_icon = "green_onion";
+            break;
+          case "Копченая курица филе":
+            ingredient.ingredient_icon = "smoked_chicken_fillet";
+            break;
+          case "Тобико красная":
+            ingredient.ingredient_icon = "tobiko_red";
+            break;
+          case "Чука":
+            ingredient.ingredient_icon = "chuka";
+            break;
+          case "Лосось филе":
+            ingredient.ingredient_icon = "salmon_fillet";
+            break;
+          case "Угорь филе":
+            ingredient.ingredient_icon = "eel_fillet";
+            break;
+          case "Тунец филе":
+            ingredient.ingredient_icon = "tuna_fillet";
+            break;
+          case "Курица жаренная":
+            ingredient.ingredient_icon = "fried_chicken_fillet";
+            break;
+          case "Стружка тунца":
+            ingredient.ingredient_icon = "tuna_shavings";
+            break;
+          case "Жаренная курица филе":
+            ingredient.ingredient_icon = "fried_chicken_fillet";
+            break;
+          case "Лосось хк филе":
+            ingredient.ingredient_icon = "salmon_hk_fillet";
+            break;
+          default:
+            ingredient.ingredient_icon = "logo";
+            break;
+        }
+
+        // if (
+        //   ingredient.ingredient_name.includes("Соусничка") ||
+        //   ingredient.ingredient_name.includes("Боксы фольгированые") ||
+        //   ingredient.ingredient_name.includes("Сухари панировачные") ||
+        //   ingredient.ingredient_name.includes("Мисо паста") ||
+        //   ingredient.ingredient_name.includes("Сухари Панировочные") ||
+        //   ingredient.ingredient_name.includes("Вода") ||
+        //   ingredient.ingredient_name.includes("Затотовка для Том Яма") ||
+        //   ingredient.ingredient_name.includes("Хлеб харис") ||
+        //   ingredient.ingredient_name.includes("Нагетсы") ||
+        //   ingredient.ingredient_name.includes("Картофель фри") ||
+        //   ingredient.ingredient_name.includes("Морс") ||
+        //   ingredient.ingredient_name.includes("Картофель по деревенски") ||
+        //   ingredient.ingredient_name.includes("Пепперони") ||
+        //   ingredient.ingredient_name.includes("Газовый") ||
+        //   ingredient.ingredient_name.includes("Мука темпурная") ||
+        //   ingredient.ingredient_name.includes("Масло фритюрное") ||
+        //   ingredient.ingredient_name.includes("Сухари панировачные") ||
+        //   ingredient.ingredient_name.includes("Соевый соус в ассортименте") ||
+        //   ingredient.ingredient_name.includes("Соевый соус порционный") ||
+        //   ingredient.ingredient_name.includes("Имбирь") ||
+        //   ingredient.ingredient_name.includes("Васаби") ||
+        //   ingredient.ingredient_name.includes("Бокс") ||
+        //   ingredient.ingredient_name.includes("Пакет") ||
+        //   ingredient.ingredient_name.includes("Короб") ||
+        //   ingredient.ingredient_name.includes("палочки") ||
+        //   ingredient.ingredient_name.includes("Наклейка") ||
+        //   ingredient.ingredient_name.includes("Упаковка") ||
+        //   ingredient.ingredient_name.includes("СП") ||
+        //   ingredient.ingredient_name.includes("Наклейки") ||
+        //   ingredient.ingredient_name.includes("СП") ||
+        //   ingredient.ingredient_name.includes("Наклейк") ||
+        //   ingredient.ingredient_name.includes("Бумага") ||
+        //   ingredient.ingredient_name.includes("Супница") ||
+        //   ingredient.ingredient_name.includes("Крышка") ||
+        //   ingredient.ingredient_name.includes("Картонные") ||
+        //   ingredient.ingredient_name.includes("Мука") ||
+        //   ingredient.ingredient_name.includes("Масло") ||
+        //   ingredient.ingredient_name.includes("Вилка") ||
+        //   ingredient.ingredient_name.includes("Тарелка") ||
+        //   ingredient.ingredient_name.includes("Ложка")
+        // ) {
+        //   data.ingredients.splice(data.ingredients.indexOf(ingredient), 1);
+        // }
+      }
+      product.ingredients = product.ingredients.filter(item => item.ingredient_icon !== 'logo')
       state.product = product;
     },
     INCREMENT: (state, index) => {
-      if (window.location.href == "http://localhost:8080/cart" || window.location.href == 'http://185.185.70.214/cart') {
+      if (
+        window.location.href == "http://localhost:8080/cart" ||
+        window.location.href == "http://185.185.70.214/cart"
+      ) {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
-          let checked = state.cart[index].group_modifications[0].modifications.filter(mode => mode.checked == true)
-          checked[0].count = state.cart[index].count
+          let checked = state.cart[
+            index
+          ].group_modifications[0].modifications.filter(
+            (mode) => mode.checked == true
+          );
+          checked[0].count = state.cart[index].count;
           state.cart[index].price[1] =
             checked[0].price * state.cart[index].count + "";
         } else if (state.cart[index].group_modifications) {
-          let array = state.cart[index].group_modifications.map(group_modifications => group_modifications.modifications.map(modification => modification.price * modification.count))
+          let array = state.cart[index].group_modifications.map(
+            (group_modifications) =>
+            group_modifications.modifications.map(
+              (modification) => modification.price * modification.count
+            )
+          );
 
           let reducer = (previousValue, currentValue) =>
             +previousValue + +currentValue;
@@ -90,50 +363,58 @@ export default createStore({
             state.cart[index].spots[0].price * state.cart[index].count +
             +result +
             "";
-
         } else {
           state.cart[index].price[1] =
-            state.cart[index].spots[0].price * state.cart[index].count +
-            "";
+            state.cart[index].spots[0].price * state.cart[index].count + "";
         }
       } else {
         state.product.count++;
-        console.log('555555');
 
-        if (state.product.category_name.includes('Пиццы')) {
-          let checked = state.product.group_modifications[0].modifications.filter(mode => mode.checked == true)
-          checked[0].count = state.product.count
-
+        if (state.product.category_name.includes("Пиццы")) {
+          let checked =
+            state.product.group_modifications[0].modifications.filter(
+              (mode) => mode.checked == true
+            );
+          checked[0].count = state.product.count;
         }
-
       }
     },
     DECREMENT: (state, index) => {
       if (
         state.product.count > 1 &&
-        window.location.href !== "http://localhost:8080/cart" && window.location.href !== "http://185.185.70.214/cart"
+        window.location.href !== "http://localhost:8080/cart" &&
+        window.location.href !== "http://185.185.70.214/cart"
       ) {
         state.product.count--;
 
-        if (state.product.category_name.includes('Пиццы')) {
-          let checked = state.product.group_modifications[0].modifications.filter(mode => mode.checked == true)
-          checked[0].count = state.product.count
+        if (state.product.category_name.includes("Пиццы")) {
+          let checked =
+            state.product.group_modifications[0].modifications.filter(
+              (mode) => mode.checked == true
+            );
+          checked[0].count = state.product.count;
         }
-
       } else if (state.cart[index].count <= 1) {
         state.cart.splice(index, 1);
-        console.log('deleted');
       } else if (state.cart[index].product_name.includes("Пицца")) {
-
         state.cart[index].count--;
-        let checked = state.cart[index].group_modifications[0].modifications.filter(mode => mode.checked == true)
-        checked[0].count = state.cart[index].count
+        let checked = state.cart[
+          index
+        ].group_modifications[0].modifications.filter(
+          (mode) => mode.checked == true
+        );
+        checked[0].count = state.cart[index].count;
         state.cart[index].price[1] =
           checked[0].price * state.cart[index].count + "";
-      } else if ((state.cart[index].group_modifications)) {
+      } else if (state.cart[index].group_modifications) {
         state.cart[index].count--;
 
-        let array = state.cart[index].group_modifications.map(group_modifications => group_modifications.modifications.map(modification => modification.price * modification.count))
+        let array = state.cart[index].group_modifications.map(
+          (group_modifications) =>
+          group_modifications.modifications.map(
+            (modification) => modification.price * modification.count
+          )
+        );
 
         let reducer = (previousValue, currentValue) =>
           +previousValue + +currentValue;
@@ -142,29 +423,22 @@ export default createStore({
           state.cart[index].spots[0].price * state.cart[index].count +
           +result +
           "";
-        console.log('14124124124');
-
       } else {
         state.cart[index].count--;
         state.cart[index].price[1] =
-          state.cart[index].spots[0].price * state.cart[index].count +
-          "";
-
+          state.cart[index].spots[0].price * state.cart[index].count + "";
       }
     },
     SET_CART: (state, data) => {
-      console.log("set cart");
       if (state.cart.length) {
         let dataExists = false;
         state.cart.map((item) => {
           if (item.product_id === data.product_id) {
             dataExists = true;
-            console.log("dataExists");
             if (
               item.group_modifications[0].modifications[0].checked !==
               data.group_modifications[0].modifications[0].checked
             ) {
-              console.log("pizza clone");
               state.cart.push(data);
             } else {
               item.count = data.count;
@@ -175,12 +449,9 @@ export default createStore({
           }
         });
         if (!dataExists) {
-          console.log('pre-latest');
           state.cart.push(data);
         }
       } else {
-        console.log('latest');
-        console.log(data.price[1]);
         state.cart.push(data);
       }
       localStorage.setItem(
@@ -191,24 +462,36 @@ export default createStore({
     TOGGLE_SIZE: (state, index) => {
       if (state.product.product !== "empty") {
         state.product.group_modifications[0].modifications.map((mode) => {
-          mode.checked = false
-          mode.count = 0
+          mode.checked = false;
+          mode.count = 0;
         });
-        state.product.group_modifications[0].modifications[index].checked = true;
-        state.product.group_modifications[0].modifications[index].count = state.product.count
+        state.product.group_modifications[0].modifications[
+          index
+        ].checked = true;
+        state.product.group_modifications[0].modifications[index].count =
+          state.product.count;
       }
-      if (state.cart.length && location.href == "http://localhost:8080/cart" || location.href == "http://185.185.70.214/cart") {
+      if (
+        (state.cart.length && location.href == "http://localhost:8080/cart") ||
+        location.href == "http://185.185.70.214/cart"
+      ) {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
-          let switchArray = state.cart[cartItem].group_modifications[0].modifications
-          console.log(switchArray);
+          let switchArray =
+            state.cart[cartItem].group_modifications[0].modifications;
           switchArray.map((mode) => {
-            mode.checked = false
-            mode.count = 0
+            mode.checked = false;
+            mode.count = 0;
           });
-          state.cart[cartItem].group_modifications[0].modifications[index].checked = true;
-          state.cart[cartItem].group_modifications[0].modifications[index].count = state.cart[cartItem].count
-          let checkedPrice = state.cart[cartItem].group_modifications[0].modifications.filter(
+          state.cart[cartItem].group_modifications[0].modifications[
+            index
+          ].checked = true;
+          state.cart[cartItem].group_modifications[0].modifications[
+            index
+          ].count = state.cart[cartItem].count;
+          let checkedPrice = state.cart[
+            cartItem
+          ].group_modifications[0].modifications.filter(
             (mode) => mode.checked == true
           )[0].price;
           state.cart[cartItem].spots[0].actualPrice = checkedPrice.toString();
@@ -226,34 +509,35 @@ export default createStore({
     },
     FULL_PRICE: (state, data) => {
       if (state.product.product_name.includes("Пицца")) {
-
-        let checked = data.group_modifications[0].modifications.filter(mode => mode.checked == true)
+        let checked = data.group_modifications[0].modifications.filter(
+          (mode) => mode.checked == true
+        );
         data.price[1] = checked[0].price.toString() * data.count + "";
       } else if (!state.product.group_modifications) {
         state.product.price[1] = data.price[1] =
           data.modified_price * data.count + "";
       } else {
-        let array = data.group_modifications.map(group_modifications => group_modifications.modifications.map(modification => modification.price * modification.count))
+        let array = data.group_modifications.map((group_modifications) =>
+          group_modifications.modifications.map(
+            (modification) => modification.price * modification.count
+          )
+        );
         let reducer = (previousValue, currentValue) =>
           +previousValue + +currentValue;
 
         let sum = function () {
           let result = array.reduce(reducer);
           if (result.length > 1) {
-            console.log(result);
             return result.reduce(reducer);
           } else {
-            console.log(result);
-            return result
+            return result;
           }
-        }
-
+        };
 
         state.product.modificationsPrice = sum() + "";
         // state.product.price[1] = data.price[1] =
         //   data.modified_price * data.count + +sum() + "";
-        state.product.price[1] = data.modified_price * data.count + sum() + ''
-        console.log(state.product.price[1]);
+        state.product.price[1] = data.modified_price * data.count + sum() + "";
       }
     },
     SET_OLD_CART: (state, data) => {
@@ -275,9 +559,14 @@ export default createStore({
         state.discount.promocode_discount = validPromo.params.discount_value;
         state.discount.promocode_type = validPromo.params.result_type;
         state.discount.condition = validPromo.params.conditions[0].pcs;
-        state.discount.period_start =
-          validPromo.params.periods[0].start.slice(0, -3)
-        state.discount.period_end = validPromo.params.periods[0].end.slice(0, -3)
+        state.discount.period_start = validPromo.params.periods[0].start.slice(
+          0,
+          -3
+        );
+        state.discount.period_end = validPromo.params.periods[0].end.slice(
+          0,
+          -3
+        );
         state.discount.error = "";
         // state.discount.time = validPromo.params.
         if (state.discount.promocode_type == 1) {
@@ -297,7 +586,7 @@ export default createStore({
       state.discountCurrentProduct = state.discountProduct.product_name;
     },
     DELIVERY_TYPE: (state, type) => {
-      state.selectAddress = {}
+      state.selectAddress = {};
       state.deliveryType = type;
     },
     PAYMENT_TYPE: (state, type) => {
@@ -369,7 +658,7 @@ export default createStore({
       state.order = order_data;
     },
     TELEGRAM_ORDER: (state, order_data) => {
-      state.telegram_order = order_data
+      state.telegram_order = order_data;
     },
     FORM_ERROR: (state, error) => {
       state.form_validation_error = error;
@@ -377,9 +666,7 @@ export default createStore({
     ADD_TO_FAVORITES: (state, product) => {
       if (state.favorites.length) {
         let dataExists = false;
-        let favoriteArr = JSON.parse(
-          localStorage.getItem("saved favorites")
-        );
+        let favoriteArr = JSON.parse(localStorage.getItem("saved favorites"));
 
         state.favorites.map((item) => {
           if (item.product_id === product.product_id) {
@@ -393,7 +680,7 @@ export default createStore({
               for (const key in favoriteArr) {
                 if (favoriteArr[key].product_id == product.product_id) {
                   state.favorites.splice(key, 1);
-                  product.favorites = false
+                  product.favorites = false;
                   localStorage.setItem(
                     "saved favorites",
                     JSON.stringify(state.favorites.map((item) => item))
@@ -420,7 +707,6 @@ export default createStore({
           JSON.stringify(state.favorites.map((item) => item))
         );
       }
-
     },
     SET_SAVED_FAVORITES: (state, data) => {
       if (data) {
@@ -431,60 +717,56 @@ export default createStore({
       state.banner = banner;
     },
     PICKUP_TIME: (state, time) => {
-      state.pickup_time = time
+      state.pickup_time = time;
     },
     SET_BANNERS: (state, banner) => {
-      state.banners = banner
+      state.banners = banner;
     },
     CUTLERY_COUNT: (state, cutlery) => {
-      state.cutlery_count = cutlery
+      state.cutlery_count = cutlery;
     },
     CURRENT_TIME: (state) => {
       let dateWithoutSecond = new Date();
-      state.current_time = dateWithoutSecond.getHours().toString()
+      state.current_time = dateWithoutSecond.getHours().toString();
     },
     RENDER_ADMIN_ADRESSES: (state) => {
-      state.admin_addresses = state.selectAdresses
+      state.admin_addresses = state.selectAdresses;
     },
     SET_ADDRESSES: (state, address) => {
       state.set_address = {
         address: address.address,
         delivery_zone: address.delivery_zone,
-        street_index: address.street_index
-      }
+        street_index: address.street_index,
+      };
     },
     DELETE_ADDRESS: (state, id) => {
-      state.delete_address = id
+      state.delete_address = id;
     },
     SET_POPULARS: (state, popular) => {
       state.admin_set_popular = {
-        name: popular
-      }
+        name: popular,
+      };
     },
     DELETE_POPULARS: (state, popular) => {
       state.admin_delete_popular = {
-        name: popular
-      }
+        name: popular,
+      };
     },
     CHANGE_PRODUCTS_POSITION: (state, settings) => {
-      let prevNextProduct = state.categoryProducts.filter(
-        (el) => {
-          if (settings.action == "prev") {
-            return el.sort_id == settings.product.sort_id - 1;
-          } else {
-            return el.sort_id == settings.product.sort_id + 1;
-          }
+      let prevNextProduct = state.categoryProducts.filter((el) => {
+        if (settings.action == "prev") {
+          return el.sort_id == settings.product.sort_id - 1;
+        } else {
+          return el.sort_id == settings.product.sort_id + 1;
         }
-      );
+      });
       if (settings.action == "prev" && settings.product.sort_id !== 0) {
-        console.log("prev");
         settings.product.sort_id = prevNextProduct[0].sort_id;
         prevNextProduct[0].sort_id = settings.product.sort_id + 1;
       } else if (
         settings.action == "next" &&
         settings.product.sort_id !== state.categoryProducts.length - 1
       ) {
-        console.log("next");
         prevNextProduct[0].sort_id = settings.product.sort_id;
         settings.product.sort_id = prevNextProduct[0].sort_id + 1;
       }
@@ -494,9 +776,9 @@ export default createStore({
       });
     },
     SAVE_PRODUCT_POSITIONS: (state, config) => {
-      state
-      config
-    }
+      state;
+      config;
+    },
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -508,11 +790,12 @@ export default createStore({
       }).then((categories) => {
         commit(
           "SET_CATEGORIES_TO_STATE",
-          categories.data.filter(
-            (category) => {
-              return category.category_name !== "Популярное" && !category.category_name.includes('КУХНЯ')
-            }
-          )
+          categories.data.filter((category) => {
+            return (
+              category.category_name !== "Популярное" &&
+              !category.category_name.includes("КУХНЯ")
+            );
+          })
         );
         return categories;
       });
@@ -522,24 +805,25 @@ export default createStore({
     }, categoryID) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/getProductsFromCategory${categoryID}`,
-        body: categoryID,
+        url: `http://185.185.70.214:3000/getProductsFromCategory${categoryID}`,
+        params: categoryID,
       }).then((products) => {
-        if (products.data.map(item => item.group_modifications)) {
-          products.data.map(product => {
+        if (products.data.map((item) => item.group_modifications)) {
+          products.data.map((product) => {
             if (product.group_modifications) {
-              product.group_modifications.map(modification_group => {
-                modification_group.modifications.map(modification => {
-                  modification.price = (modification.price + '00') - 0
-                })
-              })
+              product.group_modifications.map((modification_group) => {
+                modification_group.modifications.map((modification) => {
+                  modification.price = modification.price + "00" - 0;
+                });
+              });
             }
-          })
+          });
         }
-        if (products.data[0].category_name.includes('Пицц')) {
-          products.data.map(product => {
-            product.price[1] = (product.group_modifications[0].modifications[0].price).toString()
-          })
+        if (products.data[0].category_name.includes("Пицц")) {
+          products.data.map((product) => {
+            product.price[1] =
+              product.group_modifications[0].modifications[0].price.toString();
+          });
         }
         commit("SET_CATEGORY_PRODUCTS_TO_STATE", products.data);
       });
@@ -551,9 +835,7 @@ export default createStore({
         method: "GET",
         url: `http://185.185.70.214:3000/populars`,
       }).then((populars) => {
-        commit(
-          "SET_POPULAR_TO_STATE", populars.data
-        );
+        commit("SET_POPULAR_TO_STATE", populars.data);
       });
     },
     GET_PROMOCODES({
@@ -575,166 +857,22 @@ export default createStore({
       data.modificationsPrice = "";
 
       if (data.group_modifications) {
-        data.group_modifications.map(mode => {
-          mode.modifications.map(modification => {
+        data.group_modifications.map((mode) => {
+          mode.modifications.map((modification) => {
             modification.checked = false;
             modification.count = 0;
-          })
-        })
+          });
+        });
 
         if (data.group_modifications[0].modifications[0]) {
           data.group_modifications[0].modifications[0].checked = true;
         }
 
-        if (data.category_name.includes('Пиццы')) {
-          data.group_modifications[0].modifications[0].count = 1
-          console.log(data.group_modifications[0].modifications[0]);
+        if (data.category_name.includes("Пиццы")) {
+          data.group_modifications[0].modifications[0].count = 1;
         }
       }
-      data.ingredients.map((ingredient) => {
-        switch (ingredient.ingredient_name) {
-          case "Рис отварной":
-            ingredient.ingredient_icon = "rice";
-            break;
-          case "Нори":
-            ingredient.ingredient_icon = "nori";
-            break;
-          case "Авокадо":
-            ingredient.ingredient_icon = "avocado";
-            break;
-          case "Ананасы кусочки":
-            ingredient.ingredient_icon = "pineaple";
-            break;
-          case "Бекон":
-            ingredient.ingredient_icon = "bacon";
-            break;
-          case "Вакаме":
-            ingredient.ingredient_icon = "seaweed";
-            break;
-          case "Ветчина":
-            ingredient.ingredient_icon = "ham";
-            break;
-          case "Водоросли Комбо":
-            ingredient.ingredient_icon = "seaweed";
-            break;
-          case "Кинза":
-            ingredient.ingredient_icon = "cilantro";
-            break;
-          case "Кокосовое молоко":
-            ingredient.ingredient_icon = "coconut_milk";
-            break;
-          case "Краб-микс":
-            ingredient.ingredient_icon = "crab";
-            break;
-          case "Креветки":
-            ingredient.ingredient_icon = "shrimp";
-            break;
-          case "Кунжут Белый":
-            ingredient.ingredient_icon = "white_sesame";
-            break;
-          case "Кунжут Черный":
-            ingredient.ingredient_icon = "black_sesame";
-            break;
-          case "Лайм":
-            ingredient.ingredient_icon = "lime";
-            break;
-          case "Лосось свежий":
-            ingredient.ingredient_icon = "salmon";
-            break;
-          case "Лук зелёный":
-            ingredient.ingredient_icon = "green_onion";
-            break;
-          case "Лук красный":
-            ingredient.ingredient_icon = "red_onion";
-            break;
-          case "Лук репчатый":
-            ingredient.ingredient_icon = "onion";
-            break;
-          case "Маслины":
-            ingredient.ingredient_icon = "olives";
-            break;
-          case "Морковь":
-            ingredient.ingredient_icon = "carrot";
-            break;
-          case "Моцарелла":
-            ingredient.ingredient_icon = "mozzarella";
-            break;
-          case "Огурцы":
-            ingredient.ingredient_icon = "cucumber";
-            break;
-          case "Огурчики маринованные":
-            ingredient.ingredient_icon = "pickled_cucumbers";
-            break;
-          case "Орегано":
-            ingredient.ingredient_icon = "oregano";
-            break;
-          case "Пармезан":
-            ingredient.ingredient_icon = "parmesan";
-            break;
-          case "Петрушка":
-            ingredient.ingredient_icon = "parsley";
-            break;
-          case "Помидоры":
-            ingredient.ingredient_icon = "tomatoes";
-            break;
-          case "Рис":
-            ingredient.ingredient_icon = "rice";
-            break;
-          case "Рис Shinaki":
-            ingredient.ingredient_icon = "rice";
-            break;
-          case "Соус Унаги":
-            ingredient.ingredient_icon = "unagi_sauce";
-            break;
-          case "Сливочный сыр":
-            ingredient.ingredient_icon = "cheese_creamy";
-            break;
-          case "Тобико Оранжевая":
-            ingredient.ingredient_icon = "red-cavia";
-            break;
-          case "Тобико Красная":
-            ingredient.ingredient_icon = "red-cavia";
-            break;
-          case "Кунжут жаренный":
-            ingredient.ingredient_icon = "black_sesame";
-            break;
-          case "Чили перец":
-            ingredient.ingredient_icon = "chilli";
-            break;
-          case "Шампиньоны":
-            ingredient.ingredient_icon = "champignon";
-            break;
-          case "Тесто ":
-            ingredient.ingredient_icon = "dough";
-            break;
-          case "Черная тобико":
-            ingredient.ingredient_icon = "black-tobiko";
-            break;
-          case "Маменори":
-            ingredient.ingredient_icon = "mamenori";
-            break;
-          case "Маринованные огурцы":
-            ingredient.ingredient_icon = "marinade-cucumber";
-            break;
-          case "Сырная шапочка":
-            ingredient.ingredient_icon = "cheese_cap";
-            break;
-          case "Халапеньо":
-            ingredient.ingredient_icon = "jalapeno";
-            break;
-          default:
-            ingredient.ingredient_icon = "logo"
-            break;
-        }
 
-        data.ingredients.map(ingr => {
-          if (ingr.ingredient_name.includes('Соусничка') || ingr.ingredient_name.includes('Боксы фольгированые') || ingr.ingredient_name.includes('Пепперони') || ingr.ingredient_name.includes('Газовый') || ingr.ingredient_name.includes('Мука темпурная') || ingr.ingredient_name.includes('Масло фритюрное') || ingr.ingredient_name.includes('Сухари панировачные') || ingr.ingredient_name.includes('Соевый соус в ассортименте') || ingr.ingredient_name.includes('Соевый соус порционный') || ingr.ingredient_name.includes('Имбирь') || ingr.ingredient_name.includes('Васаби') || ingr.ingredient_name.includes('Бокс') || ingr.ingredient_name.includes('Пакет') || ingr.ingredient_name.includes('Короб') || ingr.ingredient_name.includes('палочки') || ingr.ingredient_name.includes('Наклейка') || ingr.ingredient_name.includes('Упаковка') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейки') || ingr.ingredient_name.includes('СП') || ingr.ingredient_name.includes('Наклейк') || ingr.ingredient_name.includes('Бумага') || ingr.ingredient_name.includes('Супница') || ingr.ingredient_name.includes('Крышка') || ingr.ingredient_name.includes('Картонные') || ingr.ingredient_name.includes('Мука') || ingr.ingredient_name.includes('Масло') || ingr.ingredient_name.includes('Вилка') || ingr.ingredient_name.includes('Тарелка') || ingr.ingredient_name.includes('Ложка')) {
-            data.ingredients.splice(data.ingredients.indexOf(ingr), 1)
-          }
-        })
-
-
-      });
       commit("SET_PRODUCT_TO_STATE", data);
     },
     INCREMENT_POPUP_ITEM({
@@ -760,7 +898,6 @@ export default createStore({
     RESET_PRODUCT({
       commit
     }) {
-      console.log("reset");
       commit("RESET_PRODUCT");
     },
     FULL_PRICE({
@@ -781,7 +918,6 @@ export default createStore({
     GET_DISCOUNT_PRODUCT({
       commit
     }, product) {
-      console.log(product);
       return axios({
         method: "GET",
         url: `http://185.185.70.214:3000/getDiscountProduct${product}`,
@@ -846,7 +982,6 @@ export default createStore({
       }).then((order_data) => {
         commit("SEND_ORDER_DATA", order_data);
       });
-
     },
     FORM_VALIDATION_ERROR({
       commit
@@ -868,7 +1003,7 @@ export default createStore({
     }, data) {
       return axios({
         method: "POST",
-        url: `http://localhost:3000/promoD`,
+        url: `http://185.185.70.214:3000/promoD`,
         params: data,
       }).then((data) => {
         commit("GET_BANNER", data);
@@ -879,7 +1014,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://localhost:3000/banners`,
+        url: `http://185.185.70.214:3000/banners`,
       }).then((banners) => {
         commit("SET_BANNERS", banners.data);
       });
@@ -887,17 +1022,17 @@ export default createStore({
     GET_PICKUP_TIME({
       commit
     }, time) {
-      commit("PICKUP_TIME", time)
+      commit("PICKUP_TIME", time);
     },
     GET_CUTLERY_COUNT({
       commit
     }, cutlery) {
-      commit("CUTLERY_COUNT", cutlery)
+      commit("CUTLERY_COUNT", cutlery);
     },
     GET_TIME({
       commit
     }) {
-      commit("CURRENT_TIME")
+      commit("CURRENT_TIME");
     },
     GET_ADMIN_ADDRESSES({
       commit
@@ -910,7 +1045,7 @@ export default createStore({
       return axios({
         method: "POST",
         url: `http://185.185.70.214:3000/setNewAddress`,
-        params: address
+        params: address,
       }).then((address) => {
         commit("SET_ADDRESSES", address);
       });
@@ -918,12 +1053,11 @@ export default createStore({
     DELETE_ADMIN_ADDRESS({
       commit
     }, id) {
-      console.log(id);
       return axios({
         method: "POST",
         url: `http://185.185.70.214:3000/deleteAddress`,
         params: {
-          id: id
+          id: id,
         },
       }).then((id) => {
         commit("DELETE_ADDRESS", id);
@@ -935,9 +1069,9 @@ export default createStore({
       return axios({
         method: "POST",
         url: `http://185.185.70.214:3000/setNewPopular`,
-        params: popular
+        params: popular,
       }).then((popular) => {
-        commit("SET_POPULARS", popular)
+        commit("SET_POPULARS", popular);
       });
     },
     DELETE_ADMIN_POPULARS({
@@ -946,27 +1080,27 @@ export default createStore({
       return axios({
         method: "POST",
         url: `http://185.185.70.214:3000/deletePopular`,
-        params: popular
+        params: popular,
       }).then((popular) => {
-        commit("DELETE_POPULARS", popular)
+        commit("DELETE_POPULARS", popular);
       });
     },
     SET_ADMIN_PRODUCTS_POSITION({
       commit
     }, settings) {
-      commit("CHANGE_PRODUCTS_POSITION", settings)
+      commit("CHANGE_PRODUCTS_POSITION", settings);
     },
     SAVE_ADMIN_PRODUCTS_POSITION({
       commit
     }, config) {
       return axios({
         method: "POST",
-        url: `http://localhost:3000/saveProductPositions`,
-        data: config
+        url: `http://185.185.70.214:3000/saveProductPositions`,
+        data: config,
       }).then((config) => {
         commit("SAVE_PRODUCT_POSITIONS", config);
       });
-    }
+    },
   },
   getters: {
     CATEGORIES(state) {
@@ -1068,60 +1202,67 @@ export default createStore({
         let arr = [];
 
         for (let item of state.cart) {
-
           let filteredModifications = function () {
             // if (item.group_modifications && item.category_name.includes('Пиццы')) {
 
             // }
 
-
             if (item.group_modifications) {
-              if (item.category_name.includes('Пиццы')) {
-                let test = item.group_modifications ? item.group_modifications.map(modification_group => {
-                  return modification_group.modifications.filter(mode => {
-                    return mode.count > 0
-                  }).map(modif => {
-                    return {
-                      m: modif.dish_modification_id,
-                      a: 1
-                    }
+              if (item.category_name.includes("Пиццы")) {
+                let test = item.group_modifications ?
+                  item.group_modifications.map((modification_group) => {
+                    return modification_group.modifications
+                      .filter((mode) => {
+                        return mode.count > 0;
+                      })
+                      .map((modif) => {
+                        return {
+                          m: modif.dish_modification_id,
+                          a: 1,
+                        };
+                      });
+                  }) :
+                  null;
 
-                  })
-                }) : null
+                let q = test
+                  .filter((mode_arr) => mode_arr.length)
+                  .map((el) => el[0]);
 
-                let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
-
-                return q
+                return q;
               } else {
-                let test = item.group_modifications ? item.group_modifications.map(modification_group => {
-                  return modification_group.modifications.filter(mode => {
-                    return mode.count > 0
-                  }).map(modif => {
-                    return {
-                      m: modif.dish_modification_id,
-                      a: modif.count
-                    }
+                let test = item.group_modifications ?
+                  item.group_modifications.map((modification_group) => {
+                    return modification_group.modifications
+                      .filter((mode) => {
+                        return mode.count > 0;
+                      })
+                      .map((modif) => {
+                        return {
+                          m: modif.dish_modification_id,
+                          a: modif.count,
+                        };
+                      });
+                  }) :
+                  null;
 
-                  })
-                }) : null
+                let q = test
+                  .filter((mode_arr) => mode_arr.length)
+                  .map((el) => el[0]);
 
-                let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
-
-                return q
+                return q;
               }
-
             } else {
-              return null
+              return null;
             }
-          }
+          };
 
           arr.push({
             product_id: item.product_id,
             count: item.count,
             // price: item.category_name.includes('Пиццы') ? "000" : (item.price[1] / item.count).toString(),
-            price: item.category_name.includes('Пиццы') ? null : (item.price[1] / item.count).toString(),
-            modification: filteredModifications()
-
+            price: item.category_name.includes("Пиццы") ?
+              null : (item.price[1] / item.count).toString(),
+            modification: filteredModifications(),
           });
         }
         return arr;
@@ -1142,10 +1283,16 @@ export default createStore({
         delivery_price: state.delivery_pay,
         service_mode: state.deliveryType,
         products: getOrderProducts(),
-        comment: (state.cutlery_count + ' | ') + ((state.discount.promocode_name !== undefined && state.error == '') ?
+        comment: state.cutlery_count +
+          " | " +
+          (state.discount.promocode_name !== undefined && state.error == "" ?
             state.discount.promocode_name + " | " :
             "") +
-          state.payment_type + (state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
+          state.payment_type +
+          (state.deliveryType == 2 ? " | " + state.pickup_time : "") +
+          (state.order_comment !== "" ?
+            " | " + state.order_comment + " | " :
+            ""),
       });
     },
     ADDRESSES(state) {
@@ -1169,10 +1316,8 @@ export default createStore({
         state.current_time < state.discount.period_start
       ) {
         return (state.error = `Промокод работает с ${
-          state.discount.period_start + ':00'
-        }  до ${
-          state.discount.period_end + ':00'
-        }`);
+          state.discount.period_start + ":00"
+        }  до ${state.discount.period_end + ":00"}`);
       } else {
         return (state.error = ``);
       }
@@ -1187,8 +1332,7 @@ export default createStore({
       //     hour: "2-digit"
       //   })
       // .replace(":", "");
-      console.log('CURRENT_TIME', dateWithoutSecond.getHours().toString());
-      return state.current_time = dateWithoutSecond.getHours().toString()
+      return (state.current_time = dateWithoutSecond.getHours().toString());
     },
     WARNING(state) {
       return state.warning;
@@ -1197,71 +1341,74 @@ export default createStore({
       return state.favorites;
     },
     SET_SAVED_FAVORITES(state) {
-
-      let arra1 = state.categoryProducts.map(item => item.product_id)
-      let arra2 = state.popular.map(item => item.product_id)
-      let arra3 = state.favorites.map(item => item.product_id)
+      let arra1 = state.categoryProducts.map((item) => item.product_id);
+      let arra2 = state.popular.map((item) => item.product_id);
+      let arra3 = state.favorites.map((item) => item.product_id);
 
       let intersect = function (arr1, arr2) {
         return arr1.filter(function (id) {
-          return arr2.indexOf(id) !== -1
-        })
-      }
+          return arr2.indexOf(id) !== -1;
+        });
+      };
 
-      for (const item of intersect(arra1, arra3).map(item => item)) {
-        state.categoryProducts.filter(it => it.product_id == item)[0].favorites = true
+      for (const item of intersect(arra1, arra3).map((item) => item)) {
+        state.categoryProducts.filter(
+          (it) => it.product_id == item
+        )[0].favorites = true;
       }
       for (const item of intersect(arra2, arra3)) {
-        state.popular.filter(it => it.product_id == item)[0].favorites = true
+        state.popular.filter((it) => it.product_id == item)[0].favorites = true;
       }
     },
     GET_BANNER(state) {
-      return state.banner
+      return state.banner;
     },
     PICKUP_TIME(state) {
-      return state.pickup_time
+      return state.pickup_time;
     },
     SET_BANNERS(state) {
-      return state.banners
+      return state.banners;
     },
     CUTLERY_COUNT(state) {
-      return state.cutlery_count
+      return state.cutlery_count;
     },
     TELEGRAM_ORDER(state) {
       function getOrderProducts() {
         let arr = [];
 
         for (let item of state.cart) {
-
           let filteredModifications = function () {
-
             if (item.group_modifications) {
-              let test = item.group_modifications ? item.group_modifications.map(modification_group => {
-                return modification_group.modifications.filter(mode => {
-                  return mode.count > 0
-                }).map(modif => {
-                  return {
-                    m: modif.name,
-                    a: ` (${modif.count})`
-                  }
+              let test = item.group_modifications ?
+                item.group_modifications.map((modification_group) => {
+                  return modification_group.modifications
+                    .filter((mode) => {
+                      return mode.count > 0;
+                    })
+                    .map((modif) => {
+                      return {
+                        m: modif.name,
+                        a: ` (${modif.count})`,
+                      };
+                    });
+                }) :
+                null;
 
-                })
-              }) : null
+              let q = test
+                .filter((mode_arr) => mode_arr.length)
+                .map((el) => el[0]);
 
-              let q = test.filter(mode_arr => mode_arr.length).map(el => el[0])
-
-              return q
+              return q;
             } else {
-              return null
+              return null;
             }
-          }
-
+          };
 
           arr.push({
             product_name: item.product_name,
             count: item.count,
             price: (item.price[1].slice(0, -2) / item.count).toString(),
-            modification: filteredModifications()
+            modification: filteredModifications(),
           });
         }
         // (Не сработало попробуй ещё как-нибудь) С МОДИФИКАТОРАМИ ТОЖЕ НУЖНО FILTER.LENGTH СДЕЛАТЬ ЧТОБЫ ОН ПРОВЕРКУ ПРОХОДИЛ И ТОГДА ВСЁ ТОПЧИК БУДЕТ
@@ -1284,19 +1431,28 @@ export default createStore({
         service_mode: state.deliveryType,
         total_order_price: state.totalPrice.toString().slice(0, -2),
         products: getOrderProducts(),
-        comment: (state.cutlery_count + ' | ') + ((state.discount.promocode_name !== undefined && state.error == '') ?
+        comment: state.cutlery_count +
+          " | " +
+          (state.discount.promocode_name !== undefined && state.error == "" ?
             state.discount.promocode_name + " | " :
             "") +
-          state.payment_type + (' | ' + state.pickup_time == "Сам-з undefined" ? 'Тип заказа предзаказ (стоит уточнить у клиента)' : state.deliveryType == 2 ? " | " + state.pickup_time : '') + (state.order_comment !== '' ? ' | ' + state.order_comment + ' | ' : ''),
+          state.payment_type +
+          (" | " + state.pickup_time == "Сам-з undefined" ?
+            "Тип заказа предзаказ (стоит уточнить у клиента)" :
+            state.deliveryType == 2 ?
+            " | " + state.pickup_time :
+            "") +
+          (state.order_comment !== "" ?
+            " | " + state.order_comment + " | " :
+            ""),
       });
     },
     RENDER_ADMIN_ADRESSES(state) {
-      return state.admin_addresses
+      return state.admin_addresses;
     },
     DELETE_ADDRESS(state) {
-      return state.delete_address
+      return state.delete_address;
     },
-
   },
   modules: {},
 });

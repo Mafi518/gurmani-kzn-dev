@@ -3,7 +3,7 @@
     <div class="header__container">
       <img
         src="@/assets/media/img/logo.png"
-        @click="this.$router.push('/')"
+        @click="toMain"
         alt="logo"
         class="header__logo"
       />
@@ -42,6 +42,17 @@
 <script>
 export default {
   name: "v-header-desktop",
+  methods: {
+    toMain() {
+      console.log(window.location.href);
+      if (
+        window.location.href !== "http://185.185.70.214/admin-dashboard" ||
+        window.location.href !== "http://localhost:8080/admin-dashboard"
+      ) {
+        this.$router.push("/");
+      }
+    },
+  },
 };
 </script>
 <style lang="scss">

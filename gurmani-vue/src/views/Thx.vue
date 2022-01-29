@@ -10,7 +10,11 @@
 
     <p class="thx__subtitle">
       {{
-        PICKUP_TIME == "Сам-з undefined" ? 'Тип заказа – предзаказ' : DELIVERY_TYPE == 2 ? PICKUP_TIME : "Приблизительное время доставки час/полтора"
+        PICKUP_TIME == "Сам-з undefined"
+          ? "Тип заказа – предзаказ"
+          : DELIVERY_TYPE == 2
+          ? PICKUP_TIME
+          : "Приблизительное время доставки час/полтора"
       }}
     </p>
 

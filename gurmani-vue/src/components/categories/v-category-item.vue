@@ -85,7 +85,6 @@ export default {
         max-width: 80px;
       }
     }
-
   }
 }
 @media (max-width: 1024px) and (min-width: 1px) {
@@ -93,6 +92,12 @@ export default {
     padding-right: 0px !important;
     padding-top: 10px !important;
     padding-bottom: 0px !important;
+    &__item {
+      
+      &:first-child {
+        margin-left: 20px;
+      }
+    }
   }
 }
 </style>

@@ -1,26 +1,9 @@
 <template>
   <section class="home">
-    <!-- <header class="header" v-if="clientWidth <= 1024">
-      <p class="header__info">
-        <a href="tel:+78432390012">+7 (843) 239-00-12</a>
-        <span>10:00 - 22:00</span>
-      </p>
-      <h1 class="header__title">
-        <img src="@/assets/media/img/gurmani.svg" alt="" />
-        <span>море вкуса для тебя</span>
-      </h1>
-      <img
-        src="@/assets/media/img/logo.png"
-        @click="this.$router.push('/')"
-        alt="logo"
-        class="header__logo"
-        ref="logo"
-      />
-    </header> -->
-    <!-- <v-preloader
+    <v-preloader
       v-if="preloader == true"
       :preloader_props="preloader_props"
-    ></v-preloader> -->
+    ></v-preloader>
     <v-banner-list></v-banner-list>
     <v-category-list>Меню</v-category-list>
     <v-column-banner-list></v-column-banner-list>
@@ -35,16 +18,8 @@
           src="@/assets/media/img/mastercard.png"
           alt=""
         />
-        <img
-          class="footer__payment"
-          src="@/assets/media/img/sber.png"
-          alt=""
-        />
-        <img
-          class="footer__payment"
-          src="@/assets/media/img/visa.png"
-          alt=""
-        />
+        <img class="footer__payment" src="@/assets/media/img/sber.png" alt="" />
+        <img class="footer__payment" src="@/assets/media/img/visa.png" alt="" />
       </div>
     </v-footer>
   </section>
@@ -64,7 +39,7 @@ export default {
       clientWidth: 0,
       preloader: false,
       preloader_props: {
-        bgColor: "#fff",
+        bgColor: "#F5F5F7",
         subtitle: "Море вкуса для тебя",
         subtitleColor: "#000",
         circleColor: "#FF6800",

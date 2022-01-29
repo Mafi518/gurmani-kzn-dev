@@ -112,6 +112,7 @@ export default {
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
+    margin-bottom: 10px;
     img {
       max-height: 30px;
       margin-bottom: 10px;

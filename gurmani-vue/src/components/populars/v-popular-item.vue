@@ -16,7 +16,8 @@
         <v-icon name="calories-icon"></v-icon> {{ popular_data.barcode }} Ккал
       </div>
       <div class="popular__weight">
-        <v-icon name="scales-icon"></v-icon> {{ (popular_data.cooking_time / 60) }} г
+        <v-icon name="scales-icon"></v-icon>
+        {{ popular_data.cooking_time / 60 }} г
       </div>
       <v-favorite-btn v-if="!popular_data.favorites"></v-favorite-btn>
       <v-favorite-btn-active

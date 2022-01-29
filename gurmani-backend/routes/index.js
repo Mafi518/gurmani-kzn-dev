@@ -1,15 +1,21 @@
 const express = require('express');
 const config = require('../manifest');
 const PosterApi = require('../api/poster');
+// const cors = require('cors');
 const ctrlTelegram = require('../api/telegram');
 const addresses = require('../addresses.json')
 const banners = require('../banners.json')
 const popular_names = require('../popular_names.json')
+const product_positions = require('../category_positions_config.json')
 const fs = require('fs')
 
 
 const router = new express.Router();
 
+// let corsOptions = {
+//     origin: 'http://localhost:8080',
+//     optionsSuccessStatus: 200
+// }
 
 router.get('/getProductsFromCategory:id', async (req, res) => {
 
@@ -24,6 +30,29 @@ router.get('/getProductsFromCategory:id', async (req, res) => {
     })
     let sortId = 0
     products.map(item => item.sort_id = sortId++)
+
+    if (product_positions.filter(el => el.category_id == req.params.id).length) {
+        products.map(item => {
+            let products_config = product_positions.filter(el => el.category_id == item.menu_category_id)
+
+            if (products_config) {
+                let config_products_data = products_config[0].products
+
+                for (const item of products) {
+                    let clone = config_products_data.filter(el => el.product_name == item.product_name)
+                    let prod = products.filter(el => el.product_name == clone[0].product_name)
+                    prod[0].sort_id = clone[0].sort_id
+                }
+            }
+        })
+
+        products.map(item => console.log(item.product_name, item.sort_id))
+
+        products.sort((item1, item2) => {
+            return item1.sort_id - item2.sort_id;
+        });
+    }
+
     res.send(products);
 });
 
@@ -45,7 +74,7 @@ router.get('/populars', async (req, res) => {
         })
         filtered.push(test2[0])
     }
-    
+
     res.send(filtered.filter(item => item));
 })
 
@@ -204,11 +233,27 @@ router.post('/saveProductPositions', async (req, res) => {
     const data = await req.body
 
     let obj = {
-        category_name: data[0].category_name,
-        filtered_products: data
+        category_id: data[0].menu_category_id,
+        products: data.map(item => {
+            return {
+                product_name: item.product_name,
+                category_name: item.category_name,
+                category_id: item.menu_category_id,
+                sort_id: item.sort_id
+            }
+        })
     }
-    let fullData = JSON.stringify(obj, null, 2)
-    fs.writeFile('gurmani-backend/filtered_category_products.json', fullData, (err) => {
+
+    if (product_positions.filter(item => item.category_id == obj.category_id).length) {
+        let index = product_positions.filter(item => item.category_id == obj.category_id)
+        product_positions.splice(product_positions.indexOf(index[0]), 1)
+        product_positions.push(obj)
+    } else {
+        product_positions.push(obj)
+    }
+
+    let fullData = JSON.stringify(product_positions, null, 2)
+    fs.writeFile('gurmani-backend/category_positions_config.json', fullData, (err) => {
         if (err) console.log(err)
     })
 

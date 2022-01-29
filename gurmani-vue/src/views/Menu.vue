@@ -13,13 +13,7 @@
         >Условия доставки способы оплаты время доставки</v-menu-item
       >
     </div>
-    <v-footer style="padding: 0px;">
-      <div class="footer__business">
-        <p>{{ this.current_year }} GURMANI</p>
-        <p>ИП КОРНИЛОВ А. А.</p>
-        <p>ИНН: 503614560405</p>
-        <p>ОГРН: 321169000049507</p>
-      </div>
+    <v-footer style="padding: 0px">
       <div class="footer__payments">
         <img
           class="footer__payment"
@@ -28,6 +22,12 @@
         />
         <img class="footer__payment" src="@/assets/media/img/sber.png" alt="" />
         <img class="footer__payment" src="@/assets/media/img/visa.png" alt="" />
+      </div>
+      <div class="footer__business">
+        <p>{{ this.current_year }} GURMANI</p>
+        <p>ИП КОРНИЛОВ А. А.</p>
+        <p>ИНН: 503614560405</p>
+        <p>ОГРН: 321169000049507</p>
       </div>
     </v-footer>
   </section>

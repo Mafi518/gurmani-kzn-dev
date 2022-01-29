@@ -159,7 +159,7 @@ export default {
     max-width: 47%;
     margin-right: 0;
     position: relative;
-    &__image *{
+    &__image * {
       max-height: 100%;
     }
     .favorite-btn {
