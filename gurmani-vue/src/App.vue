@@ -85,6 +85,7 @@ export default {
 }
 .navbar {
   &__item {
+    position: relative;
     svg {
       path {
         fill: $black;
@@ -92,6 +93,20 @@ export default {
     }
     span {
       display: none;
+    }
+    &-counter {
+      background-color: $accent;
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      color: $white;
+      position: absolute;
+      top: -2px;
+      right: 9px;
     }
     .burger {
       path {

@@ -232,6 +232,31 @@
         Сохранить
       </button>
     </div>
+
+    <section class="admin-promocodes">
+      <h2 class="admin-promocodes__title">
+        Редактировать применение промокода
+      </h2>
+      <div class="admin-promocodes__list">
+        <div
+          class="admin-promocodes__item"
+          v-for="promocode in PROMOCODES"
+          :key="promocode.promotion_id"
+        >
+          {{ promocode.name }}
+          <button
+            class="admin-promocodes__change"
+            @click.prevent="SET_ADMIN_PROMOCODES_USAGE(promocode)"
+          >
+            {{
+              promocode.usage == "reusable"
+                ? "Сделать промокод одноразовым"
+                : "Сделать промокод многоразовым"
+            }}
+          </button>
+        </div>
+      </div>
+    </section>
   </section>
 </template>
 <script>
@@ -295,6 +320,8 @@ export default {
       "GET_CATEGORY_PRODUCTS_FROM_API",
       "SET_ADMIN_PRODUCTS_POSITION",
       "SAVE_ADMIN_PRODUCTS_POSITION",
+      "GET_PROMOCODES",
+      "SET_ADMIN_PROMOCODES_USAGE",
     ]),
     async changeBanners(e) {
       const data = await {
@@ -332,9 +359,11 @@ export default {
     },
     async adminAddPopular() {
       await this.SET_ADMIN_POPULARS(this.add_popular_field);
+      this.GET_POPULAR_FROM_API()
     },
     async adminDeletePopular(popular) {
       await this.DELETE_ADMIN_POPULARS(popular);
+      this.GET_POPULAR_FROM_API()
     },
     async adminCategoryProductsList(id) {
       await this.GET_CATEGORY_PRODUCTS_FROM_API(id);
@@ -365,6 +394,7 @@ export default {
       "POPULAR",
       "CATEGORIES",
       "CATEGORY_PRODUCTS",
+      "PROMOCODES",
     ]),
     FIND_ADDRESS() {
       console.log(this.RENDER_ADMIN_ADRESSES.length);
@@ -385,6 +415,7 @@ export default {
     this.adminAdresses();
     this.GET_POPULAR_FROM_API();
     this.GET_CATEGORIES_FROM_API();
+    this.GET_PROMOCODES();
   },
 };
 </script>
@@ -583,7 +614,8 @@ export default {
   }
   &__list {
     display: flex;
-    flex-wrap: wrap;
+    overflow: auto;
+    margin-bottom: 20px;
   }
   &__item {
     max-width: 120px;
@@ -593,11 +625,12 @@ export default {
     align-items: center;
     @include container;
     padding-bottom: 10px;
-    margin: 10px;
+    margin-right: 10px;
     cursor: pointer;
+    text-align: center;
   }
   &__image {
-    max-width: 120px;
+    max-width: 100px;
   }
 }
 .change-popup {
@@ -643,6 +676,30 @@ export default {
     color: $white;
     border-radius: 10px;
     cursor: pointer;
+  }
+}
+.admin-promocodes {
+  &__title {
+    @include h2;
+  }
+  &__list {
+    display: flex;
+    overflow: auto;
+  }
+  &__item {
+    @include container;
+    margin-right: 20px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__change {
+    @include container;
+    background-color: $accent;
+    padding: 5px;
+    color: $white;
   }
 }
 </style>

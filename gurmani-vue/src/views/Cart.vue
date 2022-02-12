@@ -40,9 +40,11 @@ export default {
     },
     showBarOnScroll() {
       if (document.querySelector(".cart-info")) {
-        gsap.to(".cart-info", {
-          transform: "translateY(0%)",
-          duration: 0.6,
+        gsap.to(".cart-info", 0.7, {
+          minHeight: "270px",
+          maxHeight: "270px",
+          height: "100%",
+          overflow: "visible",
         });
       }
     },
@@ -61,45 +63,33 @@ export default {
       handler() {
         if (
           this.active_element.tagName == "INPUT" &&
+          !this.active_element.classList.contains("confirm__radio") &&
           window.innerWidth <= 768
         ) {
           if (
             this.active_element.className.includes("cart-info__promocode-inp")
           ) {
-            gsap.to(".cart-info", {
-              transform: "translateY(100%)",
-              duration: 0.6,
+            gsap.to(".cart-info", 0.7, {
+              minHeight: "0px",
+              height: "0px",
             });
           } else {
-            gsap.to(".cart-info", {
-              transform: "translateY(200%)",
-              duration: 0.6,
+            gsap.to(".cart-info", 0.7, {
+              minHeight: "0px",
+              height: "0px",
+              overflow: "hidden",
             });
           }
         } else {
           if (document.querySelector(".cart-info")) {
-            gsap.to(".cart-info", {
-              transform: "translateY(0%)",
-              duration: 0.6,
+            gsap.to(".cart-info", 0.7, {
+              minHeight: "270px",
+              maxHeight: "270px",
+              height: "100%",
+              overflow: "visible",
             });
           }
         }
-
-        // if (
-        //   this.active_element.className.includes("cart-info__promocode-inp")
-        // ) {
-        //   console.log("promo inp");
-        //   gsap.to(".cart-info", {
-        //     transform: "translateY(50%)",
-        //     duration: 0.6,
-        //   });
-        // } else {
-
-        //   gsap.to(".cart-info", {
-        //     transform: "translateY(0%)",
-        //     duration: 0.6,
-        //   });
-        // }
       },
     },
   },

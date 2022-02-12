@@ -31,8 +31,8 @@ export default {
       default() {
         return {
           subtitle: "Отправляю заказ",
-          bgColor: "background-color: rgba($second-black, 0.7)",
-          subtitleColor: "#fff",
+          bgColor: "#fff",
+          subtitleColor: "#000",
           circleColor: "FF6800",
           homePage: false,
         };
@@ -59,7 +59,7 @@ export default {
         setTimeout(() => {
           gsap
             .to(".preloader__animate", 2.2, {
-              scale: 10,
+              scale: 18,
               zIndex: 3,
             })
             .then(() => {
@@ -87,8 +87,10 @@ export default {
                     zIndex: -1,
                     display: 'none'
                   });
-                  gsap.from('.home', 0.4, {
+                  gsap.fromTo('.home', 0.4, {
                     opacity: 0,
+                  }, {
+                    opacity: 1
                   })
                 });
               gsap.set(".preloader__subtitle", {
@@ -126,7 +128,6 @@ export default {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba($second-black, 0.7);
   z-index: 3;
   display: flex;
   align-items: center;
@@ -146,9 +147,9 @@ export default {
   }
   &__animate {
     content: "";
-    width: 120px;
-    height: 120px;
-    position: absolute;
+    width: 80px;
+    height: 80px;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

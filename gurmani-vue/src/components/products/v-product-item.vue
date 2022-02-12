@@ -21,7 +21,9 @@
       </div>
       <div class="card__footer buy-btn">
         <p class="card__price">{{ product_data.price[1].slice(0, -2) }} ₽</p>
-        <v-icon name="plus-icon" class="plus-icon"></v-icon>
+        <button>
+          <v-icon name="plus-icon" class="plus-icon"></v-icon>
+        </button>
       </div>
     </slot>
   </article>
@@ -29,6 +31,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { TimelineMax } from 'gsap'
 
 export default {
   name: "v-product-item",
@@ -63,6 +66,14 @@ export default {
       ) {
         await this.GET_PRODUCT_INFO(this.product_data);
         await this.ADD_TO_CART(this.product_data);
+        let tl = new TimelineMax({})
+        tl.to(e.target.parentNode, 0.3, {
+          scale: 1.3
+        })
+
+        tl.play().then(() => {
+          tl.reverse()
+        })
         this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||

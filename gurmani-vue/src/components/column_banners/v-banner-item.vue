@@ -5,7 +5,7 @@
     @click="setPromo"
   >
     <img
-      :src="`http://185.185.70.214:3000/column-banners/${banner_data.promo_picture}`"
+      :src="`https://gurmanikzn.ru:3000/column-banners/${banner_data.promo_picture}`"
       alt=""
     />
   </div>
@@ -43,6 +43,7 @@ export default {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  cursor: pointer;
   img {
     margin-left: 15px;
   }

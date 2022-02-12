@@ -54,16 +54,17 @@ export default {
 <style lang="scss" scoped>
 .fix {
   margin-right: 20px;
+  margin-left: 20px;
 }
 
 .products {
-  margin-left: 20px;
   &__list {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    margin-left: 20px;
   }
   &__title {
     width: 100%;

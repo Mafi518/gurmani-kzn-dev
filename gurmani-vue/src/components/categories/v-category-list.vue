@@ -68,7 +68,6 @@ export default {
 <style lang="scss">
 .category {
   padding-bottom: 10px;
-  padding: 0 20px;
   &__title {
     @include h2;
   }
@@ -83,6 +82,13 @@ export default {
   .category {
     &__list {
       padding-bottom: 10px;
+    }
+  }
+}
+@media (max-width: 1024px) and (min-width: 1px) {
+  .category {
+    &__title {
+      margin-left: 20px;
     }
   }
 }

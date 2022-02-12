@@ -7,7 +7,9 @@ const addresses = require('../addresses.json')
 const banners = require('../banners.json')
 const popular_names = require('../popular_names.json')
 const product_positions = require('../category_positions_config.json')
-const fs = require('fs')
+const promocodes_usage = require('../promocode_type.json')
+const fs = require('fs');
+const e = require('express');
 
 
 const router = new express.Router();
@@ -97,6 +99,18 @@ router.get('/promocodes', async (req, res) => {
 
     const promocodes = await posterApi.makePosterRequest('clients.getPromotions')
 
+    promocodes.map(promocode => promocode.usage = 'reusable')
+
+    if (promocodes_usage.length) {
+        for (const promocode of promocodes) {
+
+            let promo = promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase())
+            if (promo.length) {
+                promocode.usage = promo[0].usage
+            }
+        }
+    }
+
     res.send(promocodes)
 })
 
@@ -118,7 +132,6 @@ router.get('/getDiscountProduct:id', async (req, res) => {
 router.get('/getAddresses', async (req, res) => {
     res.send(addresses)
 })
-
 
 router.post('/order', async (req, res) => {
     const posterApi = new PosterApi({
@@ -219,9 +232,10 @@ router.post('/setNewPopular', async (req, res) => {
 
 router.post('/deletePopular', async (req, res) => {
     const data = await req.query
+    
+    popular_names.splice(data[0], 1)
 
-    let filtered = await popular_names.filter(name => name !== data[0])
-    let fullData = JSON.stringify(filtered, null, 2)
+    let fullData = JSON.stringify(popular_names, null, 2)
     fs.writeFile('gurmani-backend/popular_names.json', fullData, (err) => {
         if (err) console.log(err)
     })
@@ -245,6 +259,7 @@ router.post('/saveProductPositions', async (req, res) => {
     }
 
     if (product_positions.filter(item => item.category_id == obj.category_id).length) {
+        console.log('change');
         let index = product_positions.filter(item => item.category_id == obj.category_id)
         product_positions.splice(product_positions.indexOf(index[0]), 1)
         product_positions.push(obj)
@@ -254,6 +269,26 @@ router.post('/saveProductPositions', async (req, res) => {
 
     let fullData = JSON.stringify(product_positions, null, 2)
     fs.writeFile('gurmani-backend/category_positions_config.json', fullData, (err) => {
+        if (err) console.log(err)
+    })
+
+    res.end()
+})
+
+router.post('/changePromocodeType', async (req, res) => {
+    const promocode = await req.body
+
+    if (promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase()).length) {
+        let index = promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase())
+        promocodes_usage.splice(promocodes_usage.indexOf(index[0]), 1)
+        promocodes_usage.push(promocode)
+        console.log('exist');
+    } else {
+        promocodes_usage.push(promocode)
+    }
+
+    let fullData = JSON.stringify(promocodes_usage, null, 2)
+    fs.writeFile(`gurmani-backend/promocode_type.json`, fullData, (err) => {
         if (err) console.log(err)
     })
 

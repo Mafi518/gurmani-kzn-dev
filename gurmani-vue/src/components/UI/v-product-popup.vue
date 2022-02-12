@@ -23,7 +23,19 @@
             </h2>
             <p class="popup__subtitle">
               <span class="popup__price"
-                >{{ PRODUCT.price[1].slice(0, -2) }} ₽</span
+                >{{ PRODUCT.price[1].slice(0, -2) }} ₽ |
+                {{ PRODUCT.cooking_time / 60 }}
+                г 
+                {{
+                  PRODUCT.category_name == "Маки и Суши" ||
+                  PRODUCT.category_name == "Напитки" ||
+                  PRODUCT.category_name == "Сеты" ||
+                  PRODUCT.category_name == "Соуса" ||
+                  PRODUCT.category_name == "Горячие закуски"
+                    ? ""
+                    : " | " + PRODUCT.barcode + " ккал"
+                }}
+                </span
               >
             </p>
           </div>
@@ -107,7 +119,10 @@
         </div>
 
         <div class="popup__info" v-if="PRODUCT.group_modifications">
-          <section class="additional" v-if="PRODUCT.category_name !== 'Пиццы new'">
+          <section
+            class="additional"
+            v-if="PRODUCT.category_name !== 'Пиццы new'"
+          >
             <div
               class="additional__container"
               v-for="modification_group in PRODUCT.group_modifications"
@@ -252,8 +267,7 @@ export default {
       await this.ADD_TO_CART(data);
       this.clearPopupState();
     },
-    deleteModification(modification, modification_group) {
-      console.log(modification_group);
+    deleteModification(modification) {
       if (modification.count > 0) {
         modification.count--;
       }
@@ -265,7 +279,6 @@ export default {
         modification.count++;
       } else {
         modification.count++;
-        console.log(modification);
       }
       this.FULL_PRICE(this.PRODUCT);
     },
@@ -278,6 +291,7 @@ export default {
     ...mapGetters(["PRODUCT", "POPULAR", "CATEGORY_PRODUCTS"]),
   },
   mounted() {
+    document.querySelector(".popup").style.height = `${window.screen.height}px`;
     if (window.innerWidth > 768) {
       document
         .querySelector(".popup__body")

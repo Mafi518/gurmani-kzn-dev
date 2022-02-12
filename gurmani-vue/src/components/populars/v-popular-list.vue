@@ -35,7 +35,6 @@ export default {
 </script>
 <style lang="scss">
 .popular {
-  padding: 0 0 0 20px;
   &__title {
     @include h2;
   }
@@ -50,6 +49,14 @@ export default {
   .popular {
     &__list {
       padding-bottom: 10px;
+    }
+  }
+}
+@media (max-width: 1024px) and (min-width: 1px) {
+  .popular {
+    &__title {
+      @include h2;
+      margin-left: 20px;
     }
   }
 }

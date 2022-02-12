@@ -108,7 +108,7 @@
               name="pickup-address"
               id="pickup-address"
               readonly
-              class="confirm__input confirm__label block-input"
+              class="confirm__input confirm__label block-input confirm__select"
               v-if="this.$store.state.deliveryType == 2"
               @change="sendPickupTime"
             >
@@ -313,7 +313,7 @@
           </p>
         </div>
         <div class="cart-info__item" v-if="this.WARNING.length !== 0">
-          <p class="cart-info__description">
+          <p class="cart-info__description" ref="warning">
             {{ this.WARNING }}
           </p>
         </div>
@@ -670,7 +670,7 @@
               </p>
             </div>
             <div class="cart-info__item" v-if="this.WARNING.length !== 0">
-              <p class="cart-info__description">
+              <p class="cart-info__description" ref="warning">
                 {{ this.WARNING }}
               </p>
             </div>
@@ -769,10 +769,6 @@ export default {
         "20:30",
         "21:00",
         "22:00",
-        "22:30",
-        "23:00",
-        "23:30",
-        "00:00",
       ],
     };
   },
@@ -859,6 +855,7 @@ export default {
       "GET_PICKUP_TIME",
       "GET_CUTLERY_COUNT",
       "SEND_ORDER_TO_TELEGRAM",
+      "DISPOSABLE_PROMOCODES",
     ]),
     increment(index) {
       this.INCREMENT_POPUP_ITEM(index);
@@ -912,18 +909,40 @@ export default {
     },
     async sendOrder() {
       this.v$.$validate();
-      console.log(this.v$.$errors);
-      if (!this.v$.$error) {
-        this.preloader = true;
-        this.$refs.sendOrderBtn.disabled = true;
-        await this.SEND_ORDER(this.ORDER_DATA);
-        await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER);
-        this.$refs.sendOrderBtn.disabled = false;
-        this.preloader = false;
-        this.$router.push("/thx");
+      if (
+        !this.v$.$error &&
+        this.$store.state.warning !==
+          "Доставка осуществляется при сумме заказа от 600 ₽"
+      ) {
+        if (this.$store.state.discount.total_discount !== "0 ₽") {
+          localStorage.setItem(
+            this.$store.state.discount.promocode_name.toUpperCase(),
+            this.$store.state.discount.promocode_name.toUpperCase()
+          );
+          this.preloader = true;
+          this.$refs.sendOrderBtn.disabled = true;
+          await this.SEND_ORDER(this.ORDER_DATA);
+          await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER);
+          this.$refs.sendOrderBtn.disabled = false;
+          this.preloader = false;
+          this.$router.push("/thx");
+        } else {
+          this.preloader = true;
+          this.$refs.sendOrderBtn.disabled = true;
+          await this.SEND_ORDER(this.ORDER_DATA);
+          await this.SEND_ORDER_TO_TELEGRAM(this.TELEGRAM_ORDER);
+          this.$refs.sendOrderBtn.disabled = false;
+          this.preloader = false;
+          this.$router.push("/thx");
+        }
       } else {
-        // this.$refs.sendOrderBtn.disabled = true;
-
+        if (
+          this.$store.state.warning ==
+          "Доставка осуществляется при сумме заказа от 600 ₽"
+        ) {
+          console.log(this.$refs.warning);
+          this.$refs.warning.style.color = "tomato";
+        }
         if (this.v$.form.order_phone.$errors.length >= 1) {
           this.v$.form.order_phone.$errors[0].$message == "Value is required"
             ? (this.v$.form.order_phone.$errors[0].$message =
@@ -1001,9 +1020,12 @@ export default {
       }
     },
     SORT_PICKUP_TIME() {
-      return this.pickup.filter(
-        (item) => item > this.$store.state.current_time
-      );
+      let curr_minute = new Date().getMinutes();
+      console.log(curr_minute);
+      let pickup = this.pickup.filter((item) => {
+        return +item.substr(0, 2) >= +this.$store.state.current_time;
+      });
+      return pickup.slice(1, -1);
     },
     COMPUTED_CUTLERY() {
       return this.cart_data
@@ -1027,6 +1049,7 @@ export default {
   mounted() {
     this.INCREMENT_POPUP_ITEM(0);
     this.DECREMENT_POPUP_ITEM(0);
+    this.DISPOSABLE_PROMOCODES();
     if (
       document
         .querySelector(".cart__item-container")
@@ -1218,11 +1241,6 @@ export default {
       max-width: 47%;
       width: 100%;
       margin-bottom: 18px;
-    }
-  }
-  &__select {
-    option:first-child {
-      display: none;
     }
   }
   &__radio {

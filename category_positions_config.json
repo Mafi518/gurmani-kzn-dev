@@ -1,0 +1,96 @@
+[
+  {
+    "category_id": "21",
+    "products": [
+      {
+        "product_name": "Чизкейк Классический",
+        "category_name": "Десерты",
+        "category_id": "21",
+        "sort_id": 0
+      },
+      {
+        "product_name": "Чизкейк Шоколадный",
+        "category_name": "Десерты",
+        "category_id": "21",
+        "sort_id": 1
+      }
+    ]
+  },
+  {
+    "category_id": "4",
+    "products": [
+      {
+        "product_name": "Пицца Азия",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 0
+      },
+      {
+        "product_name": "Пицца Гавайская",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 1
+      },
+      {
+        "product_name": "Пицца Капричиоза",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 2
+      },
+      {
+        "product_name": "Пицца Цезарь",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 3
+      },
+      {
+        "product_name": "Пицца Маргарита",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 4
+      },
+      {
+        "product_name": "Пицца Маринара",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 5
+      },
+      {
+        "product_name": "Пицца Мясная",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 6
+      },
+      {
+        "product_name": "Пицца Пепперони",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 7
+      },
+      {
+        "product_name": "Пицца Римская",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 8
+      },
+      {
+        "product_name": "Пицца Четыре сезона",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 9
+      },
+      {
+        "product_name": "Пицца Четыре сыра",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 10
+      },
+      {
+        "product_name": "Пицца Чизбургер",
+        "category_name": "Пиццы new",
+        "category_id": "4",
+        "sort_id": 11
+      }
+    ]
+  }
+]

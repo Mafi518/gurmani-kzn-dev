@@ -12,7 +12,10 @@
       {{ popular_data.product_production_description }}
     </p>
     <div class="popular__info-wrap">
-      <div class="popular__calories">
+      <div
+        class="popular__calories"
+        v-if="popular_data.category_name !== 'Сеты'"
+      >
         <v-icon name="calories-icon"></v-icon> {{ popular_data.barcode }} Ккал
       </div>
       <div class="popular__weight">
@@ -43,10 +46,8 @@ export default {
   methods: {
     ...mapActions(["GET_PRODUCT_INFO", "ADD_TO_CART", "ADD_TO_FAVORITES"]),
     async getProductInfo(e) {
-      if (e.target.classList.contains("buy-btn")) {
-        await this.GET_PRODUCT_INFO(this.popular_data);
+      if (e.target.classList.contains("buy-support")) {
         await this.ADD_TO_CART(this.popular_data);
-        this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
         e.target.classList.contains("favorite-icon-path") ||
@@ -85,6 +86,7 @@ export default {
     -ms-flex-pack: justify;
     justify-content: space-between;
     margin-right: 20px;
+    cursor: pointer;
   }
   &__head {
     display: -webkit-box;
@@ -105,7 +107,7 @@ export default {
     @include h3;
     margin-bottom: 0;
     font-size: 18px;
-    max-width: 167px;
+    max-width: 127px;
     width: 100%;
   }
   &__description {
@@ -183,6 +185,16 @@ export default {
     p:nth-child(2) {
       font-size: 18px;
       font-weight: bold;
+    }
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 1px) {
+  .popular {
+    &__item {
+      &:first-child {
+        margin-left: 20px;
+      }
     }
   }
 }

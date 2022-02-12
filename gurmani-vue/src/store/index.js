@@ -44,6 +44,8 @@ export default createStore({
 
     admin_set_popular: "",
     admin_delete_popular: "",
+
+    disposable_promocodes: {}
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -336,7 +338,7 @@ export default createStore({
     INCREMENT: (state, index) => {
       if (
         window.location.href == "http://localhost:8080/cart" ||
-        window.location.href == "http://185.185.70.214/cart"
+        window.location.href == "https://gurmanikzn.ru/cart"
       ) {
         state.cart[index].count++;
         if (state.cart[index].product_name.includes("Пицца")) {
@@ -383,7 +385,7 @@ export default createStore({
       if (
         state.product.count > 1 &&
         window.location.href !== "http://localhost:8080/cart" &&
-        window.location.href !== "http://185.185.70.214/cart"
+        window.location.href !== "https://gurmanikzn.ru/cart"
       ) {
         state.product.count--;
 
@@ -435,16 +437,17 @@ export default createStore({
         state.cart.map((item) => {
           if (item.product_id === data.product_id) {
             dataExists = true;
-            if (
-              item.group_modifications[0].modifications[0].checked !==
-              data.group_modifications[0].modifications[0].checked
-            ) {
-              state.cart.push(data);
-            } else {
-              item.count = data.count;
-              item.group_modifications = data.group_modifications;
-              item.price[1] = data.price[1];
-              // item.price = data.price[1] + data.count + ""
+            if (item.group_modifications) {
+              if (
+                item.group_modifications[0].modifications[0].checked !==
+                data.group_modifications[0].modifications[0].checked
+              ) {
+                state.cart.push(data);
+              } else {
+                item.count = data.count;
+                item.group_modifications = data.group_modifications;
+                item.price[1] = data.price[1];
+              }
             }
           }
         });
@@ -473,7 +476,7 @@ export default createStore({
       }
       if (
         (state.cart.length && location.href == "http://localhost:8080/cart") ||
-        location.href == "http://185.185.70.214/cart"
+        window.location.href == "https://gurmanikzn.ru/cart"
       ) {
         setTimeout(() => {
           let cartItem = localStorage.getItem("cartItem");
@@ -567,16 +570,12 @@ export default createStore({
           0,
           -3
         );
+        state.discount.usage = validPromo.usage
         state.discount.error = "";
-        // state.discount.time = validPromo.params.
         if (state.discount.promocode_type == 1) {
           state.discount.product_id = validPromo.params.bonus_products[0].id;
         }
-        // if (state.discount.promocode_type == 3 && state.discount.promocode_name == '16' && state.deliveryType == '2') {
-        //   console.log(state.discount.promocode_discount);
-        //   state.discount.promocode_discount = (+state.discount.promocode_discount / 2)
-        // }
-        // state.discount.product_id = validPromo.params
+
       } else {
         state.discount = {};
       }
@@ -748,6 +747,7 @@ export default createStore({
       };
     },
     DELETE_POPULARS: (state, popular) => {
+      console.log(popular);
       state.admin_delete_popular = {
         name: popular,
       };
@@ -779,6 +779,17 @@ export default createStore({
       state;
       config;
     },
+    SET_ADMIN_PROMOCODES_USAGE: (state, promocode) => {
+      state
+      if (promocode.usage == 'reusable') {
+        promocode.usage = 'disposable'
+      } else {
+        promocode.usage = 'reusable'
+      }
+    },
+    SET_DISPOSABLE_PROMOCODES: (state) => {
+      state.disposable_promocodes = state.promocodes.filter(item => item.usage == 'disposable')
+    },
   },
   actions: {
     GET_CATEGORIES_FROM_API({
@@ -786,7 +797,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: "http://185.185.70.214:3000/categories",
+        url: "https://gurmanikzn.ru:3000/categories",
       }).then((categories) => {
         commit(
           "SET_CATEGORIES_TO_STATE",
@@ -805,7 +816,7 @@ export default createStore({
     }, categoryID) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/getProductsFromCategory${categoryID}`,
+        url: `https://gurmanikzn.ru:3000/getProductsFromCategory${categoryID}`,
         params: categoryID,
       }).then((products) => {
         if (products.data.map((item) => item.group_modifications)) {
@@ -833,7 +844,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/populars`,
+        url: `https://gurmanikzn.ru:3000/populars`,
       }).then((populars) => {
         commit("SET_POPULAR_TO_STATE", populars.data);
       });
@@ -843,7 +854,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/promocodes`,
+        url: `https://gurmanikzn.ru:3000/promocodes`,
       }).then((promocodes) => {
         commit("SET_PROMOCODES", promocodes.data);
       });
@@ -920,7 +931,7 @@ export default createStore({
     }, product) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/getDiscountProduct${product}`,
+        url: `https://gurmanikzn.ru:3000/getDiscountProduct${product}`,
         body: product,
       }).then((discount_product) => {
         commit("DISCOUNT_PRODUCT", discount_product.data);
@@ -946,7 +957,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/getAddresses`,
+        url: `https://gurmanikzn.ru:3000/getAddresses`,
       }).then((addresses) => {
         commit("ADDRESSES", addresses.data);
       });
@@ -966,7 +977,7 @@ export default createStore({
     }, order_data) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/order`,
+        url: `https://gurmanikzn.ru:3000/order`,
         params: order_data,
       }).then((order_data) => {
         commit("SEND_ORDER_DATA", order_data);
@@ -977,7 +988,7 @@ export default createStore({
     }, order_data) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/telegram`,
+        url: `https://gurmanikzn.ru:3000/telegram`,
         params: order_data,
       }).then((order_data) => {
         commit("SEND_ORDER_DATA", order_data);
@@ -1003,7 +1014,7 @@ export default createStore({
     }, data) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/promoD`,
+        url: `https://gurmanikzn.ru:3000/promoD`,
         params: data,
       }).then((data) => {
         commit("GET_BANNER", data);
@@ -1014,7 +1025,7 @@ export default createStore({
     }) {
       return axios({
         method: "GET",
-        url: `http://185.185.70.214:3000/banners`,
+        url: `https://gurmanikzn.ru:3000/banners`,
       }).then((banners) => {
         commit("SET_BANNERS", banners.data);
       });
@@ -1044,7 +1055,7 @@ export default createStore({
     }, address) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/setNewAddress`,
+        url: `https://gurmanikzn.ru:3000/setNewAddress`,
         params: address,
       }).then((address) => {
         commit("SET_ADDRESSES", address);
@@ -1055,7 +1066,7 @@ export default createStore({
     }, id) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/deleteAddress`,
+        url: `https://gurmanikzn.ru:3000/deleteAddress`,
         params: {
           id: id,
         },
@@ -1068,7 +1079,7 @@ export default createStore({
     }, popular) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/setNewPopular`,
+        url: `https://gurmanikzn.ru:3000/setNewPopular`,
         params: popular,
       }).then((popular) => {
         commit("SET_POPULARS", popular);
@@ -1079,11 +1090,11 @@ export default createStore({
     }, popular) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/deletePopular`,
+        url: `https://gurmanikzn.ru:3000/deletePopular`,
         params: popular,
       }).then((popular) => {
         commit("DELETE_POPULARS", popular);
-      });
+      })
     },
     SET_ADMIN_PRODUCTS_POSITION({
       commit
@@ -1095,12 +1106,27 @@ export default createStore({
     }, config) {
       return axios({
         method: "POST",
-        url: `http://185.185.70.214:3000/saveProductPositions`,
+        url: `https://gurmanikzn.ru:3000/saveProductPositions`,
         data: config,
       }).then((config) => {
         commit("SAVE_PRODUCT_POSITIONS", config);
       });
     },
+    SET_ADMIN_PROMOCODES_USAGE({
+      commit
+    }, promocode) {
+      commit("SET_ADMIN_PROMOCODES_USAGE", promocode);
+      axios({
+        method: "POST",
+        url: `https://gurmanikzn.ru:3000/changePromocodeType`,
+        data: promocode,
+      })
+    },
+    DISPOSABLE_PROMOCODES({
+      commit
+    }) {
+      commit('SET_DISPOSABLE_PROMOCODES')
+    }
   },
   getters: {
     CATEGORIES(state) {
@@ -1139,6 +1165,9 @@ export default createStore({
         return (state.delivery_pay = 0);
       } else if (state.deliveryType == 2) {
         return (state.delivery_pay = -(+state.subtotalPrice * 10) / 100);
+      } else if (state.totalPrice < 60000) {
+        state.warning = 'Доставка осуществляется при сумме заказа от 600 ₽'
+        return (state.delivery_pay = 0)
       } else {
         if (state.selectAddress.delivery_zone) {
           state.warning = `Закажите ещё на ${(
@@ -1164,8 +1193,12 @@ export default createStore({
       if (
         state.subtotalPrice >= state.discount.condition &&
         state.current_time < state.discount.period_end &&
-        state.current_time > state.discount.period_start
+        state.current_time > state.discount.period_start &&
+        // state.discount.promocode_name.toUpperCase() !== localStorage.getItem(state.discount.promocode_name.toUpperCase())
+        state.error == ''
       ) {
+        // if (state.discount.promocode_name) {
+        // if (state.discount.promocode_name.toUpperCase() == localStorage.getItem(state.discount.promocode_name.toUpperCase())) {
         if (state.discount.promocode_type == 2) {
           state.discount.total_discount = state.discount.promocode_discount;
           return (state.promocode_total = state.discount.promocode_discount);
@@ -1178,6 +1211,9 @@ export default createStore({
           state.discount.total_discount = state.discountCurrentProduct;
           return (state.promocode_total = state.discountCurrentProduct);
         }
+        // }
+        // }
+
       } else {
         return (state.promocode_total = 0);
       }
@@ -1318,6 +1354,12 @@ export default createStore({
         return (state.error = `Промокод работает с ${
           state.discount.period_start + ":00"
         }  до ${state.discount.period_end + ":00"}`);
+      } else if (state.discount.promocode_name) {
+        if (state.discount.promocode_name.toUpperCase() == localStorage.getItem(state.discount.promocode_name.toUpperCase()) && state.discount.usage == 'disposable') {
+          return state.error = `Этот купон можно было применить только 1 раз`
+        } else {
+          return (state.error = ``);
+        }
       } else {
         return (state.error = ``);
       }
@@ -1453,6 +1495,9 @@ export default createStore({
     DELETE_ADDRESS(state) {
       return state.delete_address;
     },
+    DISPOSABLE_PROMOCODES(state) {
+      return state.disposable_promocodes
+    }
   },
   modules: {},
 });
