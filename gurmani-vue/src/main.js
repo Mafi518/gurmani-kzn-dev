@@ -15,7 +15,7 @@ components.forEach((component) => {
 app.directive("phone", phoneDerictive);
 
 app.use(VueYandexMetrika, {
-  id: 75206455,
+  id: 79488682,
   router: router,
   env: "production",
   scriptSrc: "https://mc.yandex.ru/metrika/tag.js",

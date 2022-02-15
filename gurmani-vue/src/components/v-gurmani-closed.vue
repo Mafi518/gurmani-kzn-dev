@@ -61,9 +61,11 @@ export default {
     padding: 15px;
     width: 100%;
     font-family: roboto, sans-serif;
+    text-align: center;
   }
   &__description {
     margin: 12px 0;
+    text-align: center;
   }
 }
 .bg {

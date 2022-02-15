@@ -41,10 +41,7 @@ export default {
     showBarOnScroll() {
       if (document.querySelector(".cart-info")) {
         gsap.to(".cart-info", 0.7, {
-          minHeight: "270px",
-          maxHeight: "270px",
-          height: "100%",
-          overflow: "visible",
+          height: "auto",
         });
       }
     },
@@ -70,23 +67,17 @@ export default {
             this.active_element.className.includes("cart-info__promocode-inp")
           ) {
             gsap.to(".cart-info", 0.7, {
-              minHeight: "0px",
-              height: "0px",
+              height: "0%",
             });
           } else {
             gsap.to(".cart-info", 0.7, {
-              minHeight: "0px",
-              height: "0px",
-              overflow: "hidden",
+              height: "0%",
             });
           }
         } else {
           if (document.querySelector(".cart-info")) {
             gsap.to(".cart-info", 0.7, {
-              minHeight: "270px",
-              maxHeight: "270px",
-              height: "100%",
-              overflow: "visible",
+              height: "auto",
             });
           }
         }

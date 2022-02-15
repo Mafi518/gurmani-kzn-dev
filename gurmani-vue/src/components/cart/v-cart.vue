@@ -233,6 +233,17 @@
               Наличными
             </label>
           </div>
+          <div class="cart-info__promocode">
+            <input
+              type="text"
+              class="cart-info__promocode-inp"
+              id="promocode"
+              placeholder="Есть промокод? Жми сюда!"
+              v-model.trim="promocode_input"
+              @input="validatePromocode"
+              maxlength="10"
+            />
+          </div>
           <div class="confirm__input-wrapper block-input">
             <input
               type="text"
@@ -266,18 +277,6 @@
     </div>
 
     <form action="" class="cart-info" id="cart-info">
-      <div class="cart-info__promocode">
-        <input
-          type="text"
-          class="cart-info__promocode-inp"
-          id="promocode"
-          placeholder="Есть промокод? Жми сюда!"
-          v-model.trim="promocode_input"
-          @input="validatePromocode"
-          maxlength="10"
-        />
-      </div>
-
       <div class="cart-info__list">
         <div class="cart-info__item">
           <p class="cart-info__description">Промежуточный итог</p>
@@ -606,6 +605,17 @@
                 Наличными
               </label>
             </div>
+            <div class="cart-info__promocode">
+              <input
+                type="text"
+                class="cart-info__promocode-inp"
+                id="promocode"
+                placeholder="Есть промокод? Жми сюда!"
+                v-model.trim="promocode_input"
+                @input="validatePromocode"
+                maxlength="10"
+              />
+            </div>
             <div class="confirm__input-wrapper block-input">
               <input
                 type="text"
@@ -619,17 +629,7 @@
             </div>
           </form>
         </transition>
-        <div class="cart-info__promocode">
-          <input
-            type="text"
-            class="cart-info__promocode-inp"
-            id="promocode"
-            placeholder="Есть промокод? Жми сюда!"
-            v-model.trim="promocode_input"
-            @input="validatePromocode"
-            maxlength="10"
-          />
-        </div>
+
         <form action="" class="cart-info" id="cart-info">
           <div class="cart-info__list">
             <div class="cart-info__item">
@@ -1108,7 +1108,6 @@ export default {
 <style lang="scss">
 .cart-info {
   @include container;
-  min-height: 270px;
   position: fixed;
   bottom: 0px;
   left: 0;
@@ -1128,6 +1127,7 @@ export default {
   &__policy {
     text-align: center;
     text-decoration: underline;
+    margin: 8px 0;
   }
   &__promocode {
     top: -75px;
@@ -1137,9 +1137,10 @@ export default {
     transform: translateX(-50%);
     position: absolute;
     width: 85%;
+    margin-bottom: 18px;
     &-inp {
       width: 100%;
-      padding: 24px 10px;
+      padding: 14px 10px;
       border: none;
       @include container;
     }
@@ -1164,8 +1165,8 @@ export default {
       font-size: 18px;
       border-radius: 10px;
       right: 0;
-      width: 44px;
-      height: 44px;
+      width: 30px;
+      height: 30px;
       background-color: $accent;
     }
   }
@@ -1174,6 +1175,7 @@ export default {
     -o-text-overflow: clip;
     text-overflow: clip;
     overflow: hidden;
+    min-height: 17px;
   }
   &__item {
     display: -webkit-box;
@@ -1448,6 +1450,17 @@ export default {
     }
 
     &__promocode-inp {
+      width: 100%;
+    }
+  }
+}
+@media (max-width: 1025px) and (min-width: 1px) {
+  .cart-info {
+    &__promocode {
+      top: initial;
+      left: initial;
+      transform: initial;
+      position: relative;
       width: 100%;
     }
   }
