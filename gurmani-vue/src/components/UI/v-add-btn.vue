@@ -28,12 +28,12 @@ export default {
   },
   methods: {
     test(ref) {
-      let head = ref.childNodes[0].childNodes[0];
-      let price = ref.childNodes[0].childNodes[1];
+      // let head = ref.childNodes[0].childNodes[0];
+      // let price = ref.childNodes[0].childNodes[1];
       let icon = ref.childNodes[1];
-      head, price, icon, animation_image
-      let animation_image =
-        ref.parentNode.childNodes[0].childNodes[0].getAttribute("src");
+      // head, price, icon, animation_image
+      // let animation_image =
+      //   ref.parentNode.childNodes[0].childNodes[0].getAttribute("src");
 
       let tl = new TimelineMax({})
 
@@ -158,6 +158,7 @@ export default {
   bottom: 20px;
   position: fixed;
   overflow: hidden;
+  cursor: pointer;
   p {
     text-align: left;
   }

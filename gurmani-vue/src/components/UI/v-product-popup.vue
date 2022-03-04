@@ -25,7 +25,7 @@
               <span class="popup__price"
                 >{{ PRODUCT.price[1].slice(0, -2) }} ₽ |
                 {{ PRODUCT.cooking_time / 60 }}
-                г 
+                г
                 {{
                   PRODUCT.category_name == "Маки и Суши" ||
                   PRODUCT.category_name == "Напитки" ||
@@ -35,8 +35,7 @@
                     ? ""
                     : " | " + PRODUCT.barcode + " ккал"
                 }}
-                </span
-              >
+              </span>
             </p>
           </div>
           <div class="popup__controls">
@@ -265,7 +264,9 @@ export default {
       data = this.PRODUCT;
 
       await this.ADD_TO_CART(data);
-      this.clearPopupState();
+      if (this.$store.state.modification_warn == "") {
+        this.clearPopupState();
+      }
     },
     deleteModification(modification) {
       if (modification.count > 0) {

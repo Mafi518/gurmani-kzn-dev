@@ -45,7 +45,9 @@ export default createStore({
     admin_set_popular: "",
     admin_delete_popular: "",
 
-    disposable_promocodes: {}
+    disposable_promocodes: {},
+
+    modification_warn: '',
   },
   mutations: {
     SET_CATEGORIES_TO_STATE: (state, categories) => {
@@ -361,6 +363,10 @@ export default createStore({
           let reducer = (previousValue, currentValue) =>
             +previousValue + +currentValue;
           let result = array.reduce(reducer) + "";
+          if (isNaN(+result)) {
+            result = 0
+          }
+          console.log(result);
           state.cart[index].price[1] =
             state.cart[index].spots[0].price * state.cart[index].count +
             +result +
@@ -421,6 +427,9 @@ export default createStore({
         let reducer = (previousValue, currentValue) =>
           +previousValue + +currentValue;
         let result = array.reduce(reducer) + "";
+        if (isNaN(+result)) {
+          result = 0
+        }
         state.cart[index].price[1] =
           state.cart[index].spots[0].price * state.cart[index].count +
           +result +
@@ -452,10 +461,34 @@ export default createStore({
           }
         });
         if (!dataExists) {
-          state.cart.push(data);
+          if (data.group_modifications && data.category_name == 'Горячие блюда') {
+            if (data.group_modifications.map(item => item.modifications.filter(elem => elem.count > 0))[0].length < 1) {
+              console.log('warn');
+              state.modification_warn = 'Выберите лапшу'
+              setTimeout(() => {
+                state.modification_warn = ''
+              }, 3000);
+            } else {
+              state.cart.push(data)
+            }
+          } else {
+            state.cart.push(data)
+          }
         }
       } else {
-        state.cart.push(data);
+        if (data.group_modifications && data.category_name == 'Горячие блюда') {
+          if (data.group_modifications.map(item => item.modifications.filter(elem => elem.count > 0))[0].length < 1) {
+            console.log('warn');
+            state.modification_warn = 'Выберите лапшу'
+            setTimeout(() => {
+              state.modification_warn = ''
+            }, 3000);
+          } else {
+            state.cart.push(data)
+          }
+        } else {
+          state.cart.push(data)
+        }
       }
       localStorage.setItem(
         "cart",
@@ -538,8 +571,6 @@ export default createStore({
         };
 
         state.product.modificationsPrice = sum() + "";
-        // state.product.price[1] = data.price[1] =
-        //   data.modified_price * data.count + +sum() + "";
         state.product.price[1] = data.modified_price * data.count + sum() + "";
       }
     },

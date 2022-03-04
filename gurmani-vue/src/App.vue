@@ -1,6 +1,7 @@
 <template>
   <v-header-desktop></v-header-desktop>
   <!-- <v-header-mobile v-if="clientWidth <= 1"></v-header-mobile> -->
+  <div class="modification-warn" v-if="this.$store.state.modification_warn" > {{ this.$store.state.modification_warn }} </div>
   <v-gurmani-closed
     v-if="this.display_warn_of_closed == true"
     @click="closeWarnOfClosed"
@@ -114,6 +115,16 @@ export default {
       }
     }
   }
+}
+.modification-warn {
+  position: absolute;
+  top: 60px;
+  right: 60px;
+  background-color: tomato;
+  padding: 20px;
+  border-radius: 20px;
+  color: #fff;
+  z-index: 5;
 }
 .router-link-active {
   @include container;

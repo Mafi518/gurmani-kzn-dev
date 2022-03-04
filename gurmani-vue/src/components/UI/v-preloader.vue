@@ -8,6 +8,8 @@
         alt=""
       />
     </div>
+    
+
     <h1
       class="preloader__subtitle"
       :style="{ color: preloader_props.subtitleColor }"
@@ -17,6 +19,7 @@
       <span class="preloader__dot">.</span>
       <span class="preloader__dot">.</span>
     </h1>
+    <a href="tel:+7 (843) 239-00-12" class="poster-fix">Телефон для заказа: +7 (843) 239-00-12</a>
   </div>
 </template>
 <script>
@@ -85,13 +88,18 @@ export default {
                   gsap.to(".preloader", 0.4, {
                     opacity: 0,
                     zIndex: -1,
-                    display: 'none'
+                    display: "none",
                   });
-                  gsap.fromTo('.home', 0.4, {
-                    opacity: 0,
-                  }, {
-                    opacity: 1
-                  })
+                  gsap.fromTo(
+                    ".home",
+                    0.4,
+                    {
+                      opacity: 0,
+                    },
+                    {
+                      opacity: 1,
+                    }
+                  );
                 });
               gsap.set(".preloader__subtitle", {
                 display: "none",
@@ -122,6 +130,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.poster-fix {
+  margin-top: 10px;
+  font-size: 18px;
+  color: $black;
+  text-decoration: underline;
+}
 .preloader {
   position: fixed;
   top: 0;

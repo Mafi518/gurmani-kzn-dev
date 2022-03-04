@@ -40,7 +40,7 @@ export default {
       preloader: false,
       preloader_props: {
         bgColor: "#F5F5F7",
-        subtitle: "Море вкуса для тебя",
+        subtitle: `Море вкуса для тебя`,
         subtitleColor: "#000",
         circleColor: "#FF6800",
         homePage: true,
