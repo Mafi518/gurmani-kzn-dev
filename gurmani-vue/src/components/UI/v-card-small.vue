@@ -2,20 +2,20 @@
   <article class="card" @click="getProductInfo">
     <div class="card__head">
       <img
-        :src="`https://gurmanikzndev.joinposter.com${like_data.photo_origin}`"
+        :src="`https://gurmanikzn.ru:3000/products/${like_data.name}.jpg`"
         alt=""
         class="card__image"
       />
       <v-favorite-btn></v-favorite-btn>
     </div>
     <div class="card__body">
-      <h3 class="card__title">{{ like_data.product_name }}</h3>
+      <h3 class="card__title">{{ like_data.name }}</h3>
       <p class="card__description">
-        {{ like_data.product_production_description }}
+        {{ like_data.description }}
       </p>
     </div>
     <div class="card__footer">
-      <p class="card__price">{{ like_data.price[1].slice(0, -2) }} ₽</p>
+      <p class="card__price">{{ like_data.price }} ₽</p>
       <v-icon name="plus-icon"></v-icon>
     </div>
   </article>

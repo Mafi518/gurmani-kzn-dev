@@ -7,109 +7,93 @@ const addresses = require('../addresses.json')
 const banners = require('../banners.json')
 const popular_names = require('../popular_names.json')
 const product_positions = require('../category_positions_config.json')
-const promocodes_usage = require('../promocode_type.json')
+const categories = require('../categories.json')
 const fs = require('fs');
 const e = require('express');
-
+const axios = require('axios');
+var request = require('request');
 
 const router = new express.Router();
 
-// let corsOptions = {
-//     origin: 'http://localhost:8080',
-//     optionsSuccessStatus: 200
-// }
+router.post('/fronthook', async (req, res) => {
 
-router.get('/getProductsFromCategory:id', async (req, res) => {
+    let products_arr = req.body.products.map(item => item.id)
+    let products_kol = req.body.count.map(item => item.count)
 
-    const posterApi = new PosterApi({
-        token: config.token
-    });
+    let affilate = req.body.pickup_address.affilate_number == '' ? req.body.delivery_affilate : req.body.pickup_address.affilate_number
 
-    const products = await posterApi.makePosterRequest('menu.getProducts', 'GET', {
-        body: {
-            category_id: req.params.id
+    if (req.body.pickup_address.affilate_number == '') {
+        if (affilate == null || affilate == undefined) {
+            affilate = ''
         }
-    })
-    let sortId = 0
-    products.map(item => item.sort_id = sortId++)
-
-    if (product_positions.filter(el => el.category_id == req.params.id).length) {
-        products.map(item => {
-            let products_config = product_positions.filter(el => el.category_id == item.menu_category_id)
-
-            if (products_config) {
-                let config_products_data = products_config[0].products
-
-                for (const item of products) {
-                    let clone = config_products_data.filter(el => el.product_name == item.product_name)
-                    let prod = products.filter(el => el.product_name == clone[0].product_name)
-                    prod[0].sort_id = clone[0].sort_id
-                }
-            }
-        })
-
-        products.map(item => console.log(item.product_name, item.sort_id))
-
-        products.sort((item1, item2) => {
-            return item1.sort_id - item2.sort_id;
-        });
+    } else {
+        affilate = req.body.pickup_address.affilate_number
     }
 
-    res.send(products);
+    var options = {
+        'method': 'POST',
+        'url': 'https://app.frontpad.ru/api/index.php?new_order',
+        'headers': {},
+        formData: {
+            'secret': 'triQaQz3Q3ysNHGnYrs9r6en29Bntz9QQirR2QEBE2SdzkseEKdYFi9shAGEZFeBSzdE9G5EyKGSZ3ZrA4a5a9iiASQikYK5eQyehnHE2diK674sZ4hZ3y8naKAkt8eBNDFYRdnEhAbby5teYE5H2323BkbYhfhYHRFnYYS5hY6EQnHzTD7GsTyS6ABdFK3dryt9da4nYZSzarTTSRr8zNRs9eyFRhH6E55H5YZQFE9FTTnBAFAYebadfz',
+            'name': req.body.name,
+            'phone': req.body.phone,
+            'affiliate': affilate,
+            'street': req.body.address.search_value !== '' ? req.body.address.search_value : '',
+            'home': req.body.address.house !== '' ? req.body.address.house : '',
+            'apart': req.body.address.apartment !== '' ? req.body.address.apartment : '',
+            'et': req.body.address.floor !== '' ? req.body.address.floor : '',
+            'pod': req.body.address.entrance !== '' ? req.body.address.entrance : '',
+            'descr': `${req.body.descr} ${req.body.delivery !== 0 ? `| Доставка ${req.body.delivery}₽` : ''}`,
+            'product[]': products_arr,
+            'product_kol[]': products_kol
+        }
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+    });
+
+    res.end()
+})
+
+router.get('/getProductsFromCategory', async (req, res) => {
+
+    let id = req.query[0]
+
+    const products = jsonDecoder(fs.readFileSync(__dirname + '/products.json', 'utf8'))
+
+    const category_products = products.filter(item => item.category_id == id)
+
+    res.send(category_products)
 });
 
-router.get('/populars', async (req, res) => {
+router.get('/getPopulars', async (req, res) => {
 
-    const posterApi = new PosterApi({
-        token: config.token
-    });
+    const products = jsonDecoder(fs.readFileSync(__dirname + '/products.json', 'utf8'))
 
-    const populars = await posterApi.makePosterRequest('menu.getProducts')
+    const populars = products.filter(item => item.second_category_name == 'Популярное')
 
-    const names = popular_names
-
-    let filtered = []
-
-    for (const item of names) {
-        test2 = populars.filter(popular => {
-            return popular.product_name == item
-        })
-        filtered.push(test2[0])
-    }
-
-    res.send(filtered.filter(item => item));
+    res.send(populars)
 })
 
 router.get('/categories', async (req, res) => {
-
-    const posterApi = new PosterApi({
-        token: config.token
-    });
-
-    const categories = await posterApi.makePosterRequest('menu.getCategories')
-
-    res.send(categories)
+    res.send(categories);
 })
+// router.get('/categories', async (req, res) => {
+
+//     const posterApi = new PosterApi({
+//         token: config.token
+//     });
+
+//     const categories = await posterApi.makePosterRequest('menu.getCategories')
+
+//     res.send(categories)
+// })
 
 router.get('/promocodes', async (req, res) => {
 
-    const posterApi = new PosterApi({
-        token: config.token
-    });
-
-    const promocodes = await posterApi.makePosterRequest('clients.getPromotions')
-
-    promocodes.map(promocode => promocode.usage = 'reusable')
-
-    if (promocodes_usage.length) {
-        for (const promocode of promocodes) {
-
-            let promo = promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase())
-            if (promo.length) {
-                promocode.usage = promo[0].usage
-            }
-        }
-    }
+    const promocodes = jsonDecoder(fs.readFileSync(__dirname + '/promocodes.json', 'utf8'))
 
     res.send(promocodes)
 })
@@ -232,7 +216,7 @@ router.post('/setNewPopular', async (req, res) => {
 
 router.post('/deletePopular', async (req, res) => {
     const data = await req.query
-    
+
     popular_names.splice(data[0], 1)
 
     let fullData = JSON.stringify(popular_names, null, 2)
@@ -275,24 +259,28 @@ router.post('/saveProductPositions', async (req, res) => {
     res.end()
 })
 
-router.post('/changePromocodeType', async (req, res) => {
-    const promocode = await req.body
+// router.post('/changePromocodeType', async (req, res) => {
+//     const promocode = await req.body
 
-    if (promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase()).length) {
-        let index = promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase())
-        promocodes_usage.splice(promocodes_usage.indexOf(index[0]), 1)
-        promocodes_usage.push(promocode)
-        console.log('exist');
-    } else {
-        promocodes_usage.push(promocode)
-    }
+//     if (promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase()).length) {
+//         let index = promocodes_usage.filter(item => item.name.toUpperCase() == promocode.name.toUpperCase())
+//         promocodes_usage.splice(promocodes_usage.indexOf(index[0]), 1)
+//         promocodes_usage.push(promocode)
+//         console.log('exist');
+//     } else {
+//         promocodes_usage.push(promocode)
+//     }
 
-    let fullData = JSON.stringify(promocodes_usage, null, 2)
-    fs.writeFile(`gurmani-backend/promocode_type.json`, fullData, (err) => {
-        if (err) console.log(err)
-    })
+//     let fullData = JSON.stringify(promocodes_usage, null, 2)
+//     fs.writeFile(`gurmani-backend/promocode_type.json`, fullData, (err) => {
+//         if (err) console.log(err)
+//     })
 
-    res.end()
-})
+//     res.end()
+// })
+
+function jsonDecoder(data) {
+    return JSON.parse(data)
+}
 
 module.exports = router;

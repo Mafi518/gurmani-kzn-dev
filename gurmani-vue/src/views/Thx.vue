@@ -1,20 +1,20 @@
 <template>
   <section class="thx">
-    <img src="@/assets/media/img/logo.png" alt="logo" />
+    <img src="@/assets/media/img/logo.svg" alt="logo" />
     <h1 class="thx__title">Спасибо за заказ!</h1>
     <p class="thx__subtitle">
       Вы указали номер :
-      {{ ORDER_DATA.phone !== undefined ? ORDER_DATA.phone : "" }} Оператор
+      {{ ORDER.order_phone !== undefined ? ORDER.order_phone : "" }} Оператор
       свяжется с вами в ближайшее время
     </p>
 
     <p class="thx__subtitle">
       {{
-        PICKUP_TIME == "Сам-з undefined"
-          ? "Тип заказа – предзаказ"
-          : DELIVERY_TYPE == 2
-          ? PICKUP_TIME
-          : "Приблизительное время доставки час/полтора"
+        CART_DATA.delivery.type == "delivery"
+          ? `Приблизительное время доставки час/полтора`
+          : ORDER.order_pickup == "Сам-з undefined"
+          ? `Тип заказа – предзаказ`
+          : `Тип заказа – самовывоз`
       }}
     </p>
 
@@ -28,7 +28,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "thx",
   computed: {
-    ...mapGetters(["ORDER_DATA", "DELIVERY_TYPE", "PICKUP_TIME"]),
+    ...mapGetters(["CART_DATA", "ORDER"]),
   },
 };
 </script>

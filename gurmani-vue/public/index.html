@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <title><%= htmlWebpackPlugin.options.title %></title>
-  <!-- Meta Pixel Code -->
-  <script>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1, maximum-scale=1"
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- Meta Pixel Code -->
+    <!-- <script>
     ! function (f, b, e, v, n, t, s) {
       if (f.fbq) return;
       n = f.fbq = function () {
@@ -35,16 +35,27 @@
   </script>
   <noscript><img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=189244619611786&ev=PageView&noscript=1" /></noscript>
-  <!-- End Meta Pixel Code -->
-</head>
+  <script type="text/javascript">
+    ! function () {
+      var t = document.createElement("script");
+      t.type = "text/javascript", t.async = !0, t.src = 'https://vk.com/js/api/openapi.js?169', t.onload = function () {
+        VK.Retargeting.Init("VK-RTRG-1369580-36Wjd"), VK.Retargeting.Hit()
+      }, document.head.appendChild(t)
+    }();
+  </script><noscript><img src="https://vk.com/rtrg?p=VK-RTRG-1369580-36Wjd" style="position:fixed; left:-999px;"
+      alt="" /></noscript> -->
+    <!-- End Meta Pixel Code -->
+  </head>
 
-<body>
-  <noscript>
-    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-      Please enable it to continue.</strong>
-  </noscript>
-  <div id="app"></div>
-  <!-- built files will be auto injected -->
-</body>
-
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>

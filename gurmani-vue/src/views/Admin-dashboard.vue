@@ -1,9 +1,13 @@
 <template>
   <section class="panel">
-    <v-back-menu>
+    <v-back-menu class="panel__back-menu">
       <v-back-btn @click="signOutUser"></v-back-btn>
       <h2 class="panel__title">Gurmani dashboard</h2>
     </v-back-menu>
+
+    <router-link to="/admin-products" class="panel__section-link"
+      >Товары</router-link
+    >
 
     <form action="" class="promotion form">
       <h2 class="form__title">Добавить баннер</h2>
@@ -93,39 +97,15 @@
           placeholder="Индекс улицы"
           v-model.trim="add_form.street_index"
         />
-        <button class="addresses__add" @click.prevent="adminAddAddress()">
-          Добавить
-        </button>
+        <button class="addresses__add" @click.prevent="">Добавить</button>
       </article>
 
       <div class="addresses__list">
-        <article
-          class="addresses__item"
-          v-for="address in FIND_ADDRESS"
-          :key="address.id"
-        >
-          <input
-            type="text"
-            id="address"
-            :value="address.address"
-            class="addresses__input"
-          />
-          <input
-            type="text"
-            :value="address.delivery_zone"
-            class="addresses__input"
-          />
-          <input
-            type="text"
-            :value="address.street_index"
-            class="addresses__input"
-          />
-          <button
-            class="addresses__delete"
-            @click.prevent="adminDeleteAddress(address)"
-          >
-            Удалить
-          </button>
+        <article class="addresses__item">
+          <input type="text" id="address" class="addresses__input" />
+          <input type="text" class="addresses__input" />
+          <input type="text" class="addresses__input" />
+          <button class="addresses__delete">Удалить</button>
         </article>
       </div>
     </form>
@@ -142,7 +122,7 @@
         Добавить
       </button>
 
-      <div class="admin-popular__item-container" v-if="add_popular == true">
+      <div class="admin-popular__item-container">
         <input
           type="text"
           placeholder="Название блюда"
@@ -157,7 +137,7 @@
       <div class="admin-popular__container">
         <article
           class="admin-popular__item"
-          v-for="popular in POPULAR"
+          v-for="popular in 1"
           :key="popular.product_id"
         >
           <img
@@ -182,7 +162,7 @@
       <div class="config__list">
         <div
           class="config__item"
-          v-for="category in CATEGORIES"
+          v-for="category in 1"
           :key="category.category_id"
           @click="adminCategoryProductsList(category.category_id)"
         >
@@ -196,12 +176,12 @@
       </div>
     </section>
 
-    <div class="change-popup" v-if="this.CATEGORY_PRODUCTS.length">
+    <div class="change-popup">
       <h2 class="change-popup__title">Редактировать позицию продуктов</h2>
       <div class="change-popup__list">
         <div
           class="change-popup__item"
-          v-for="product in CATEGORY_PRODUCTS"
+          v-for="product in 1"
           :key="product.product_id"
           @click="support(product)"
         >
@@ -240,14 +220,11 @@
       <div class="admin-promocodes__list">
         <div
           class="admin-promocodes__item"
-          v-for="promocode in PROMOCODES"
+          v-for="promocode in 1"
           :key="promocode.promotion_id"
         >
           {{ promocode.name }}
-          <button
-            class="admin-promocodes__change"
-            @click.prevent="SET_ADMIN_PROMOCODES_USAGE(promocode)"
-          >
+          <button class="admin-promocodes__change" @click.prevent="">
             {{
               promocode.usage == "reusable"
                 ? "Сделать промокод одноразовым"
@@ -273,7 +250,6 @@ export default {
       promo_picture: "",
       promo_location: "",
       banner_response: "",
-
       search_address: "",
 
       add_toggle: false,
@@ -306,69 +282,7 @@ export default {
     return { user, signOutUser };
   },
   methods: {
-    ...mapActions([
-      "ADD_BANNER",
-      "ADD_BANNER_PHOTO",
-      "GET_ADMIN_ADDRESSES",
-      "GET_ADDRESSES",
-      "SET_ADMIN_ADDRESSES",
-      "DELETE_ADMIN_ADDRESS",
-      "GET_POPULAR_FROM_API",
-      "SET_ADMIN_POPULARS",
-      "DELETE_ADMIN_POPULARS",
-      "GET_CATEGORIES_FROM_API",
-      "GET_CATEGORY_PRODUCTS_FROM_API",
-      "SET_ADMIN_PRODUCTS_POSITION",
-      "SAVE_ADMIN_PRODUCTS_POSITION",
-      "GET_PROMOCODES",
-      "SET_ADMIN_PROMOCODES_USAGE",
-    ]),
-    async changeBanners(e) {
-      const data = await {
-        action: e.target.getAttribute("title"),
-        promo_name: this.promo_name,
-        promo_picture: this.promo_picture,
-        location: this.promo_location,
-      };
-      this.ADD_BANNER(data);
-      if (e.target.getAttribute("title") == "add") {
-        this.response = "Баннер успешно добавлен";
-      } else {
-        this.response = "Баннер успешно удалён";
-      }
-
-      setTimeout(() => {
-        this.response = "";
-      }, 1000);
-    },
-    async adminAdresses() {
-      await this.GET_ADDRESSES();
-      this.GET_ADMIN_ADDRESSES();
-    },
-    async adminDeleteAddress(address) {
-      await this.DELETE_ADMIN_ADDRESS(address.id);
-      this.search_address = "";
-      this.adminAdresses();
-    },
-    async adminAddAddress() {
-      await this.SET_ADMIN_ADDRESSES(this.add_form);
-      this.add_form.address = "";
-      this.add_form.delivery_zone = "";
-      this.add_form.street_index = "";
-      this.adminAdresses();
-    },
-    async adminAddPopular() {
-      await this.SET_ADMIN_POPULARS(this.add_popular_field);
-      this.GET_POPULAR_FROM_API()
-    },
-    async adminDeletePopular(popular) {
-      await this.DELETE_ADMIN_POPULARS(popular);
-      this.GET_POPULAR_FROM_API()
-    },
-    async adminCategoryProductsList(id) {
-      await this.GET_CATEGORY_PRODUCTS_FROM_API(id);
-      this.change_popup_toggle = true;
-    },
+    ...mapActions([]),
     async changeProductPosition(product, action) {
       // Что если сделать функционал кастомной сортировки продуктов полностью через vuex,
       // Сохранить при этом реактивность объектов,
@@ -378,45 +292,17 @@ export default {
         product: product,
         action: action,
       };
-      this.SET_ADMIN_PRODUCTS_POSITION(settings);
+      settings;
+      // this.SET_ADMIN_PRODUCTS_POSITION(settings);
     },
-    async saveProductPositions() {
-      this.SAVE_ADMIN_PRODUCTS_POSITION(this.CATEGORY_PRODUCTS);
-    },
-    support(prod) {
-      console.log("support id", prod.sort_id);
-      prod;
-    },
+    // async saveProductPositions() {
+    //   this.SAVE_ADMIN_PRODUCTS_POSITION(this.CATEGORY_PRODUCTS);
+    // },
   },
   computed: {
-    ...mapGetters([
-      "RENDER_ADMIN_ADRESSES",
-      "POPULAR",
-      "CATEGORIES",
-      "CATEGORY_PRODUCTS",
-      "PROMOCODES",
-    ]),
-    FIND_ADDRESS() {
-      console.log(this.RENDER_ADMIN_ADRESSES.length);
-      if (
-        this.RENDER_ADMIN_ADRESSES.filter((elem) =>
-          elem.address.toLowerCase().includes(this.search_address.toLowerCase())
-        )
-      ) {
-        return this.RENDER_ADMIN_ADRESSES.filter((elem) =>
-          elem.address.toLowerCase().includes(this.search_address.toLowerCase())
-        );
-      } else {
-        return this.RENDER_ADMIN_ADRESSES;
-      }
-    },
+    ...mapGetters([]),
   },
-  mounted() {
-    this.adminAdresses();
-    this.GET_POPULAR_FROM_API();
-    this.GET_CATEGORIES_FROM_API();
-    this.GET_PROMOCODES();
-  },
+  mounted() {},
 };
 </script>
 <style lang="scss" scoped>
@@ -427,6 +313,30 @@ export default {
     width: 100%;
     text-align: center;
     margin-bottom: 0;
+  }
+
+  // .panel__back-menu
+
+  &__back-menu {
+    margin-bottom: 20px;
+  }
+
+  // .panel__section-link
+
+  &__section-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    min-width: 90px;
+    max-width: 130px;
+    width: 100%;
+    min-height: 90px;
+    max-height: 130px;
+    height: 100%;
+    background-color: rgb(255, 153, 0);
+    color: $white;
+    font-size: 18px;
   }
 }
 .promotion {

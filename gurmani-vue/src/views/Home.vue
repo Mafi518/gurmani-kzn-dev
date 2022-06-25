@@ -1,5 +1,6 @@
 <template>
   <section class="home">
+    <button @click="TESTING('qwe')">TESTING</button>
     <v-preloader
       v-if="preloader == true"
       :preloader_props="preloader_props"
@@ -9,7 +10,7 @@
     <v-column-banner-list></v-column-banner-list>
     <v-popular-list></v-popular-list>
     <transition name="popup" mode="out-in">
-      <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+      <v-product-popup v-if="PRODUCT_INFO.name"></v-product-popup>
     </transition>
     <v-footer>
       <div class="footer__payments">
@@ -55,12 +56,15 @@ export default {
   },
   methods: {
     ...mapActions([
-      "RESET_PRODUCT",
-      "GET_CATEGORIES_FROM_API",
-      "GET_POPULAR_FROM_API",
+      "GET_CATEGORIES",
+      "GET_POPULARS_FROM_API",
+      "SET_SAVED_FAVORITES",
+      "TESTING",
     ]),
-    reset() {
-      this.RESET_PRODUCT();
+    async getFavorites() {
+      if (this.FAVORITES.length <= 0) {
+        this.SET_SAVED_FAVORITES(localStorage.getItem("SAVED_FAVORITES"));
+      }
     },
     getLogoPosition() {
       let el = document.querySelector(".header__logo").getBoundingClientRect();
@@ -72,33 +76,30 @@ export default {
       };
     },
     async animateLogoPosition() {
-      if (this.CATEGORIES.length && this.POPULAR.length) {
+      if ((this.CATEGORIES.length, this.POPULARS.length)) {
         this.preloader = false;
       } else {
-        this.preloader = true;
-        await this.GET_CATEGORIES_FROM_API();
-        console.log("await popular");
-        await this.GET_POPULAR_FROM_API();
-        console.log("loaded");
-        this.preloader_props.loaded = true;
-        this.preloader_props.logoPosition = {
-          left: this.getLogoPosition().left,
-          top: this.getLogoPosition().top,
-          width: this.getLogoPosition().width,
-          height: this.getLogoPosition().width,
-        };
+        // this.preloader = true;
+        await this.GET_CATEGORIES();
+        await this.GET_POPULARS_FROM_API();
+        // this.preloader_props.loaded = true;
+        // this.preloader_props.logoPosition = {
+        //   left: this.getLogoPosition().left,
+        //   top: this.getLogoPosition().top,
+        //   width: this.getLogoPosition().width,
+        //   height: this.getLogoPosition().width,
+        // };
       }
     },
   },
   computed: {
-    ...mapGetters(["PRODUCT", "CATEGORIES", "POPULAR"]),
+    ...mapGetters(["PRODUCT_INFO", "CATEGORIES", "POPULARS", "FAVORITES"]),
   },
   mounted() {
-    this.reset();
-    this.clientWidth = window.innerWidth;
     this.animateLogoPosition(this.$refs.logo);
-    // this.GET_CATEGORIES_FROM_API()
-    // this.GET_POPULAR_FROM_API();
+    this.clientWidth = window.innerWidth;
+    this.getFavorites();
+    console.log(process.env);
   },
 };
 </script>

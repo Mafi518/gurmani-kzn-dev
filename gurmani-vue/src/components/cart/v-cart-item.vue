@@ -2,7 +2,7 @@
   <div class="cart__item">
     <div class="cart__item-img">
       <img
-        :src="`https://gurmanikzndev.joinposter.com${cart_item_data.photo_origin}`"
+        :src="`https://gurmanikzn.ru:3000/products/${cart_item_data.name}.jpg`"
         alt=""
         class="cart__item-image"
       />
@@ -10,36 +10,33 @@
 
     <div class="cart__item-info">
       <div class="cart__item-container">
-        <h3 class="cart__item-title">{{ cart_item_data.product_name }}</h3>
+        <h3 class="cart__item-title">{{ cart_item_data.name }}</h3>
       </div>
 
       <div class="cart__item-container">
         <p class="cart__item-price">
-          {{ cart_item_data.price[1].slice(0, -2) }}
+          {{ cart_item_data.total_price }}
           ₽
         </p>
-        <div
-          class="cart__item-controls"
-          v-if="cart_item_data.product_name.includes('Пицца')"
-        >
+        <!-- <div class="cart__item-controls">
           <v-icon name="controls-minus-icon" @click="decrementItem"></v-icon>
           <p class="cart__item-count">{{ cart_item_data.count }}</p>
           <v-icon name="controls-plus-icon" @click="incrementItem"></v-icon>
-        </div>
+        </div> -->
         <div
           class="cart__item-controls"
-          v-if="!cart_item_data.product_name.includes('Пицца')"
+          v-if="cart_item_data.stock !== true || !cart_item_data.stock"
         >
           <v-icon
             name="controls-minus-icon"
             class="cart__item-control"
-            @click="decrementItem"
+            @click="decrementItem(cart_item_data)"
           ></v-icon>
           <p class="cart__item-count">{{ cart_item_data.count }}</p>
           <v-icon
             name="controls-plus-icon"
             class="cart__item-control"
-            @click="incrementItem"
+            @click="incrementItem(cart_item_data)"
           ></v-icon>
         </div>
       </div>
@@ -47,25 +44,28 @@
       <div class="cart__item-container">
         <div
           class="cart__item-size"
-          v-if="cart_item_data.product_name.includes('Пицца')"
+          v-if="cart_item_data.category_name == 'Пиццы'"
         >
           <div
             class="cart__item-radio"
-            v-for="(modification, index) in cart_item_data
-              .group_modifications[0].modifications"
-            :key="modification.dish_modification_group_id"
+            v-for="(modification, index) in cart_item_data.modifications"
+            :key="modification.name"
           >
             <input
               type="radio"
               ref="radio"
-              :checked="
-                cart_item_data.group_modifications[0].modifications[index]
-                  .checked == true
-              "
-              :name="cart_item_data.photo_origin"
+              name=""
+              :id="`${cart_item_data.modifications[0].id}`"
               class="cart__item-input"
+              :checked="cart_item_data.modifications[index].selected == true"
             />
-            <label class="cart__item-label" @click="toggleSize(index)">
+            <label
+              class="cart__item-label"
+              :for="`${cart_item_data.modifications[1].id}`"
+              @click="
+                toggleSizeItem({ modification, PRODUCT_INFO: cart_item_data })
+              "
+            >
               {{ modification.name }}
             </label>
           </div>
@@ -84,16 +84,18 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["TOGGLE_SIZE_OF_PIZZA"]),
-    incrementItem() {
-      this.$emit("increment");
+    ...mapActions(["TOGGLE_SIZE_OF_PIZZA", "SET_SAVED_CART"]),
+    incrementItem(data) {
+      this.$emit("increment", data);
+      console.log(this.cart_item_data.count);
     },
-    decrementItem() {
-      this.$emit("decrement");
+    decrementItem(data) {
+      this.$emit("decrement", data);
     },
-    toggleSize(index) {
-      this.TOGGLE_SIZE_OF_PIZZA(index, this.cart_item_data);
-      localStorage.setItem("pizzaSize", index);
+    toggleSizeItem(data) {
+      // this.TOGGLE_SIZE_OF_PIZZA(index, this.cart_item_data);
+      // localStorage.setItem("pizzaSize", index);
+      this.$emit("toggleSize", data);
     },
   },
   props: {
@@ -178,6 +180,10 @@ export default {
       align-items: center;
       svg {
         width: 28px;
+        cursor: pointer;
+        path {
+          pointer-events: none;
+        }
       }
     }
     &-count {
@@ -208,6 +214,7 @@ export default {
     }
     &-label {
       white-space: nowrap;
+      cursor: pointer;
     }
     &-input {
       position: absolute;

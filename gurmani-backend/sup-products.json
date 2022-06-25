@@ -1,0 +1,100 @@
+[{
+        "id": 0,
+        "name": "Калифорния с креветкой",
+        "price": 330,
+        "fixed_price": 330,
+        "total_price": 330,
+        "weight": "220",
+        "calory": "160",
+        "ingredients": [{
+            "name": "Лосось"
+        }],
+        "image": "california-krevetka",
+        "category_id": 2,
+        "count": 1,
+        "favorites": false,
+        "description": "",
+        "category_name": "Холодные роллы",
+        "modifications": []
+    },
+    {
+        "id": 1,
+        "name": "Бонито",
+        "price": 240,
+        "fixed_price": 240,
+        "total_price": 240,
+        "weight": "123",
+        "calory": "512",
+        "ingredients": [{
+            "name": "Лосось"
+        }, {
+            "name": "Сыр Cremette"
+        }, {
+            "name": "Рис"
+        }],
+        "image": "california-krevetka",
+        "category_id": 2,
+        "count": 1,
+        "favorites": false,
+        "description": "",
+        "category_name": "Холодные роллы",
+        "modifications": [{
+            "name": "Соевый соус",
+            "modification": true,
+            "price": 25,
+            "fixed_price": 25,
+            "count": 0,
+            "image": "soi-sauce",
+            "selected": false,
+            "required": false
+        }, {
+            "name": "Соевый соус 2",
+            "modification": true,
+            "price": 40,
+            "fixed_price": 40,
+            "count": 0,
+            "image": "soi-sauce",
+            "selected": false,
+            "required": false
+        }]
+    },
+    {
+        "id": 2,
+        "name": "Пицца Азия",
+        "price": 240,
+        "fixed_price": 240,
+        "total_price": 240,
+        "weight": "123",
+        "calory": "512",
+        "ingredients": [{
+            "name": "Лосось",
+            "icon": "salmon"
+        }],
+        "image": "california-krevetka",
+        "category_id": 1,
+        "count": 1,
+        "favorites": false,
+        "description": "",
+        "category_name": "Пиццы",
+        "second_category_name": "Популярное",
+        "modifications": [{
+            "name": "25 см",
+            "modification": true,
+            "price": 240,
+            "fixed_price": 240,
+            "count": 0,
+            "image": "",
+            "selected": true,
+            "required": false
+        }, {
+            "name": "30 см",
+            "modification": true,
+            "price": 340,
+            "fixed_price": 340,
+            "count": 0,
+            "image": "",
+            "selected": false,
+            "required": false
+        }]
+    }
+]

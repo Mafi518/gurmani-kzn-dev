@@ -2,32 +2,32 @@
   <article class="popular__item" @click="getProductInfo">
     <div class="popular__head">
       <img
-        :src="`https://gurmanikzndev.joinposter.com${popular_data.photo_origin}`"
+        :src="`https://gurmanikzn.ru:3000/products/${popular_data.name}.jpg`"
         alt=""
         class="popular__image"
       />
-      <h3 class="popular__item-title">{{ popular_data.product_name }}</h3>
+      <h3 class="popular__item-title">{{ popular_data.name }}</h3>
     </div>
     <p class="popular__description">
-      {{ popular_data.product_production_description }}
+      {{ popular_data.description }}
     </p>
     <div class="popular__info-wrap">
       <div
         class="popular__calories"
         v-if="popular_data.category_name !== 'Сеты'"
       >
-        <v-icon name="calories-icon"></v-icon> {{ popular_data.barcode }} Ккал
+        <v-icon name="calories-icon"></v-icon> {{ popular_data.calory }} Ккал
       </div>
       <div class="popular__weight">
         <v-icon name="scales-icon"></v-icon>
-        {{ popular_data.cooking_time / 60 }} г
+        {{ popular_data.weight }} г
       </div>
-      <v-favorite-btn v-if="!popular_data.favorites"></v-favorite-btn>
+      <v-favorite-btn v-if="!popular_data.favorites == true"></v-favorite-btn>
       <v-favorite-btn-active
         v-if="popular_data.favorites == true"
       ></v-favorite-btn-active>
     </div>
-    <v-add-btn>{{ popular_data.price[1].slice(0, -2) }} ₽</v-add-btn>
+    <v-add-btn>{{ popular_data.price }} ₽</v-add-btn>
   </article>
 </template>
 <script>

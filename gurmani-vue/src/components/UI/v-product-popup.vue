@@ -1,80 +1,77 @@
 <template>
-  <article v-if="PRODUCT.photo_origin" class="popup">
+  <article v-if="PRODUCT_INFO.name" class="popup">
     <v-back-menu
       ><v-back-btn @click="clearPopupState"></v-back-btn>
-      <v-favorite-btn
-        @click="addToFavorites"
-        v-if="!PRODUCT.favorites"
-      ></v-favorite-btn>
+      <v-favorite-btn v-if="!PRODUCT_INFO.favorites"></v-favorite-btn>
       <v-favorite-btn-active
-        @click="addToFavorites"
-        v-if="PRODUCT.favorites == true"
+        v-if="PRODUCT_INFO.favorites == true"
       ></v-favorite-btn-active>
     </v-back-menu>
     <article class="popup__item">
       <div class="popup__head">
         <img
-          :src="`https://gurmanikzndev.joinposter.com${PRODUCT.photo_origin}`"
+          :src="`https://gurmanikzn.ru:3000/products/${PRODUCT_INFO.name}.jpg`"
         />
         <div class="popup__wrap">
           <div class="popup__info popup__media">
             <h2 class="popup__title" style="margin-bottom: 0px">
-              {{ PRODUCT.product_name }}
+              {{ PRODUCT_INFO.name }}
             </h2>
             <p class="popup__subtitle">
-              <span class="popup__price"
-                >{{ PRODUCT.price[1].slice(0, -2) }} ₽ |
-                {{ PRODUCT.cooking_time / 60 }}
+              <span class="popup__price dadasdad"
+                >{{ PRODUCT_INFO.total_price }} ₽ |
+                {{ PRODUCT_INFO.weight }}
                 г
                 {{
-                  PRODUCT.category_name == "Маки и Суши" ||
-                  PRODUCT.category_name == "Напитки" ||
-                  PRODUCT.category_name == "Сеты" ||
-                  PRODUCT.category_name == "Соуса" ||
-                  PRODUCT.category_name == "Горячие закуски"
+                  PRODUCT_INFO.category_name == "Маки и Суши" ||
+                  PRODUCT_INFO.category_name == "Напитки" ||
+                  PRODUCT_INFO.category_name == "Сеты" ||
+                  PRODUCT_INFO.category_name == "Соуса"
                     ? ""
-                    : " | " + PRODUCT.barcode + " ккал"
+                    : " | " + PRODUCT_INFO.calory + " ккал"
                 }}
               </span>
             </p>
           </div>
           <div class="popup__controls">
             <div class="popup__counter">
-              <button class="popup__minus-counter">
-                <v-icon
-                  name="controls-minus-icon"
-                  @click="decrementItem"
-                ></v-icon>
+              <button
+                class="popup__minus-counter"
+                @click="DECREMENT(PRODUCT_INFO), TOTAL_PRICE(PRODUCT_INFO)"
+              >
+                <v-icon name="controls-minus-icon"></v-icon>
               </button>
-              <span class="popup__count"> {{ PRODUCT.count }} </span>
-              <button class="popup__plus-counter">
-                <v-icon
-                  name="controls-plus-icon"
-                  @click="incrementItem"
-                ></v-icon>
+              <span class="popup__count"> {{ PRODUCT_INFO.count }} </span>
+              <button
+                class="popup__plus-counter"
+                @click="INCREMENT(PRODUCT_INFO), TOTAL_PRICE(PRODUCT_INFO)"
+              >
+                <v-icon name="controls-plus-icon"></v-icon>
               </button>
             </div>
             <div
               class="popup__size"
-              v-if="PRODUCT.category_name.includes('Пиццы')"
+              v-if="PRODUCT_INFO.category_name.includes('Пиццы')"
             >
               <div
                 class="popup__radio"
-                v-for="(modification, index) in PRODUCT.group_modifications[0]
-                  .modifications"
-                :key="modification.dish_modification_group_id"
+                v-for="(modification, index) in PRODUCT_INFO.modifications"
+                :key="modification.name"
               >
                 <input
                   type="radio"
-                  :checked="
-                    PRODUCT.group_modifications[0].modifications[index]
-                      .checked == true
-                  "
+                  :checked="PRODUCT_INFO.modifications[index].selected == true"
                   name="size"
                   class="popup__input"
                 />
 
-                <label class="popup__label" @click="toggleSize(index)">
+                <label
+                  class="popup__label"
+                  @click="
+                    TOGGLE_SIZE_OF_PIZZA({ modification, PRODUCT_INFO }),
+                      TOTAL_PRICE(PRODUCT_INFO)
+                  "
+                >
                   {{ modification.name }}
                 </label>
               </div>
@@ -86,7 +83,7 @@
       <div class="popup__body">
         <div class="popup__info" v-if="client_width > 768">
           <div class="about">
-            {{ PRODUCT.product_production_description }}
+            {{ PRODUCT_INFO.description }}
           </div>
         </div>
         <div class="popup__info">
@@ -94,18 +91,18 @@
           <section class="ingredients">
             <div
               class="ingredient"
-              v-for="ingredient in PRODUCT.ingredients"
+              v-for="ingredient in PRODUCT_INFO.ingredients"
               :key="ingredient.ingredient_id"
             >
               <div class="ingredient__head">
                 <img
                   :src="
-                    require(`@/assets/media/img/ingredients/${ingredient.ingredient_icon}.png`)
+                    require(`@/assets/media/img/ingredients/${ingredient.icon}.png`)
                   "
-                  alt=""
+                  :alt="`${ingredient.name}`"
                 />
               </div>
-              <p class="ingredient__body">{{ ingredient.ingredient_name }}</p>
+              <p class="ingredient__body">{{ ingredient.name }}</p>
             </div>
           </section>
         </div>
@@ -113,44 +110,40 @@
         <div class="popup__info" v-if="client_width < 768">
           <h2 class="popup__title">О блюде</h2>
           <div class="about">
-            {{ PRODUCT.product_production_description }}
+            {{ PRODUCT_INFO.description }}
           </div>
         </div>
 
-        <div class="popup__info" v-if="PRODUCT.group_modifications">
+        <div class="popup__info" v-if="PRODUCT_INFO.modifications">
           <section
             class="additional"
-            v-if="PRODUCT.category_name !== 'Пиццы new'"
+            v-if="PRODUCT_INFO.category_name !== 'Пиццы'"
           >
-            <div
-              class="additional__container"
-              v-for="modification_group in PRODUCT.group_modifications"
-              :key="modification_group.dish_modification_group_id"
-            >
+            <div class="additional__container">
               <article
                 class="additional__card"
-                v-for="modification in modification_group.modifications"
-                :key="modification.dish_modification_id"
+                v-for="modification in PRODUCT_INFO.modifications"
+                :key="modification.name"
               >
                 <div
                   class="additional__delete"
-                  @click="deleteModification(modification, modification_group)"
+                  @click="DECREMENT(modification), TOTAL_PRICE(PRODUCT_INFO)"
                 >
                   <v-icon name="controls-minus-icon"></v-icon>
                 </div>
                 <div
                   class="additional__add"
-                  @click="addModification(modification, modification_group)"
+                  @click="INCREMENT(modification), TOTAL_PRICE(PRODUCT_INFO)"
                 >
                   <v-icon name="plus-icon"></v-icon>
                 </div>
                 <div class="additional__head">
                   <picture>
                     <source
-                      :srcset="`https://gurmanikzndev.joinposter.com${modification.photo_large}`"
+                      :srcset="`https://gurmanikzn.ru:3000/products/${modification.name}.jpg`"
                     />
                     <img
-                      :src="`https://gurmanikzndev.joinposter.com${modification.photo_large}`"
+                      :src="`https://gurmanikzn.ru:3000/products/${modification.name}.jpg`"
                       alt=""
                     />
                   </picture>
@@ -159,8 +152,7 @@
                   {{
                     modification.name +
                     " | " +
-                    modification.price.toString().slice(0, -2) *
-                      modification.count +
+                    modification.price +
                     " ₽" +
                     " | " +
                     modification.count +
@@ -175,33 +167,36 @@
 
       <div class="popup__info popup__like">
         <h3 class="popup__title popup__title--small">Вам может понравиться</h3>
-        <section class="like" v-if="PRODUCT.sub_category == 'Популярное'">
+        <div
+          class="like"
+          v-if="PRODUCT_INFO.second_category_name == 'Популярное'"
+        >
           <v-card-small
-            v-for="like in POPULAR"
+            v-for="like in POPULARS"
             :key="like.id"
             :like_data="like"
             @getProductInfo="getProductInfo"
           ></v-card-small>
-        </section>
-        <section class="like" v-else-if="PRODUCT.category_name == 'Соуса'">
+        </div>
+        <div class="like" v-else-if="PRODUCT_INFO.category_name == 'Соуса'">
           <v-card-small
-            v-for="like in POPULAR"
+            v-for="like in POPULARS"
             :key="like.id"
             :like_data="like"
             @getProductInfo="getProductInfo"
           ></v-card-small>
-        </section>
-        <section class="like" v-else>
+        </div>
+        <div class="like" v-else>
           <v-card-small
             v-for="like in CATEGORY_PRODUCTS"
             :key="like.id"
             :like_data="like"
             @getProductInfo="getProductInfo"
           ></v-card-small>
-        </section>
+        </div>
       </div>
-      <v-add-btn class="popup-buy-btn" @click="addToCart"
-        >{{ PRODUCT.price[1].slice(0, -2) }} ₽</v-add-btn
+      <v-add-btn class="popup-buy-btn" @click="addToCart(PRODUCT_INFO)"
+        >{{ PRODUCT_INFO.total_price }} ₽</v-add-btn
       >
     </article>
   </article>
@@ -227,20 +222,22 @@ export default {
   methods: {
     ...mapActions([
       "GET_PRODUCT_INFO",
-      "INCREMENT_POPUP_ITEM",
-      "DECREMENT_POPUP_ITEM",
+      "INCREMENT",
+      "DECREMENT",
       "ADD_TO_CART",
       "TOGGLE_SIZE_OF_PIZZA",
       "RESET_PRODUCT",
       "FULL_PRICE",
       "ADD_TO_FAVORITES",
+      "TOTAL_PRICE",
     ]),
     getProductInfo(data) {
       this.GET_PRODUCT_INFO(data);
       window.scrollBy(0, -400);
     },
-    addToFavorites() {
-      this.ADD_TO_FAVORITES(this.PRODUCT);
+    addToCart(data) {
+      this.ADD_TO_CART(data);
+      this.RESET_PRODUCT();
     },
     async clearPopupState() {
       await this.RESET_PRODUCT();
@@ -252,44 +249,9 @@ export default {
         this.$router.push("/");
       }
     },
-    incrementItem() {
-      this.INCREMENT_POPUP_ITEM();
-      this.FULL_PRICE(this.PRODUCT);
-    },
-    decrementItem() {
-      this.DECREMENT_POPUP_ITEM();
-      this.FULL_PRICE(this.PRODUCT);
-    },
-    async addToCart(data) {
-      data = this.PRODUCT;
-
-      await this.ADD_TO_CART(data);
-      if (this.$store.state.modification_warn == "") {
-        this.clearPopupState();
-      }
-    },
-    deleteModification(modification) {
-      if (modification.count > 0) {
-        modification.count--;
-      }
-      this.FULL_PRICE(this.PRODUCT);
-    },
-    addModification(modification, modification_group) {
-      if (modification_group.name == "Лапша на выбор") {
-        modification_group.modifications.map((item) => (item.count = 0));
-        modification.count++;
-      } else {
-        modification.count++;
-      }
-      this.FULL_PRICE(this.PRODUCT);
-    },
-    toggleSize(index) {
-      this.TOGGLE_SIZE_OF_PIZZA(index);
-      this.FULL_PRICE(this.PRODUCT);
-    },
   },
   computed: {
-    ...mapGetters(["PRODUCT", "POPULAR", "CATEGORY_PRODUCTS"]),
+    ...mapGetters(["PRODUCT_INFO", "POPULARS", "CATEGORY_PRODUCTS"]),
   },
   mounted() {
     document.querySelector(".popup").style.height = `${window.screen.height}px`;
@@ -510,6 +472,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
+    cursor: pointer;
   }
   &__add {
     background-color: $accent;
@@ -522,6 +485,7 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
+    cursor: pointer;
   }
   &__head * {
     height: 53px;
@@ -549,6 +513,11 @@ export default {
 .to-cart-enter-active,
 .to-cart-leave-active {
   transition: opacity 0.5s ease-out;
+}
+
+.popup__minus-counter,
+.popup__plus-counter {
+  cursor: pointer;
 }
 
 @media (max-width: 1920px) and (min-width: 1025px) {
@@ -580,7 +549,8 @@ export default {
       display: none;
     }
     &__body {
-      width: 570px;
+      max-width: 570px;
+      width: 100%;
     }
     &-buy-btn {
       position: static;

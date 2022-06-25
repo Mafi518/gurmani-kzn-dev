@@ -4,10 +4,10 @@
       <div class="favorite__head">
         <picture class="favorite__image">
           <source
-            :srcset="`https://gurmanikzndev.joinposter.com${favorite_data.photo_origin}`"
+            :srcset="`https://gurmanikzn.ru:3000/products/${favorite_data.image}.png`"
           />
           <img
-            :src="`https://gurmanikzndev.joinposter.com${favorite_data.photo_origin}`"
+            :src="`https://gurmanikzn.ru:3000/products/${favorite_data.image}.png`"
             alt=""
           />
         </picture>
@@ -17,21 +17,19 @@
         ></v-favorite-btn-active>
       </div>
       <div class="favorite__body">
-        <h3 class="favorite__title">{{ favorite_data.product_name }}</h3>
+        <h3 class="favorite__title">{{ favorite_data.name }}</h3>
         <p class="favorite__description">
-          {{ favorite_data.product_production_description }}
+          {{ favorite_data.description }}
         </p>
       </div>
       <div class="favorite__footer buy-btn">
-        <p class="favorite__price">
-          {{ favorite_data.price[1].slice(0, -2) }} ₽
-        </p>
+        <p class="favorite__price">{{ favorite_data.total_price }} ₽</p>
         <v-icon name="plus-icon" class="plus-icon"></v-icon>
       </div>
     </slot>
   </article>
   <transition name="popup" mode="out-in">
-    <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+    <v-product-popup v-if="PRODUCT_INFO.product_name"></v-product-popup>
   </transition>
 </template>
 <script>
@@ -52,12 +50,13 @@ export default {
       "GET_POPULAR_FROM_API",
       "ADD_TO_CART",
       "ADD_TO_FAVORITES",
+      "SET_SAVED_FAVORITES",
     ]),
     reset() {
       this.size = "small-size";
     },
     getCategoryID(data) {
-      data = this.PRODUCT.menu_category_id;
+      data = this.PRODUCT_INFO.menu_category_id;
       console.log(data);
     },
     async getProductInfo(e, data) {
@@ -79,9 +78,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["PRODUCT", "POPULAR"]),
+    ...mapGetters(["PRODUCT_INFO", "POPULAR"]),
   },
-  mounted() {},
+  mounted() {
+    this.SET_SAVED_FAVORITES();
+  },
 };
 </script>
 <style lang="scss" scoped>

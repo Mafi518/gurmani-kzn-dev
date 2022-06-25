@@ -1,0 +1,67 @@
+[{
+        "category_id": 12,
+        "category_name": "Сеты",
+        "category_color": "",
+        "category_image": ""
+    },
+    {
+        "category_id": 1,
+        "category_name": "Пиццы",
+        "category_color": "#FFDEB4",
+        "category_image": ""
+    },
+    {
+        "category_id": 2,
+        "category_name": "Холодные роллы",
+        "category_color": "#FFA68A",
+        "category_image": ""
+    },
+    {
+        "category_id": 3,
+        "category_name": "Запеченные роллы",
+        "category_color": "#FFD1AD",
+        "category_image": ""
+    },
+    {
+        "category_id": 4,
+        "category_name": "Жареные роллы",
+        "category_color": "#FFD1AD",
+        "category_image": ""
+    },
+    {
+        "category_id": 5,
+        "category_name": "Горячие закуски",
+        "category_color": "#FFD5B7",
+        "category_image": ""
+    },
+    {
+        "category_id": 6,
+        "category_name": "Маки и суши",
+        "category_color": "#FFC5AF",
+        "category_image": ""
+    },
+    {
+        "category_id": 7,
+        "category_name": "Горячие блюда",
+        "category_color": "#FFD1AD",
+        "category_image": ""
+    },
+    {
+        "category_id": 8,
+        "category_name": "Десерты и напитки",
+        "category_color": "#FFAFB5",
+        "category_image": ""
+    },
+    {
+        "category_id": 9,
+        "category_name": "Салаты и Поке",
+        "category_color": "#F2FFA4",
+        "category_image": ""
+    },
+    {
+        "category_id": 10,
+        "category_name": "Соуса",
+        "category_color": "#FFAFA5",
+        "category_image": ""
+    }
+]

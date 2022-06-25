@@ -5,6 +5,7 @@ import store from "./store";
 import components from "@/components/UI";
 import phoneDerictive from "@/directives/Vphone";
 import VueYandexMetrika from "vue-yandex-metrika";
+VueYandexMetrika;
 
 const app = createApp(App);
 
@@ -14,14 +15,16 @@ components.forEach((component) => {
 
 app.directive("phone", phoneDerictive);
 
-app.use(VueYandexMetrika, {
-  id: 79488682,
-  router: router,
-  env: "production",
-  scriptSrc: "https://mc.yandex.ru/metrika/tag.js",
-});
-
 import "@/assets/styles/style.scss";
 import "@/assets/styles/_media.scss";
 
-app.use(store).use(router).mount("#app");
+app
+  .use(store)
+  // .use(VueYandexMetrika, {
+  //   id: 79488682,
+  //   router: router,
+  //   env: "production",
+  //   scriptSrc: "https://mc.yandex.ru/metrika/tag.js",
+  // })
+  .use(router)
+  .mount("#app");

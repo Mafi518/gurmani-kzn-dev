@@ -19,9 +19,6 @@ export default {
   },
   methods: {
     ...mapActions(["GET_BANNERS"]),
-    test() {
-      console.log(this);
-    },
   },
   computed: {
     ...mapGetters(["SET_BANNERS"]),

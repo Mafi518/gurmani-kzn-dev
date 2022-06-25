@@ -4,11 +4,10 @@
       <div class="preloader__animate"></div>
       <img
         class="preloader__logo-img"
-        src="@/assets/media/img/logo.png"
+        src="@/assets/media/img/logo.svg"
         alt=""
       />
     </div>
-    
 
     <h1
       class="preloader__subtitle"
@@ -19,7 +18,7 @@
       <span class="preloader__dot">.</span>
       <span class="preloader__dot">.</span>
     </h1>
-    <a href="tel:+7 (843) 239-00-12" class="poster-fix">Телефон для заказа: +7 (843) 239-00-12</a>
+    <!-- <a href="tel:+7 (843) 239-00-12" class="poster-fix">Телефон для заказа: +7 (843) 239-00-12</a> -->
   </div>
 </template>
 <script>
@@ -158,6 +157,8 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 4;
+    width: 200px;
+    height: 200px;
   }
   &__animate {
     content: "";

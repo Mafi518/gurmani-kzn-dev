@@ -3,11 +3,11 @@
     <div class="footer__contacts">
       <div class="footer__social">
         <a
-          href="https://www.instagram.com/gurmani.kzn/"
+          href="https://t.me/gurmanikzn"
           target="_blank"
           class="footer__social-link"
         >
-          <v-icon name="instagram-icon"></v-icon>
+          <v-icon name="telegram-icon"></v-icon>
         </a>
         <a
           href="https://vk.com/gurmanikzn"
@@ -18,9 +18,16 @@
         </a>
       </div>
       <div class="footer__info">
-        <a href="tel:+78432390012" class="footer__phone">+7 (843) 239-00-12</a>
-        <h3 class="footer__info-title">10:00 – 22:00</h3>
-        <h3 class="footer__info-title">г. Казань</h3>
+        <a href="tel:+78432390012" class="footer__phone"
+          >+7 (843) 239-00-12 - <span>Казань</span></a
+        >
+        <a href="tel:+78432900012" class="footer__phone"
+          >+7 (843) 290-00-12 - <span>Дербышки</span></a
+        >
+        <h3 class="footer__info-title">
+          {{ day == 5 || day == 6 ? "10:00 - 23:00" : "10:00 - 22:00" }}
+        </h3>
+        <!-- <h3 class="footer__info-title">г. Казань</h3> -->
       </div>
     </div>
 
@@ -35,7 +42,7 @@ export default {
   name: "v-footer",
   data() {
     return {
-      location: this.$store.state.location,
+      day: new Date().getDay(),
     };
   },
 };
@@ -83,17 +90,31 @@ export default {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    &-link {
+      svg {
+        min-width: 32px;
+        min-height: 32px;
+      }
+    }
   }
   &__info {
+    display: flex;
+    flex-direction: column;
     &-title {
       @include h3;
       margin-top: 5px;
     }
   }
   &__phone {
-    font-size: 20px;
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 0;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    span {
+      margin-left: 4px;
+      font-size: 12px;
+    }
   }
   &__metrics {
     margin-top: 30px;
@@ -116,6 +137,20 @@ export default {
     img {
       max-height: 30px;
       margin-bottom: 10px;
+    }
+  }
+}
+
+@media (max-width: 340px) {
+  .footer {
+    &__contacts {
+      flex-direction: column;
+    }
+    &__info {
+      margin-top: 12px;
+      text-align: center;
+    }
+    &__phone {
     }
   }
 }

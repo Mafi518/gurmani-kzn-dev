@@ -4,7 +4,7 @@
       <div class="card__head">
         <picture class="card__image">
           <img
-            :src="`https://gurmanikzndev.joinposter.com${product_data.photo_origin}`"
+            :src="`https://gurmanikzn.ru:3000/products/${product_data.name}.jpg`"
             alt=""
           />
         </picture>
@@ -14,15 +14,20 @@
         ></v-favorite-btn-active>
       </div>
       <div class="card__body">
-        <h3 class="card__title">{{ product_data.product_name }}</h3>
+        <h3 class="card__title">{{ product_data.name }}</h3>
         <p class="card__description">
-          {{ product_data.product_production_description }}
+          {{ product_data.description }}
         </p>
       </div>
-      <div class="card__footer buy-btn">
-        <p class="card__price">{{ product_data.price[1].slice(0, -2) }} ₽</p>
-        <button>
+      <div class="card__footer">
+        <p class="card__price">{{ product_data.total_price }} ₽</p>
+        <button class="card__button buy-btn">
           <v-icon name="plus-icon" class="plus-icon"></v-icon>
+          <img
+            class="buy-support buy-animate-icon"
+            src="@/assets/media/icons/success-icon.svg"
+            alt=""
+          />
         </button>
       </div>
     </slot>
@@ -30,8 +35,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { TimelineMax } from 'gsap'
+import { mapActions } from "vuex";
+import { TimelineMax } from "gsap";
 
 export default {
   name: "v-product-item",
@@ -44,36 +49,36 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "GET_PRODUCT_INFO",
-      "GET_POPULAR_FROM_API",
-      "ADD_TO_CART",
-      "ADD_TO_FAVORITES",
-    ]),
-    reset() {
-      this.size = "small-size";
-    },
-    getCategoryID(data) {
-      data = this.PRODUCT.menu_category_id;
-      console.log(data);
-    },
+    ...mapActions(["GET_PRODUCT_INFO", "ADD_TO_CART", "ADD_TO_FAVORITES"]),
     async getProductInfo(e, data) {
       data = this.product_data;
-      if (
-        e.target.classList.contains("buy-btn") ||
-        e.target.classList.contains("plus-icon") ||
-        e.target.classList.contains("plus-icon-path")
-      ) {
+      if (e.target.classList.contains("buy-btn")) {
         await this.GET_PRODUCT_INFO(this.product_data);
         await this.ADD_TO_CART(this.product_data);
-        let tl = new TimelineMax({})
-        tl.to(e.target.parentNode, 0.3, {
-          scale: 1.3
-        })
+
+        let icon = e.target.childNodes[0];
+        let hiddenIcon = e.target.childNodes[1];
+
+        let tl = new TimelineMax({});
+
+        tl.to(icon, 0.5, {
+          rotate: "120deg",
+          opacity: 0,
+          transform: "scale(0)",
+        });
+
+        tl.to(hiddenIcon, 0.5, {
+          rotate: "0deg",
+          opacity: 1,
+          transform: "scale(1)",
+          display: "initial",
+        });
 
         tl.play().then(() => {
-          tl.reverse()
-        })
+          setTimeout(() => {
+            tl.reverse();
+          }, 1000);
+        });
         this.$store.state.product = { product: "empty" };
       } else if (
         e.target.parentNode.classList.contains("favorite-btn") ||
@@ -87,9 +92,7 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapGetters(["PRODUCT", "POPULAR"]),
-  },
+  computed: {},
   mounted() {},
 };
 </script>
@@ -115,6 +118,7 @@ export default {
   flex-direction: column;
   margin-right: 20px;
   margin-bottom: 20px;
+  cursor: pointer;
   &__head {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -144,10 +148,6 @@ export default {
   &__description {
     color: $second-black;
     font-size: 12px;
-    overflow: hidden;
-    white-space: nowrap;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
   }
   &__footer {
     display: -webkit-box;
@@ -163,6 +163,20 @@ export default {
   &__price {
     font-weight: 500;
   }
+  &__button {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    svg {
+      pointer-events: none;
+    }
+  }
+}
+.buy-animate-icon {
+  transform: scale(0);
+  display: none;
+  min-width: 26px;
+  min-height: 26px;
 }
 @media (max-width: 416px) {
   .card {

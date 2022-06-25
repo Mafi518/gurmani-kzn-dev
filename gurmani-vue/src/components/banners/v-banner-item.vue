@@ -7,6 +7,7 @@
   </div>
 </template>
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "v-banner-item",
   props: {
@@ -18,6 +19,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["ADD_TO_CART"]),
     setPromo() {
       localStorage.setItem("setPromo", this.banner_data.promo_name);
       this.$router.push("/cart");

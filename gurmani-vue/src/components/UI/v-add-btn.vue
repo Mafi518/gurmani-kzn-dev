@@ -2,16 +2,18 @@
   <button
     class="buy-btn buy-support"
     ref="buy"
-    @click="test(this.$refs.buy)"
+    @click="animate(this.$refs.buy)"
     v-if="this.added == false"
   >
-    <div class="buy-support">
-      <p class="buy-support buy-animate-text">Добавить в корзину</p>
-      <p class="buy-support buy-animate-price"><slot></slot></p>
+    <div class="buy-support buy-support--container">
+      <p class="buy-support buy-hidden buy-animate-text">Добавлено в корзину</p>
+      <p class="buy-support">Добавить в корзину</p>
+      <p class="buy-support"><slot></slot></p>
     </div>
+    <img class="buy-support" src="@/assets/media/icons/plus-icon.svg" alt="" />
     <img
       class="buy-support buy-animate-icon"
-      src="@/assets/media/icons/plus-icon.svg"
+      src="@/assets/media/icons/success-icon.svg"
       alt=""
     />
   </button>
@@ -27,113 +29,82 @@ export default {
     };
   },
   methods: {
-    test(ref) {
-      // let head = ref.childNodes[0].childNodes[0];
-      // let price = ref.childNodes[0].childNodes[1];
+    animate(ref) {
       let icon = ref.childNodes[1];
-      // head, price, icon, animation_image
-      // let animation_image =
-      //   ref.parentNode.childNodes[0].childNodes[0].getAttribute("src");
+      let hiddenText = ref.childNodes[0].childNodes[0];
+      let hiddenImage = ref.childNodes[2];
+      let text = ref.childNodes[0].childNodes[1];
+      let price = ref.childNodes[0].childNodes[2];
+      hiddenText;
+      text;
+      price;
+      icon;
+      hiddenImage;
+      let tl = new TimelineMax({});
 
-      let tl = new TimelineMax({})
+      tl.to(text, 0.5, {
+        transform: "translateY(-30px)",
+        opacity: 0,
+      });
 
-      tl.to(icon, 0.7, {
-        scale: 1.3
-      })
+      tl.to(
+        price,
+        0.5,
+        {
+          transform: "translateY(30px)",
+          opacity: 0,
+        },
+        "-=0.5"
+      );
+
+      tl.to(
+        icon,
+        0.5,
+        {
+          rotate: "160deg",
+          opacity: 0,
+          transform: "scale(0)",
+        },
+        "-=0.5"
+      );
+
+      tl.to(icon, 0, {
+        display: "none",
+      });
+
+      tl.to(text, 0, {
+        height: 0,
+      });
+
+      tl.to(price, 0, {
+        height: 0,
+      });
+
+      tl.to(hiddenText, 0.5, {
+        height: "auto",
+        marginTop: "10px",
+        opacity: 1,
+      });
+
+      tl.to(
+        hiddenImage,
+        0.5,
+        {
+          rotate: "0",
+          opacity: 1,
+          transform: "scale(1)",
+          display: "initial",
+        },
+        "-=0.4"
+      );
 
       tl.play().then(() => {
-        tl.reverse()
-      })
-
-      // this.addAnimation(head, price, icon, animation_image, ref);
+        setTimeout(() => {
+          tl.reverse();
+        }, 1000);
+      });
     },
-
-    // addAnimation(head, price, icon, animation_image, ref) {
-    //   console.log(head, price, icon, animation_image);
-    //   gsap;
-    //   TimelineMax;
-    //   const tl = new TimelineMax({});
-
-    //   console.log(tl);
-
-    //   tl.to(head, 0.7, {
-    //     transform: "translateY(15px)",
-    //     opacity: 0,
-    //     ease: Power2.easeInOut,
-    //   });
-    //   tl.to(
-    //     price,
-    //     0.7,
-    //     {
-    //       transform: "translateY(15px)",
-    //       opacity: 0,
-    //       ease: Power2.easeInOut,
-    //     },
-    //     "-=0.6"
-    //   );
-    //   tl.to(
-    //     icon,
-    //     0.7,
-    //     {
-    //       opacity: 0,
-    //     },
-    //     "-=0.6"
-    //   );
-
-    //   tl.play().then(() => {
-    //     let tl2 = new TimelineMax({});
-    //     // tl.reverse()
-    //     this.added = true;
-    //     console.log(this.added);
-
-    //     setTimeout(() => {
-    //       tl2.to(this.$refs.animate_btn.childNodes[1], 0.7, {
-    //         opacity: 1,
-    //       });
-    //       tl2.to(this.$refs.animate_btn.childNodes[0], 0.7, {
-    //         attr: { src: animation_image },
-    //       });
-    //       tl2.to(this.$refs.animate_btn.childNodes[0], 0.7, {
-    //         transform: `translateX(${
-    //           this.$refs.animate_btn.getBoundingClientRect().width - 60
-    //         }px)`,
-    //         opacity: 0,
-    //         ease: Power2.easeInOut,
-    //         scale: 0.5,
-    //       });
-    //       tl2.to(
-    //         this.$refs.animate_btn.childNodes[1],
-    //         0.3,
-    //         {
-    //           scale: 1.3,
-    //         },
-    //         "-=0.5"
-    //       );
-    //       tl2
-    //         .to(this.$refs.animate_btn.childNodes[1], 0.3, {
-    //           scale: 1,
-    //         })
-    //         .then(() => {
-    //           tl2.to(this.$refs.animate_btn, 0.7, {
-    //             delay: 0.3,
-    //             onComplete: () => {
-    //               console.log();
-    //               this.added = false;
-
-    //               console.log(ref);
-    //               // gsap.to(ref, 0.3, {
-    //               //   opacity: 1,
-    //               // })
-    //             },
-    //           });
-    //         });
-    //     }, 200);
-    //   })
-
-    //   // this.added = true;
-    // },
   },
-
 };
 </script>
 
@@ -162,13 +133,19 @@ export default {
   p {
     text-align: left;
   }
-  p:nth-child(1) {
+  p:nth-child(1),
+  p:nth-child(2) {
     font-size: 16px;
     margin-bottom: 6px;
   }
-  p:nth-child(2) {
+  p:nth-child(3) {
     font-size: 18px;
     font-weight: bold;
+  }
+  p,
+  img,
+  div {
+    pointer-events: none;
   }
 }
 .animate-btn {
@@ -179,5 +156,22 @@ export default {
 }
 .buy-cart-animate {
   opacity: 0;
+}
+.buy-hidden {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.buy-support {
+  overflow: hidden;
+}
+.buy-support--container {
+  position: relative;
+}
+.buy-animate-text {
+}
+.buy-animate-icon {
+  transform: scale(0);
+  display: none;
 }
 </style>

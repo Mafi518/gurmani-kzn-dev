@@ -9,6 +9,8 @@ import vBackBtn from "@/components/UI/v-back-button";
 import vFavoriteBtnActive from "@/components/UI/v-favorite-btn-active";
 import vFooter from "@/components/UI/v-footer";
 import vPreloader from "@/components/UI/v-preloader";
+import vPickupPopup from "@/components/UI/v-pickup-popup";
+import vPopup from "@/components/UI/v-popup";
 
 export default [
   vIcon,
@@ -21,4 +23,6 @@ export default [
   vFavoriteBtnActive,
   vFooter,
   vPreloader,
+  vPickupPopup,
+  vPopup,
 ];

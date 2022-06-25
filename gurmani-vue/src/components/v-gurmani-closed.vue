@@ -1,9 +1,10 @@
 <template>
   <div class="closed-popup">
     <div class="closed-popup__info">
-      <img src="@/assets/media/img/logo.png" alt="" />
+      <img src="@/assets/media/img/logo.svg" alt="" />
       <p class="closed-popup__description">
-        К сожалению мы уже закрыты Работаем ежедневно с 10.00 до 22.00 Вы можете
+        К сожалению мы уже закрыты Работаем ежедневно с
+        {{ day == 5 || day == 6 ? "10:00 - 23:00" : "10:00 - 22:00" }} Вы можете
         сделать предзаказ на завтра
       </p>
       <button class="closed-popup__btn" @click="close_popup = true">
@@ -16,6 +17,11 @@
 <script>
 export default {
   name: "v-gurmani-closed",
+  data() {
+    return {
+      day: new Date().getDay(),
+    };
+  },
 };
 </script>
 <style lang="scss" scoped>

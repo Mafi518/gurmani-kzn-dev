@@ -1,0 +1,51 @@
+[{
+    "name": "web",
+    "condition": 1000,
+    "condition_time": false,
+    "discount": 150,
+    "type": "integer",
+    "total": 0,
+    "success": false
+  },
+  {
+    "name": "16pm",
+    "condition": 0,
+    "condition_time": {
+      "start": 12,
+      "end": 16
+    },
+    "discount": 20,
+    "type": "percent",
+    "total": 0,
+    "success": false
+  },
+  {
+    "name": "mini",
+    "condition": 999,
+    "condition_time": false,
+    "discount": 0,
+    "type": "product",
+    "discount_product": "Сет мини",
+    "total": 0,
+    "success": false
+  },
+  {
+    "name": "сяке",
+    "condition": 600,
+    "condition_time": false,
+    "discount": 0,
+    "type": "product",
+    "discount_product": "Ролл Сяке",
+    "total": 0,
+    "success": false
+  },
+  {
+    "name": "DERB",
+    "condition": 1000,
+    "condition_time": false,
+    "discount": 150,
+    "type": "integer",
+    "total": 0,
+    "success": false
+  }
+]

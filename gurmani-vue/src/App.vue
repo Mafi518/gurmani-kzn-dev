@@ -1,12 +1,11 @@
 <template>
   <v-header-desktop></v-header-desktop>
   <!-- <v-header-mobile v-if="clientWidth <= 1"></v-header-mobile> -->
-  <div class="modification-warn" v-if="this.$store.state.modification_warn" > {{ this.$store.state.modification_warn }} </div>
+  <div class="modification-warn" v-if="TOOLTIP">{{ this.TOOLTIP }}</div>
   <v-gurmani-closed
     v-if="this.display_warn_of_closed == true"
     @click="closeWarnOfClosed"
   ></v-gurmani-closed>
-
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <component :is="Component" />
@@ -29,20 +28,22 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      "SET_SAVED_FAVORITES_TO_STATE",
-      "GET_POPULAR_FROM_API",
-      "GET_TIME",
-    ]),
+    ...mapActions(["SET_SAVED_FAVORITES", "GET_POPULAR_FROM_API"]),
     displayWarnOfClosed() {
-      let current_time = +this.CURRENT_TIME;
+      let current_time = new Date().getHours();
+      console.log(current_time);
+      let current_day = new Date().getDay();
+
+      let time_start = current_day == 5 || current_day == 6 ? 10 : 10;
+      let time_end = current_day == 5 || current_day == 6 ? 23 : 22;
+
       if (localStorage.getItem("TIME_WARN_DISPLAYED") == null) {
         localStorage.setItem("TIME_WARN_DISPLAYED", false);
       }
 
       let warn = JSON.parse(localStorage.getItem("TIME_WARN_DISPLAYED"));
 
-      if (current_time > 22 || current_time < 10) {
+      if (current_time >= time_end || current_time < time_start) {
         if (warn !== true) {
           this.display_warn_of_closed = true;
           localStorage.setItem("TIME_WARN_DISPLAYED", true);
@@ -63,25 +64,19 @@ export default {
     },
   },
   mounted() {
-    this.SET_SAVED_FAVORITES_TO_STATE(localStorage.getItem("saved favorites"));
+    this.SET_SAVED_FAVORITES(localStorage.getItem("SAVED_FAVORITES"));
     this.clientWidth = window.innerWidth;
     this.displayWarnOfClosed();
   },
   computed: {
-    ...mapGetters(["CURRENT_TIME"]),
-    SCREEN_WIDTH() {
-      console.log(window.innerWidth);
-      return window.innerWidth;
-    },
+    ...mapGetters(["TOOLTIP"]),
   },
-
-  // Попробуй сделать это через промисы, чтобы перед роутом выполнялась анимация, а только потом он через await дожидался данных, потом уже отображался
 };
 </script>
 
 <style lang="scss">
 #app {
-  padding-top: 40px;
+  padding-top: 10px;
   padding-bottom: 60px;
 }
 .navbar {

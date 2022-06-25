@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getUserState } from "../firebase";
+import store from "../store/index";
 import Home from "../views/Home.vue";
 
 const routes = [
@@ -7,65 +8,65 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
   },
   {
     path: "/about",
     name: "About",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
     path: "/conditions",
     name: "Conditions",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () =>
       import(/* webpackChunkName: "conditions" */ "../views/Conditions.vue"),
   },
   {
     path: "/privacy",
     name: "Privacy",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () =>
       import(/* webpackChunkName: "conditions" */ "../views/Privacy.vue"),
   },
   {
     path: "/cart",
     name: "Cart",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () => import(/* webpackChunkName: "cart" */ "../views/Cart.vue"),
   },
   {
     path: "/favorite",
     name: "Favorite",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () =>
       import(/* webpackChunkName: "favorite" */ "../views/Favorite.vue"),
   },
   {
     path: "/menu",
     name: "Menu",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () => import(/* webpackChunkName: "menu" */ "../views/Menu.vue"),
   },
   {
     path: "/products",
     name: "Products",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () =>
       import(/* webpackChunkName: "products" */ "../views/Products.vue"),
   },
   {
     path: "/thx",
     name: "Thx",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () => import(/* webpackChunkName: "thx" */ "../views/Thx.vue"),
   },
   {
     path: "/auth",
     name: "Auth",
-    meta: { requiresUnAuth: true },
+    meta: { requiresUnAuth: false },
     component: () => import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
   },
   {
@@ -75,6 +76,15 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "admin-dashboard" */ "../views/Admin-dashboard.vue"
+      ),
+  },
+  {
+    path: "/admin-products",
+    name: "ProductsViews",
+    meta: { requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "admin-dashboard" */ "../views/AdminViews/ProductsViews.vue"
       ),
   },
 ];
@@ -92,9 +102,12 @@ router.beforeEach(async (to, from, next) => {
   const requiresUnAuth = to.matched.some(
     (record) => record.meta.requiresUnAuth
   );
+  console.log(store.state.is_auth);
+  await store.dispatch("IS_AUTH", isAuth);
+  console.log(store.state.is_auth);
 
   if (requiresAuth && !isAuth) next("/auth");
-  else if (requiresUnAuth && isAuth) next("/");
+  else if (!requiresUnAuth) next();
   else next();
 });
 

@@ -2,7 +2,7 @@
   <section class="cart" @click="getCurrentEl">
     <v-cart v-if="CART.length" :cart_data="CART"></v-cart>
     <div class="cart__empty" v-if="!CART.length">
-      <img src="@/assets/media/img/logo.png" alt="" />
+      <img src="@/assets/media/img/logo.svg" alt="" />
       Корзина пуста
     </div>
   </section>
@@ -23,18 +23,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["RESET_PRODUCT", "SET_OLD_CART", "GET_PROMOCODES"]),
-    reset() {
-      this.RESET_PRODUCT();
-    },
-    getOldCart() {
-      if (this.CART.length <= 0) {
-        this.SET_OLD_CART(localStorage.getItem("cart"));
-      }
-    },
-    getPromocodes() {
-      this.GET_PROMOCODES();
-    },
+    ...mapActions(["SET_SAVED_CART"]),
     getCurrentEl(e) {
       this.active_element = e.target;
     },
@@ -45,14 +34,17 @@ export default {
         });
       }
     },
+    getOldCart() {
+      if (this.CART.length <= 0) {
+        this.SET_SAVED_CART(localStorage.getItem("SAVED_CART"));
+      }
+    },
   },
   computed: {
-    ...mapGetters(["CART", "OLD_CART", "PROMOCODES"]),
+    ...mapGetters(["CART", "PROMOCODES"]),
   },
   mounted() {
-    this.reset();
     this.getOldCart();
-    this.getPromocodes();
     window.addEventListener("scroll", this.showBarOnScroll);
   },
   watch: {
@@ -90,9 +82,7 @@ export default {
 <style lang="scss">
 .cart {
   padding: 0 20px 20px 20px;
-  padding-bottom: 350px;
   width: 100%;
-  min-height: 100vh;
 }
 .cart__empty {
   display: -webkit-box;

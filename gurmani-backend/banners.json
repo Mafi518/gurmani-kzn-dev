@@ -1,9 +1,15 @@
 [
   {
     "action": "add",
-    "promo_name": "web",
+    "promo_name": "mini",
     "location": "header",
-    "promo_picture": "web.png"
+    "promo_picture": "mini.png"
+  },
+  {
+    "action": "add",
+    "promo_name": "DERB",
+    "location": "header",
+    "promo_picture": "DERB.png"
   },
   {
     "action": "add",

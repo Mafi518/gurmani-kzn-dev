@@ -3,7 +3,7 @@
     <h2 class="popular__title">Популярное</h2>
     <div class="popular__list">
       <v-popular-item
-        v-for="popular in POPULAR"
+        v-for="popular in POPULARS"
         :key="popular.id"
         :popular_data="popular"
       ></v-popular-item>
@@ -12,7 +12,7 @@
 </template>
 <script>
 import vPopularItem from "@/components/populars/v-popular-item";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "v-popular-list",
@@ -20,14 +20,10 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["POPULAR"]),
+    ...mapGetters(["POPULARS"]),
   },
-  methods: {
-    ...mapActions(["GET_POPULAR_FROM_API"]),
-  },
-  mounted() {
-    // this.GET_POPULAR_FROM_API();
-  },
+  methods: {},
+  mounted() {},
   components: {
     vPopularItem,
   },

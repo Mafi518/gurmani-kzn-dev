@@ -1,9 +1,16 @@
 <template>
   <article @click="getCategoryID" class="category__item">
     <img
-      :src="`https://gurmanikzndev.joinposter.com${category_data.category_photo_origin}`"
+      :src="`https://gurmanikzn.ru:3000/category-icons/${category_data.category_name}.PNG`"
       alt=""
       class="category__image"
+      v-if="!category_data.category_image.includes('data:image')"
+    />
+    <img
+      :src="category_data.category_image"
+      alt=""
+      class="category__image"
+      v-show="category_data.category_image.includes('data:image')"
     />
     <h3 class="category__item-title">{{ category_data.category_name }}</h3>
   </article>
@@ -93,9 +100,8 @@ export default {
     padding-top: 10px !important;
     padding-bottom: 0px !important;
     &__item {
-      
       &:first-child {
-        margin-left: 20px;
+        margin-left: 0px;
       }
     }
   }

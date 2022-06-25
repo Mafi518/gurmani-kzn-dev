@@ -9,14 +9,16 @@
     <v-category-list style="padding: 30px 0px"></v-category-list>
     <div class="products__list">
       <v-product-item
-        v-for="product in CATEGORY_PRODUCTS"
-        :key="product.product_id"
+        v-for="product in CATEGORY_PRODUCTS.filter(
+          (item) => item.name !== 'Сяке Хот за 230р'
+        )"
+        :key="product.id"
         :product_data="product"
       ></v-product-item>
     </div>
   </section>
   <transition name="popup" mode="out-in">
-    <v-product-popup v-if="PRODUCT.product_name"></v-product-popup>
+    <v-product-popup v-if="PRODUCT_INFO.name"></v-product-popup>
   </transition>
 </template>
 
@@ -31,21 +33,22 @@ export default {
     vCategoryList,
   },
   computed: {
-    ...mapGetters(["CATEGORY_PRODUCTS", "PRODUCT"]),
+    ...mapGetters(["CATEGORY_PRODUCTS", "PRODUCT_INFO"]),
   },
   methods: {
     ...mapActions([
       "GET_CATEGORY_PRODUCTS_FROM_API",
       "GET_CATEGORIES_FROM_API",
+      "SET_SAVED_FAVORITES",
     ]),
     async reRenderCards() {
       await this.GET_CATEGORY_PRODUCTS_FROM_API(
         localStorage.getItem("categoryID")
       );
+      this.SET_SAVED_FAVORITES(localStorage.getItem("SAVED_FAVORITES"));
     },
   },
   mounted() {
-    this.GET_CATEGORIES_FROM_API();
     this.reRenderCards();
   },
 };

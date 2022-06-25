@@ -2,11 +2,23 @@
   <header class="header">
     <div class="header__container">
       <img
-        src="@/assets/media/img/logo.png"
+        src="@/assets/media/img/logo.svg"
         @click="toMain"
         alt="logo"
         class="header__logo"
       />
+      <span
+        style="
+          font-size: 37px;
+          font-weight: 200;
+          line-height: 100%;
+          height: 43px;
+          letter-spacing: 4px;
+          font-family: 'Antonio', sans-serif;
+        "
+      >
+        GURMANI
+      </span>
     </div>
 
     <div class="header__flag">
@@ -109,10 +121,23 @@
       <span>море вкуса для тебя</span>
     </div>
 
-    <h1 class="header__title">
-      <a href="tel:+78432390012" class="header__phone">+7 (843) 239-00-12</a>
-      <span class="header__info">10:00 - 22:00</span>
-    </h1>
+    <!-- <h1 class="header__title">
+      <a href="tel:+78432390012" class="header__phone"
+        >+7 (843) 239-00-12 - <span>Казань</span></a
+      >
+      <a href="tel:+78432900012" class="header__phone"
+        >+7 (843) 290-00-12 - <span>Дербышки</span></a
+      >
+      <span class="header__info"> {{ (day == 5 || day == 6) ? '10:00 - 23:00' : '10:00 - 22:00' }} </span>
+    </h1> -->
+
+    <span class="header__info">
+      <span> 10:00 </span>
+      <span style="line-height: 50%"> – </span>
+      <span>
+        {{ day == 5 || day == 6 ? "23:00" : "22:00" }}
+      </span>
+    </span>
 
     <nav id="navbar" class="navbar">
       <router-link class="navbar__item" to="/"
@@ -125,9 +150,9 @@
       >
       <router-link class="navbar__item navbar__cart" to="/cart">
         <v-icon name="cart-icon"></v-icon>
-        <span class="navbar__text">Корзина</span
-        ><p class="navbar__item-counter" v-if="CART.length" > {{ CART.length }} </p></router-link
-      >
+        <span class="navbar__text">Корзина</span>
+        <!-- <p class="navbar__item-counter" v-if="CART.length" >  </p -->
+      </router-link>
       <router-link class="navbar__item" to="/favorite">
         <v-icon name="favorite-icon"></v-icon>
         <span class="navbar__text">Избранное</span></router-link
@@ -136,10 +161,13 @@
   </header>
 </template>
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "v-header-desktop",
+  data() {
+    return {
+      day: new Date().getDay(),
+    };
+  },
   methods: {
     toMain() {
       console.log(window.location.href);
@@ -152,9 +180,7 @@ export default {
       }
     },
   },
-  computed: {
-    ...mapGetters(["CART"]),
-  },
+  computed: {},
 };
 </script>
 <style lang="scss">
@@ -168,7 +194,7 @@ export default {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  padding: 0px 20px 20px 20px;
+  padding: 0px 20px 10px 20px;
   z-index: 2;
   &__container {
     display: -webkit-box;
@@ -178,13 +204,11 @@ export default {
   }
   &__logo {
     margin-right: 10px;
-    width: 70px;
+    width: 40px;
   }
   &__title {
     @include h1;
-    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
     display: inline;
-    text-transform: uppercase;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -194,12 +218,21 @@ export default {
     flex-direction: column;
   }
   &__phone {
-    font-size: 18px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    span {
+      margin-left: 4px;
+      font-size: 12px;
+    }
   }
   &__info {
-    font-size: 12px;
-    font-weight: bold;
-    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+    font-size: 16px;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
   }
   &__flag {
     display: flex;
@@ -292,7 +325,6 @@ export default {
     z-index: 1;
   }
   .header__title {
-    text-align: right;
   }
 }
 @media (max-width: 465px) {
