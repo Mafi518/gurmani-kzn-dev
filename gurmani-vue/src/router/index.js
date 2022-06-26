@@ -102,9 +102,8 @@ router.beforeEach(async (to, from, next) => {
   const requiresUnAuth = to.matched.some(
     (record) => record.meta.requiresUnAuth
   );
-  console.log(store.state.is_auth);
+
   await store.dispatch("IS_AUTH", isAuth);
-  console.log(store.state.is_auth);
 
   if (requiresAuth && !isAuth) next("/auth");
   else if (!requiresUnAuth) next();

@@ -1,5 +1,5 @@
 <template>
-  <div class="popup" v-show="data.options.visible">
+  <div class="popup" v-show="data.options.visible && data.options.require_auth">
     <h1 class="popup__title">{{ data.title }}</h1>
     <slot></slot>
     <button

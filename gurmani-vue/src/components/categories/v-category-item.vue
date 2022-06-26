@@ -1,11 +1,9 @@
 <template>
-  <article @click="getCategoryID" class="category__item">
-    <img
-      :src="`https://gurmanikzn.ru:3000/category-icons/${category_data.category_name}.PNG`"
-      alt=""
-      class="category__image"
-      v-if="!category_data.category_image.includes('data:image')"
-    />
+  <article
+    @click="getCategoryID"
+    :style="{ 'background-color': category_data.category_color }"
+    class="category__item"
+  >
     <img
       :src="category_data.category_image"
       alt=""
@@ -24,15 +22,22 @@ export default {
         return {};
       },
     },
+    settings: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
   },
   methods: {
     getCategoryID() {
-      this.$emit("getCategoryProducts", this.category_data.category_id);
+      if (this.settings.admin_emit) this.$emit("addNewCategory");
+      else this.$emit("getCategoryProducts", this.category_data.category_id);
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .category {
   &__item {
     @include container;
@@ -55,6 +60,9 @@ export default {
     background-color: #ffd1ad;
     margin-right: 20px;
     cursor: pointer;
+    &:last-child {
+      margin-right: 0;
+    }
     img {
       max-width: 50px;
     }

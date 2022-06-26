@@ -1,6 +1,5 @@
 <template>
   <section class="home">
-    <button @click="TESTING('qwe')">TESTING</button>
     <v-preloader
       v-if="preloader == true"
       :preloader_props="preloader_props"
@@ -55,12 +54,7 @@ export default {
     vColumnBannerList,
   },
   methods: {
-    ...mapActions([
-      "GET_CATEGORIES",
-      "GET_POPULARS_FROM_API",
-      "SET_SAVED_FAVORITES",
-      "TESTING",
-    ]),
+    ...mapActions(["GET_POPULARS_FROM_API", "SET_SAVED_FAVORITES"]),
     async getFavorites() {
       if (this.FAVORITES.length <= 0) {
         this.SET_SAVED_FAVORITES(localStorage.getItem("SAVED_FAVORITES"));
@@ -80,7 +74,6 @@ export default {
         this.preloader = false;
       } else {
         // this.preloader = true;
-        await this.GET_CATEGORIES();
         await this.GET_POPULARS_FROM_API();
         // this.preloader_props.loaded = true;
         // this.preloader_props.logoPosition = {

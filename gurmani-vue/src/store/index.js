@@ -3,9 +3,14 @@ import axios from "axios";
 import adminActions from "./modules/admin/actions";
 import adminMutations from "./modules/admin/mutations";
 import adminGetters from "./modules/admin/getters";
+import apiRequest from "./api-request";
 
 export default createStore({
   state: {
+    categories: {
+      categories: [],
+      fake_categories: [],
+    },
     test: "",
     is_auth: false,
     pickup_address: {
@@ -36,7 +41,6 @@ export default createStore({
     tooltip: "",
     addresses: [],
     banners: [],
-    categories: [],
     category_products: [],
     promocodes: [],
     populars: [],
@@ -51,8 +55,9 @@ export default createStore({
   },
   mutations: {
     ...adminMutations,
-    SET_CATEGORIES_TO_STATE: (state, categories) => {
-      state.categories = categories;
+    SET_CATEGORIES_TO_STATE: (state, payload) => {
+      state.categories.categories = payload.categories;
+      state.categories.fake_categories = payload.fake_categories;
     },
     SET_CATEGORY_PRODUCTS_TO_STATE: (state, data) => {
       if (data[0].category_name == "Пиццы") {
@@ -971,31 +976,37 @@ export default createStore({
         };
       }
     },
+    testMutate1: (state, data = 3) => {
+      console.log(data);
+      state;
+    },
+    testMutate2: (state, data = 2) => {
+      console.log(data);
+      state;
+    },
+    testMutate3: (state, data = 3) => {
+      console.log(data);
+      state;
+    },
   },
   actions: {
     ...adminActions,
-    PUSH_NEW_CATEGORY({ commit }, payload) {
-      commit, payload;
-    },
     DELIVERY_TYPE({ commit }, type) {
       commit("SET_DELIVERY_TYPE", type);
     },
-    GET_CATEGORIES({ commit }) {
-      return axios({
-        method: "GET",
-        url: "https://gurmanikzn.ru:3000/categories",
-      }).then((categories) => {
-        commit("SET_CATEGORIES_TO_STATE", categories.data);
-      });
+    async GET_CATEGORIES() {
+      await apiRequest.function("GET", "/categories", [
+        "SET_CATEGORIES_TO_STATE",
+      ]);
     },
-    GET_CATEGORY_PRODUCTS_FROM_API({ commit }, ID) {
-      return axios({
-        method: "GET",
-        params: ID,
-        url: "https://gurmanikzn.ru:3000/getProductsFromCategory",
-      }).then((categories) => {
-        commit("SET_CATEGORY_PRODUCTS_TO_STATE", categories.data);
-      });
+    async GET_CATEGORY_PRODUCTS_FROM_API({ commit }, ID) {
+      commit;
+      await apiRequest.function(
+        "GET",
+        "/getProductsFromCategory",
+        ["SET_CATEGORY_PRODUCTS_TO_STATE"],
+        ID
+      );
     },
     GET_BANNERS({ commit }) {
       return axios({

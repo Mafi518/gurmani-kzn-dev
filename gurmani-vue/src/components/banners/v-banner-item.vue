@@ -41,14 +41,15 @@ export default {
   -ms-flex-pack: center;
   justify-content: center;
   cursor: pointer;
-  // img {
-  //   max-width: 384px;
-  //   border-radius: 10px;
-  // }
+  &:last-child {
+    img {
+      margin-right: 0;
+    }
+  }
   img {
-    max-width: 374px;
+    width: 374px;
     border-radius: 10px;
-    margin-left: 20px;
+    margin-right: 20px;
   }
 }
 
