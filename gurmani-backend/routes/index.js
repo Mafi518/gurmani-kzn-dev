@@ -12,9 +12,64 @@ const fs = require("fs");
 const path = require("path");
 const e = require("express");
 const axios = require("axios");
+const fileMiddleWare = require("../file");
 var request = require("request");
 
 const router = new express.Router();
+
+router.post("/deleteImage", async (req, res) => {
+  fs.unlink(
+    `gurmani-backend/uploads/${req.headers.path}/${req.body.img}.jpg`,
+    await function (err) {
+      if (err) {
+        res.status(500).send("Somthing wrong!");
+      } else {
+        console.log("Файл удалён");
+        res.status(200).send("Файл удалён");
+      }
+    }
+  );
+});
+
+router.post("/addCategory", fileMiddleWare.single("file"), async (req, res) => {
+  // let categoryData = JSON.parse(req.body.obj);
+  // categoryData.category_id = +categoryData.category_id;
+  // let categories = JSON.parse(
+  //   fs.readFileSync(path.resolve("gurmani-backend/categories.json"), "utf8")
+  // );
+
+  // if (
+  //   categories.filter((item) => item.category_id == categoryData.category_id)
+  //     .length
+  // ) {
+  //   res.status(400).send("Такой ID уже существует");
+  // } else {
+  //   categories.unshift(categoryData);
+  //   let fullData = JSON.stringify(categories, null, 2);
+
+  //   fs.writeFileSync("gurmani-backend/categories.json", fullData, (err) => {
+  //     if (err) console.log(err);
+  //     else res.status(200).send("Категория добавлена");
+  //   });
+  // }
+
+  res.end();
+});
+// router.post(
+//   "/saveImage",
+//   upload.single("file"),
+//   async function (req, res, next) {
+//     console.log(req.file);
+
+//     res.end();
+//   }
+// );
+
+// router.post("/saveImage", async (req, res) => {
+//   console.log(req.files);
+
+//   res.end();
+// });
 
 router.post("/fronthook", async (req, res) => {
   let products_arr = req.body.products.map((item) => item.id);

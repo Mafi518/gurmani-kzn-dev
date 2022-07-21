@@ -71,9 +71,7 @@ export default {
   },
   methods: {
     ...mapActions(["PUSH_NEW_CATEGORY"]),
-    setNewCategory() {
-      this.admin_settings.categories.popup_data.options.visible = true;
-    },
+
     async onFileChange(e, type) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;

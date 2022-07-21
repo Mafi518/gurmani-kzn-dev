@@ -2,11 +2,7 @@
   <section class="category">
     <h2 class="category__title"><slot></slot></h2>
     <div class="category__list">
-      <button
-        class="category__item-add"
-        v-show="admin_settings.visible"
-        @click="$emit('setNewCategory')"
-      >
+      <button class="category__item-add" v-show="IS_AUTH" @click="openPopup">
         Добавить новую категорию
       </button>
       <!-- <v-category-item
@@ -20,14 +16,8 @@
         v-show="IS_AUTH"
       >
         <v-category-item
-          :category_data="{
-            category_id: 9999,
-            category_name: 'Добавить категорию',
-            category_color: '#FF6800',
-            category_image: editable_image,
-          }"
+          :category_data="category_form"
           :settings="{ admin_emit: IS_AUTH ? true : false }"
-          @addNewCategory="openPopup"
         >
         </v-category-item>
       </transition>
@@ -36,7 +26,9 @@
           v-for="(category, index) in CATEGORIES.categories"
           :key="category.category_id"
           :category_data="category"
+          :settings="{ admin_emit: IS_AUTH ? true : false }"
           @getCategoryProducts="getCategoryProducts"
+          @editCategory="editCategory"
           :data-index="index"
         ></v-category-item>
       </transition-group>
@@ -55,7 +47,7 @@
         ></v-category-item>
       </transition-group> -->
     </div>
-    <v-popup :data="popup_data">
+    <v-popup v-show="IS_AUTH" @adminSave="addNewCategory" :data="popup_data">
       <div class="popup__container">
         <input
           type="file"
@@ -78,8 +70,7 @@
         />
         <input
           type="color"
-          tabindex="1"
-          @focusout="onColorChange"
+          @input="onColorChange"
           placeholder=""
           class="popup__input-colorpicker"
         />
@@ -89,11 +80,15 @@
             type="checkbox"
             name="hidden"
             id="hidden"
+            @input="$emit('update:category_form.hidden', $event.target.value)"
+            v-model="category_form.hidden"
             class="popup__input-checkbox"
           />
         </label>
       </div>
     </v-popup>
+
+    <button @click="DELETE_IMAGE('aaaaaaa')">DELETE_IMAGE</button>
   </section>
 </template>
 <script>
@@ -120,37 +115,57 @@ export default {
         category_id: 0,
         category_name: "",
         category_color: "",
+        category_show_image: "",
         category_image: "",
-        category_hidden: false,
+        hidden: false,
       },
     };
   },
-  props: {
-    admin_settings: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-  },
+  props: {},
   computed: {
     ...mapGetters(["CATEGORIES", "CATEGORY_PRODUCTS", "IS_AUTH"]),
   },
   methods: {
-    ...mapActions(["GET_CATEGORIES", "GET_CATEGORY_PRODUCTS_FROM_API"]),
+    ...mapActions([
+      "GET_CATEGORIES",
+      "GET_CATEGORY_PRODUCTS_FROM_API",
+      "DELETE_IMAGE",
+      "PUSH_NEW_CATEGORY",
+    ]),
+    setNewCategory() {},
+    editCategory() {
+      console.log("emited");
+    },
+    addNewCategory(action) {
+      if (action == "save") this.PUSH_NEW_CATEGORY(this.category_form);
+      else
+        this.category_form = {
+          category_id: 9999,
+          category_name: "Добавить категорию",
+          category_color: "",
+          category_image: "",
+          category_show_image: "",
+          hidden: false,
+        };
+    },
     onColorChange(e) {
       this.category_form.category_color = e.target.value;
     },
-    onFileChange(e) {
+    async onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       let file = e.target.files[0];
-      let file_size = file.size;
-      let file_name = file.name;
-      let file_type = file.type;
-      this.category_form.category_image = file;
-      console.log(file);
-      console.log(file_size, file_name, file_type);
+      // let file_size = file.size;
+      // let file_name = file.name;
+      // let file_type = file.type;
+      // this.category_form.category_image = file;
+      this.category_form.category_show_image = file;
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        var imgcode = e.target.result;
+        this.category_form.category_image = imgcode;
+      };
     },
     async getCategoryProducts(ID) {
       console.log(ID);
@@ -169,6 +184,8 @@ export default {
   },
   mounted() {
     this.GET_CATEGORIES();
+    // this.category_form.category_id =
+    //   this.CATEGORIES.categories.slice(-1)[0].category_id + 1;
   },
   components: {
     vCategoryItem,

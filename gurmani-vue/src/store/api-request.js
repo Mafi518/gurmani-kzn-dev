@@ -3,7 +3,6 @@ import store from "./index";
 
 export default {
   async function(method, url, mutations, params) {
-    console.log(params);
     return await axios({
       method: method,
       params: params,
@@ -13,7 +12,6 @@ export default {
         for (const func of mutations) {
           store.commit(func, payload.data);
         }
-      console.log("request");
       return payload;
     });
   },

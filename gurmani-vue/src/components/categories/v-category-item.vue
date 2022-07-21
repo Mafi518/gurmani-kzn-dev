@@ -4,13 +4,9 @@
     :style="{ 'background-color': category_data.category_color }"
     class="category__item"
   >
-    <img
-      :src="category_data.category_image"
-      alt=""
-      class="category__image"
-      v-show="category_data.category_image.includes('data:image')"
-    />
+    <img :src="category_data.category_image" :alt="category_data.category_alt" class="category__image" />
     <h3 class="category__item-title">{{ category_data.category_name }}</h3>
+    <button class="category__item-btn--edit" @click="getCategoryID">Редактировать</button>
   </article>
 </template>
 <script>
@@ -31,8 +27,9 @@ export default {
   },
   methods: {
     getCategoryID() {
-      if (this.settings.admin_emit) this.$emit("addNewCategory");
-      else this.$emit("getCategoryProducts", this.category_data.category_id);
+      if (this.settings.admin_emit) {
+        this.$emit("editCategory");
+      } else this.$emit("getCategoryProducts", this.category_data.category_id);
     },
   },
 };
